@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         placeHolderFragment.setArguments(placeHolderFragmentArguments);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.activity_main_placeholder, new PlaceHolderFragment())
+                .replace(R.id.activity_main_placeholder, placeHolderFragment)
                 .commit();
     }
 }

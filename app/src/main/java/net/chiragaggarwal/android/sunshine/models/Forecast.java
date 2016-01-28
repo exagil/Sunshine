@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Forecast implements Parcelable {
-    String entry;
+    public String entry;
 
     public Forecast(String entry) {
         this.entry = entry;

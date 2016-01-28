@@ -42,4 +42,12 @@ public class Forecasts implements Parcelable {
             return new Forecasts[size];
         }
     };
+
+    public int getCount() {
+        return this.forecasts.size();
+    }
+
+    public Forecast getItem(int position) {
+        return this.forecasts.get(position);
+    }
 }
