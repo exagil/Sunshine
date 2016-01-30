@@ -13,13 +13,9 @@ public class SettingsActivity extends PreferenceActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_general);
-        setPreferenceValueAsSummary();
-    }
 
-    private void setPreferenceValueAsSummary() {
-        Preference preference = findPreference(preferenceZipCodeKey());
-        String preferenceValue = PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), "");
-        onPreferenceChange(preference, preferenceValue);
+        setPreferenceValueAsSummary(countryCodePreference());
+        setPreferenceValueAsSummary(zipCodePreference());
     }
 
     @Override
@@ -30,7 +26,19 @@ public class SettingsActivity extends PreferenceActivity implements
         return true;
     }
 
-    private String preferenceZipCodeKey() {
-        return getString(R.string.preference_zip_code);
+    private void setPreferenceValueAsSummary(Preference preference) {
+        preference.setOnPreferenceChangeListener(this);
+        String preferenceValue = PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), "");
+        onPreferenceChange(preference, preferenceValue);
+    }
+
+    private Preference zipCodePreference() {
+        String zipCodePreferenceKey = getString(R.string.preference_zip_code_key);
+        return findPreference(zipCodePreferenceKey);
+    }
+
+    private Preference countryCodePreference() {
+        String countryCodePreferenceKey = getString(R.string.preference_country_code_key);
+        return findPreference(countryCodePreferenceKey);
     }
 }
