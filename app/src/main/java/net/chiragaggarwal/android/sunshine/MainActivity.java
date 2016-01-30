@@ -2,6 +2,10 @@ package net.chiragaggarwal.android.sunshine;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 
 import net.chiragaggarwal.android.sunshine.models.Callback;
 import net.chiragaggarwal.android.sunshine.models.Forecast;
@@ -22,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initializeAppToolbar();
+
         new FetchWeatherForecastsTask(
                 new Callback<Forecasts>() {
                     @Override
@@ -35,6 +41,18 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         ).execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    private void initializeAppToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        setSupportActionBar(toolbar);
     }
 
     private void showInternetNotConnectedError() {
