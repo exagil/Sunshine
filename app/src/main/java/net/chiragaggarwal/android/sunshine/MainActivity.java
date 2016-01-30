@@ -3,6 +3,7 @@ package net.chiragaggarwal.android.sunshine;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import net.chiragaggarwal.android.sunshine.models.Callback;
 import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
 
@@ -21,18 +22,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        showWeatherForecast();
+        new FetchWeatherForecastsTask(
+                new Callback<Forecasts>() {
+                    @Override
+                    public void onSuccess(Forecasts forecasts) {
+                        showWeatherForecast(forecasts);
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        showInternetNotConnectedError();
+                    }
+                }
+        ).execute();
     }
 
-    private void showWeatherForecast() {
-        Bundle placeHolderFragmentArguments = new Bundle();
-        placeHolderFragmentArguments.putParcelable(Forecasts.TAG, this.forecasts);
+    private void showInternetNotConnectedError() {
 
-        PlaceHolderFragment placeHolderFragment = new PlaceHolderFragment();
-        placeHolderFragment.setArguments(placeHolderFragmentArguments);
+    }
+
+    private void showWeatherForecast(Forecasts forecasts) {
+        Bundle placeHolderFragmentArguments = new Bundle();
+        placeHolderFragmentArguments.putParcelable(Forecasts.TAG, forecasts);
+
+        ForecastFragment forecastFragment = new ForecastFragment();
+        forecastFragment.setArguments(placeHolderFragmentArguments);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.activity_main_placeholder, placeHolderFragment)
+                .replace(R.id.activity_main_placeholder, forecastFragment)
                 .commit();
     }
 }

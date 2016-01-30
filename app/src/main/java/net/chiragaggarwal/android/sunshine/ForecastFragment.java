@@ -10,13 +10,13 @@ import android.widget.ListView;
 
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
 
-public class PlaceHolderFragment extends Fragment {
+public class ForecastFragment extends Fragment {
     ListView forecastList;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_placeholder, container, false);
+        View view = inflater.inflate(R.layout.fragment_forecast, container, false);
 
         Forecasts forecasts = getForecastsFromFragmentArguments();
         initializeWidgets(view);
