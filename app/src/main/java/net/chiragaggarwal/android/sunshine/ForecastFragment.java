@@ -27,6 +27,13 @@ public class ForecastFragment extends Fragment {
     private WeatherForecastAdapter weatherForecastAdapter;
 
     @Override
+    public void onStart() {
+        super.onStart();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        fetchWeatherForecast(sharedPreferences);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
