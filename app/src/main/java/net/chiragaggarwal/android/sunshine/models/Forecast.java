@@ -23,10 +23,11 @@ public class Forecast implements Parcelable {
     private static final String COMMA = ", ";
     private static final String DATE_KEYWORD = " d";
     private static final long ONE_THOUSAND_MILLISECONDS = 1000;
+    public static final String TAG = "net.chiragaggarwal.android.sunshine.models.Forecast";
 
     private final Date date;
     private final Double minimumTemperature;
-    public final String mainDescription;
+    private final String mainDescription;
     private final Double maximumTemperature;
 
     public Forecast(Date date, Double minimumTemperature, Double maximumTemperature, String mainDescription) {
