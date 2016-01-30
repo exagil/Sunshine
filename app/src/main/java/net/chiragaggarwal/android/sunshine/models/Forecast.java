@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Forecast implements Parcelable {
     private static final String TEMPERATURE = "temp";
@@ -17,6 +18,11 @@ public class Forecast implements Parcelable {
     private static final String MAXIMUM_TEMPERATURE = "max";
     private static final String MAIN_DESCRIPTION = "main";
     private static final String SEPERATOR = " - ";
+    private static final String DAY_KEYWORD = "E";
+    private static final String MONTH_NAME_KEYWORD = "MMMM";
+    private static final String COMMA = ", ";
+    private static final String DATE_KEYWORD = " d";
+    private static final long ONE_THOUSAND_MILLISECONDS = 1000;
 
     private final Date date;
     private final Double minimumTemperature;
@@ -34,7 +40,7 @@ public class Forecast implements Parcelable {
         JSONObject temperature = dayForecast.getJSONObject(TEMPERATURE);
         JSONObject weather = dayForecast.getJSONArray(WEATHER).getJSONObject(0);
 
-        Date date = new Date(Long.parseLong(dayForecast.getString(DATE)));
+        Date date = new Date(Long.parseLong(dayForecast.getString(DATE)) * ONE_THOUSAND_MILLISECONDS);
         Double minimumTemperature = temperature.getDouble(MINIMUM_TEMPERATURE);
         Double maximumTemperature = temperature.getDouble(MAXIMUM_TEMPERATURE);
         String mainDescription = weather.getString(MAIN_DESCRIPTION);
@@ -42,10 +48,7 @@ public class Forecast implements Parcelable {
     }
 
     public String summary() {
-        String formattedDate = formattedDate();
-        String formattedTemperatures = formattedTemperatures();
-
-        return formattedDate + SEPERATOR + this.mainDescription + SEPERATOR + formattedTemperatures;
+        return formattedDate() + SEPERATOR + this.mainDescription + SEPERATOR + formattedTemperatures();
     }
 
     @Override
@@ -84,6 +87,7 @@ public class Forecast implements Parcelable {
     }
 
     private String formattedDate() {
-        return new SimpleDateFormat("E, M d").format(this.date);
+        return new SimpleDateFormat(DAY_KEYWORD + COMMA + MONTH_NAME_KEYWORD + DATE_KEYWORD,
+                Locale.US).format(this.date);
     }
 }

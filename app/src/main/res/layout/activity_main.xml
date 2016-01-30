@@ -9,6 +9,7 @@
     <FrameLayout
         android:id="@+id/activity_main_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"/>
 
 </FrameLayout>

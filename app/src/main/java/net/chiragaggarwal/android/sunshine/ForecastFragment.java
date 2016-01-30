@@ -10,13 +10,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import net.chiragaggarwal.android.sunshine.models.Callback;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
 
 public class ForecastFragment extends Fragment {
     private static final String INDIA_COUNTRY_CODE = "in";
-    ListView forecastList;
+    private static final String INDIRANAGAR_ZIP_CODE = "560038";
+
+    private ListView forecastList;
+    private TextView noInternetConnectionTextView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +56,7 @@ public class ForecastFragment extends Fragment {
     }
 
     private void fetchWeatherForecast() {
-        new FetchWeatherForecastsTask("560038", INDIA_COUNTRY_CODE, new Callback<Forecasts>() {
+        new FetchWeatherForecastsTask(INDIRANAGAR_ZIP_CODE, INDIA_COUNTRY_CODE, new Callback<Forecasts>() {
             @Override
             public void onSuccess(Forecasts forecasts) {
                 WeatherForecastAdapter weatherForecastAdapter = new WeatherForecastAdapter(getContext(), forecasts);
@@ -61,12 +65,22 @@ public class ForecastFragment extends Fragment {
 
             @Override
             public void onFailure() {
-
+                removeForecastList();
+                showNoInternetConnection();
             }
         }).execute();
     }
 
     private void initializeWidgets(View view) {
         this.forecastList = (ListView) view.findViewById(R.id.forecast_list);
+        this.noInternetConnectionTextView = (TextView) view.findViewById(R.id.no_internet_connection);
+    }
+
+    private void removeForecastList() {
+        this.forecastList.setVisibility(ListView.GONE);
+    }
+
+    private void showNoInternetConnection() {
+        this.noInternetConnectionTextView.setVisibility(TextView.VISIBLE);
     }
 }

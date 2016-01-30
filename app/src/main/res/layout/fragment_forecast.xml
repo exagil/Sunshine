@@ -9,4 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <TextView
+        android:id="@+id/no_internet_connection"
+        style="@style/no_internet_connection"
+        android:text="@string/no_internet_connection"/>
+
 </FrameLayout>
