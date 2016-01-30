@@ -3,20 +3,37 @@ package net.chiragaggarwal.android.sunshine.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Forecasts implements Parcelable {
-    public static final String TAG = "net/chiragaggarwal/android/sunshine/models/Forecasts";
+    private static final String LIST = "list";
     private ArrayList<Forecast> forecasts = new ArrayList<>();
 
     public Forecasts(Forecast... forecasts) {
         initialize(forecasts);
     }
 
-    private void initialize(Forecast[] forecasts) {
-        for (int forecastPosition = 0; forecastPosition < forecasts.length; forecastPosition++) {
-            this.forecasts.add(forecasts[forecastPosition]);
+    public static Forecasts fromJSON(JSONObject forecastsJSONResponse) throws JSONException {
+        JSONArray forecastsList = forecastsJSONResponse.getJSONArray(LIST);
+        Forecasts forecasts = new Forecasts();
+        for (Integer dayIndex = 0; dayIndex < forecastsList.length(); dayIndex++) {
+            JSONObject dayForecastJSON = forecastsList.getJSONObject(dayIndex);
+            Forecast forecast = Forecast.fromJSON(dayForecastJSON);
+            forecasts.add(forecast);
         }
+        return forecasts;
+    }
+
+    public int getCount() {
+        return this.forecasts.size();
+    }
+
+    public Forecast getItem(int position) {
+        return this.forecasts.get(position);
     }
 
     @Override
@@ -29,10 +46,6 @@ public class Forecasts implements Parcelable {
         dest.writeTypedList(forecasts);
     }
 
-    protected Forecasts(Parcel in) {
-        this.forecasts = in.createTypedArrayList(Forecast.CREATOR);
-    }
-
     public static final Creator<Forecasts> CREATOR = new Creator<Forecasts>() {
         public Forecasts createFromParcel(Parcel source) {
             return new Forecasts(source);
@@ -43,11 +56,17 @@ public class Forecasts implements Parcelable {
         }
     };
 
-    public int getCount() {
-        return this.forecasts.size();
+    protected Forecasts(Parcel in) {
+        this.forecasts = in.createTypedArrayList(Forecast.CREATOR);
     }
 
-    public Forecast getItem(int position) {
-        return this.forecasts.get(position);
+    private boolean add(Forecast forecast) {
+        return this.forecasts.add(forecast);
+    }
+
+    private void initialize(Forecast[] forecasts) {
+        for (int forecastPosition = 0; forecastPosition < forecasts.length; forecastPosition++) {
+            this.forecasts.add(forecasts[forecastPosition]);
+        }
     }
 }
