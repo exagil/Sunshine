@@ -43,8 +43,8 @@ public class WeatherForecastAdapter extends BaseAdapter {
         } else {
             view = convertView;
         }
-        TextView weatherForecastDetails = (TextView) view.findViewById(R.id.list_item_forecast_text_view);
-        weatherForecastDetails.setText(forecast.mainDescription);
+        TextView weatherForecastSummary = (TextView) view.findViewById(R.id.list_item_forecast_summary);
+        weatherForecastSummary.setText(forecast.summary());
         return view;
     }
 }

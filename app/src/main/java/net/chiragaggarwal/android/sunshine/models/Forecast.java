@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Forecast implements Parcelable {
@@ -15,6 +16,7 @@ public class Forecast implements Parcelable {
     private static final String MINIMUM_TEMPERATURE = "min";
     private static final String MAXIMUM_TEMPERATURE = "max";
     private static final String MAIN_DESCRIPTION = "main";
+    private static final String SEPERATOR = " - ";
 
     private final Date date;
     private final Double minimumTemperature;
@@ -37,6 +39,13 @@ public class Forecast implements Parcelable {
         Double maximumTemperature = temperature.getDouble(MAXIMUM_TEMPERATURE);
         String mainDescription = weather.getString(MAIN_DESCRIPTION);
         return new Forecast(date, minimumTemperature, maximumTemperature, mainDescription);
+    }
+
+    public String summary() {
+        String formattedDate = formattedDate();
+        String formattedTemperatures = formattedTemperatures();
+
+        return formattedDate + SEPERATOR + this.mainDescription + SEPERATOR + formattedTemperatures;
     }
 
     @Override
@@ -68,5 +77,13 @@ public class Forecast implements Parcelable {
         this.minimumTemperature = (Double) in.readValue(Double.class.getClassLoader());
         this.mainDescription = in.readString();
         this.maximumTemperature = (Double) in.readValue(Double.class.getClassLoader());
+    }
+
+    private String formattedTemperatures() {
+        return this.maximumTemperature + "/" + this.minimumTemperature;
+    }
+
+    private String formattedDate() {
+        return new SimpleDateFormat("E, M d").format(this.date);
     }
 }

@@ -55,7 +55,8 @@ public class ForecastFragment extends Fragment {
         new FetchWeatherForecastsTask("560038", INDIA_COUNTRY_CODE, new Callback<Forecasts>() {
             @Override
             public void onSuccess(Forecasts forecasts) {
-
+                WeatherForecastAdapter weatherForecastAdapter = new WeatherForecastAdapter(getContext(), forecasts);
+                forecastList.setAdapter(weatherForecastAdapter);
             }
 
             @Override
