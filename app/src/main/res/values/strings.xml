@@ -3,4 +3,7 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
     <string name="no_internet_connection">No Internet Connection</string>
+    <string name="preference_zip_code_title">Location\'s Zip Code</string>
+    <string name="preference_zip_code_default" translatable="false">94040</string>
+    <string name="preference_zip_code" translatable="false">preference_zip_code</string>
 </resources>
