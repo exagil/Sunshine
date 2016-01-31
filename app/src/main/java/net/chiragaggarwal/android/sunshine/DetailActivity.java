@@ -25,33 +25,12 @@ public class DetailActivity extends AppCompatActivity {
         forecastSummary.setText(forecast.summary());
     }
 
-    private void initializeAppToolbar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.clear();
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         initializeShareActionProvider(menu);
         return true;
-    }
-
-    private void initializeShareActionProvider(Menu menu) {
-        MenuItem shareMenuItem = menu.findItem(R.id.menu_item_share);
-        android.support.v7.widget.ShareActionProvider shareActionProvider =
-                (android.support.v7.widget.ShareActionProvider) MenuItemCompat.
-                        getActionProvider(shareMenuItem);
-        shareActionProvider.setShareIntent(createShareIntent());
-    }
-
-    private Intent createShareIntent() {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType(getString(R.string.text_plain));
-        shareIntent.putExtra(Intent.EXTRA_TEXT, this.forecast.summaryWithHashtag(this));
-        return shareIntent;
     }
 
     @Override
@@ -65,6 +44,28 @@ public class DetailActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initializeAppToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void initializeShareActionProvider(Menu menu) {
+        MenuItem shareMenuItem = menu.findItem(R.id.menu_item_share);
+        android.support.v7.widget.ShareActionProvider shareActionProvider =
+                (android.support.v7.widget.ShareActionProvider) MenuItemCompat.
+                        getActionProvider(shareMenuItem);
+        shareActionProvider.setShareIntent(createShareIntent());
+    }
+
+    private Intent createShareIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType(getString(R.string.text_plain));
+        shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, this.forecast.summaryWithHashtag(this));
+        return shareIntent;
     }
 
     private void launchSettings() {
