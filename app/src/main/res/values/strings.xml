@@ -11,4 +11,11 @@
     <string name="preference_country_code_default">US</string>
     <string name="preference_country_code_key">preference_country_code</string>
     <string name="preference_country_code_title">Country Code</string>
+
+    <string name="preference_temperature_unit_key">preference_temperature_unit</string>
+    <string name="preference_temperature_unit_title">Temperature Unit</string>
+    <string name="preference_temperature_unit_entry_celsius">Celsius</string>
+    <string name="preference_temperature_unit_entry_fahrenheit">Fahrenheit</string>
+    <string name="preference_temperature_unit_entry_value_metric">metric</string>
+    <string name="preference_temperature_unit_entry_value_imperial">imperial</string>
 </resources>

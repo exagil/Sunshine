@@ -5,8 +5,8 @@
         android:defaultValue="@string/preference_country_code_default"
         android:inputType="text"
         android:key="@string/preference_country_code_key"
-        android:singleLine="true"
         android:maxLength="2"
+        android:singleLine="true"
         android:title="@string/preference_country_code_title"/>
 
     <EditTextPreference
@@ -15,5 +15,13 @@
         android:key="@string/preference_zip_code_key"
         android:singleLine="true"
         android:title="@string/preference_zip_code_title"/>
+
+    <ListPreference
+        android:defaultValue="@string/preference_temperature_unit_entry_value_metric"
+        android:dialogTitle="@string/preference_temperature_unit_title"
+        android:entries="@array/preference_temperature_unit_entries"
+        android:entryValues="@array/preference_temperature_unit_entry_values"
+        android:key="@string/preference_temperature_unit_key"
+        android:title="@string/preference_temperature_unit_title"/>
 
 </PreferenceScreen>

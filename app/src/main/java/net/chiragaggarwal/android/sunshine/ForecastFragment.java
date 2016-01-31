@@ -29,7 +29,7 @@ public class ForecastFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         fetchWeatherForecast(sharedPreferences);
     }
 
@@ -73,6 +73,7 @@ public class ForecastFragment extends Fragment {
         new FetchWeatherForecastsTask(
                 savedZipCode(sharedPreferences),
                 savedCountryCode(sharedPreferences),
+                savedTemperatureUnit(sharedPreferences),
                 new Callback<Forecasts>() {
                     @Override
                     public void onSuccess(Forecasts forecasts) {
@@ -93,6 +94,7 @@ public class ForecastFragment extends Fragment {
                     }
                 }).execute();
     }
+
 
     private void launchSettings() {
         Intent intent = new Intent(getContext(), SettingsActivity.class);
@@ -128,6 +130,11 @@ public class ForecastFragment extends Fragment {
     private String savedZipCode(SharedPreferences sharedPreferences) {
         String preferenceZipCodeKey = getString(R.string.preference_zip_code_key);
         return sharedPreferences.getString(preferenceZipCodeKey, "");
+    }
+
+    private String savedTemperatureUnit(SharedPreferences sharedPreferences) {
+        String preferenceTemperatureUnitKey = getString(R.string.preference_temperature_unit_key);
+        return sharedPreferences.getString(preferenceTemperatureUnitKey, "");
     }
 
     @NonNull

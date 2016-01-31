@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="preference_temperature_unit_entries">
+        <item>@string/preference_temperature_unit_entry_celsius</item>
+        <item>@string/preference_temperature_unit_entry_fahrenheit</item>
+    </string-array>
+
+    <string-array name="preference_temperature_unit_entry_values">
+        <item>@string/preference_temperature_unit_entry_value_metric</item>
+        <item>@string/preference_temperature_unit_entry_value_imperial</item>
+    </string-array>
+</resources>

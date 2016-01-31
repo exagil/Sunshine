@@ -29,7 +29,6 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
     private static final String MODE = "mode";
     private static final String JSON = "json";
     private static final String UNITS = "units";
-    private static final String METRIC = "metric";
     private static final String COUNT = "cnt";
     private static final String SEVEN = "7";
     private static final String APPID = "APPID";
@@ -37,11 +36,17 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
     private final Callback callback;
     private final String postalCode;
     private final String countryCode;
+    private final String temperatureUnit;
 
-    public FetchWeatherForecastsTask(String postalCode, String countryCode, Callback<Forecasts> callback) {
-        this.callback = callback;
+    public FetchWeatherForecastsTask(String postalCode,
+                                     String countryCode,
+                                     String temperatureUnit,
+                                     Callback<Forecasts> callback) {
+
         this.postalCode = postalCode;
         this.countryCode = countryCode;
+        this.temperatureUnit = temperatureUnit;
+        this.callback = callback;
     }
 
     @Override
@@ -52,7 +57,7 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
             if (isResponseAcceptable(httpURLConnection))
-                forecasts = getForecasts(forecasts, httpURLConnection);
+                forecasts = getForecasts(httpURLConnection);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -81,7 +86,7 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
                 .appendPath(PATH_DAILY)
                 .appendQueryParameter(PARAMETER_ZIP, this.postalCode + COMMA + this.countryCode)
                 .appendQueryParameter(MODE, JSON)
-                .appendQueryParameter(UNITS, METRIC)
+                .appendQueryParameter(UNITS, this.temperatureUnit)
                 .appendQueryParameter(COUNT, SEVEN)
                 .appendQueryParameter(APPID, "8e3db2dc590adf10c1a5e1f8ee25899e")
                 .build();
@@ -92,12 +97,14 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
         return String.valueOf(httpURLConnection.getResponseCode()).matches(RESPONSE_ACCEPTABLE_RANGE);
     }
 
-    private Forecasts getForecasts(Forecasts forecasts, HttpURLConnection httpURLConnection) throws IOException, JSONException {
-        InputStream inputStream = httpURLConnection.getInputStream();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String forecastsResponseString = buildResponseString(bufferedReader);
+    private Forecasts getForecasts(HttpURLConnection httpURLConnection) throws IOException, JSONException {
+        Forecasts forecasts = null;
+        InputStream forecastsResponseStream = httpURLConnection.getInputStream();
+        BufferedReader forecastsResponseReader = new BufferedReader(new InputStreamReader(forecastsResponseStream));
+        String forecastsResponseString = buildResponseString(forecastsResponseReader);
+
         if (forecastsResponseString != null)
-            forecasts = buildForecastFromResponseString(forecastsResponseString);
+            forecasts = buildForecastsFromResponseString(forecastsResponseString);
         return forecasts;
     }
 
@@ -110,7 +117,7 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
         return responseString.toString();
     }
 
-    private Forecasts buildForecastFromResponseString(String forecastsResponseString) throws JSONException {
+    private Forecasts buildForecastsFromResponseString(String forecastsResponseString) throws JSONException {
         JSONObject forecastsJSONResponse = new JSONObject(forecastsResponseString);
         return Forecasts.fromJSON(forecastsJSONResponse);
     }
