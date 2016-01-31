@@ -57,7 +57,7 @@ public class DetailActivity extends AppCompatActivity {
         android.support.v7.widget.ShareActionProvider shareActionProvider =
                 (android.support.v7.widget.ShareActionProvider) MenuItemCompat.
                         getActionProvider(shareMenuItem);
-        shareActionProvider.setShareIntent(createShareIntent());
+        if (shareActionProvider != null) shareActionProvider.setShareIntent(createShareIntent());
     }
 
     private Intent createShareIntent() {
