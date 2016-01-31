@@ -18,4 +18,6 @@
     <string name="preference_temperature_unit_entry_fahrenheit">Fahrenheit</string>
     <string name="preference_temperature_unit_entry_value_metric">metric</string>
     <string name="preference_temperature_unit_entry_value_imperial">imperial</string>
+    
+    <string name="action_show_location">Show Location</string>
 </resources>

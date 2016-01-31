@@ -1,7 +1,9 @@
 package net.chiragaggarwal.android.sunshine;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -57,9 +59,13 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         switch (item.getItemId()) {
+            case R.id.forecast_action_show_location:
+                String zipCode = savedZipCode(sharedPreferences);
+                showLocationAt(zipCode);
+                break;
             case R.id.forecast_action_refresh:
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                 fetchWeatherForecast(sharedPreferences);
                 break;
             case R.id.forecast_action_settings:
@@ -99,6 +105,29 @@ public class ForecastFragment extends Fragment {
     private void launchSettings() {
         Intent intent = new Intent(getContext(), SettingsActivity.class);
         startActivity(intent);
+    }
+
+    private void showLocationAt(String zipCode) {
+        Uri mapInformation = buildUriToViewLocation(zipCode);
+        Intent intent = new Intent(Intent.ACTION_VIEW, mapInformation);
+        if (canDisplayMaps(intent)) {
+            startActivity(intent);
+        } else {
+            showMapsAppNotFoundAlert();
+        }
+    }
+
+    private void showMapsAppNotFoundAlert() {
+        String errorTitle = "Error";
+        String errorMessage = "No supporting app found.\nPlease install Google Maps";
+        new AlertDialog.Builder(getContext()).
+                setTitle(errorTitle).
+                setMessage(errorMessage).
+                show();
+    }
+
+    private Uri buildUriToViewLocation(String zipCode) {
+        return Uri.parse("geo:0,0?q=" + Uri.encode(zipCode));
     }
 
     private void initializeWidgets(View view) {
@@ -160,5 +189,9 @@ public class ForecastFragment extends Fragment {
 
     public boolean isInvalidPreferencesGone() {
         return (this.invalidPreferencesTextView.getVisibility() == TextView.GONE);
+    }
+
+    private boolean canDisplayMaps(Intent intent) {
+        return intent.resolveActivity(getActivity().getPackageManager()) != null;
     }
 }
