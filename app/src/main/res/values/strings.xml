@@ -20,4 +20,6 @@
     <string name="preference_temperature_unit_entry_value_imperial">imperial</string>
     
     <string name="action_show_location">Show Location</string>
+    <string name="text_plain">text/plain</string>
+    <string name="hashtag">#sunshine</string>
 </resources>

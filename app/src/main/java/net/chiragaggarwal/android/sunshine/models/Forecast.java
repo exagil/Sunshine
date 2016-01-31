@@ -1,7 +1,10 @@
 package net.chiragaggarwal.android.sunshine.models;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import net.chiragaggarwal.android.sunshine.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +27,7 @@ public class Forecast implements Parcelable {
     private static final String DATE_KEYWORD = " d";
     private static final long ONE_THOUSAND_MILLISECONDS = 1000;
     public static final String TAG = "net.chiragaggarwal.android.sunshine.models.Forecast";
+    private static final String SPACE = " ";
 
     private final Date date;
     private final Double minimumTemperature;
@@ -50,6 +54,10 @@ public class Forecast implements Parcelable {
 
     public String summary() {
         return formattedDate() + SEPERATOR + this.mainDescription + SEPERATOR + formattedTemperatures();
+    }
+
+    public String summaryWithHashtag(Context context) {
+        return summary() + SPACE + context.getString(R.string.hashtag);
     }
 
     @Override
