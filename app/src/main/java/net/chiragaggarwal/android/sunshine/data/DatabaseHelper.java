@@ -82,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String createLocationTableSQLQuery() {
         return CREATE_TABLE + LocationEntry.TABLE_NAME +
                 START_BRACKET +
-                LocationEntry._ID + INTEGER + PRIMARY_KEY + AUTOINCREMENT +
+                LocationEntry._ID + INTEGER + PRIMARY_KEY +
                 COMMA +
                 LocationEntry.COLUMN_CITY_NAME + TEXT + NOT_NULL +
                 COMMA +
@@ -90,7 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COMMA +
                 LocationEntry.COLUMN_LONGITUDE + NUMERIC + NOT_NULL +
                 COMMA +
-                LocationEntry.COLUMN_LOCATION_SETTING + TEXT + NOT_NULL +
+                LocationEntry.COLUMN_LOCATION_SETTING + TEXT + UNIQUE + NOT_NULL +
                 COMMA +
 
                 UNIQUE + START_BRACKET + LocationEntry.COLUMN_LATITUDE + COMMA +
