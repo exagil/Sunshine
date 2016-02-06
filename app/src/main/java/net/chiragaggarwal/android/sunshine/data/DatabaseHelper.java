@@ -46,7 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @NonNull
-    private String createWeatherForecastTableSQLQuery() {
+    public String createWeatherForecastTableSQLQuery() {
         return CREATE_TABLE + ForecastEntry.TABLE_NAME +
                 START_BRACKET +
                 ForecastEntry._ID + INTEGER + PRIMARY_KEY + AUTOINCREMENT +
@@ -69,6 +69,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COMMA +
                 ForecastEntry.COLUMN_DEGREES + NUMERIC + NOT_NULL +
                 COMMA +
+                ForecastEntry.COLUMN_WEATHER_ID + NUMERIC + NOT_NULL +
+                COMMA +
 
                 FOREIGN_KEY + START_BRACKET + ForecastEntry.COLUMN_LOC_KEY + END_BRACKET +
                 REFERENCES + LocationEntry.TABLE_NAME + START_BRACKET + LocationEntry._ID + END_BRACKET +
@@ -79,7 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 END_BRACKET;
     }
 
-    private String createLocationTableSQLQuery() {
+    public String createLocationTableSQLQuery() {
         return CREATE_TABLE + LocationEntry.TABLE_NAME +
                 START_BRACKET +
                 LocationEntry._ID + INTEGER + PRIMARY_KEY +
