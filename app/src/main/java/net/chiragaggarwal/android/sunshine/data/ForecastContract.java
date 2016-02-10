@@ -15,6 +15,7 @@
  */
 package net.chiragaggarwal.android.sunshine.data;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.format.Time;
 
@@ -36,6 +37,8 @@ public class ForecastContract {
         public static final String COLUMN_CITY_NAME = "city_name";
         public static final String COLUMN_LATITUDE = "latitude";
         public static final String COLUMN_LONGITUDE = "longitude";
+        public static final Uri CONTENT_URI = Uri.parse("context://net.chiragaggarwal.android." +
+                "sunshine.locations_provider/locations");
     }
 
     public static final class ForecastEntry implements BaseColumns {
@@ -66,5 +69,7 @@ public class ForecastContract {
 
         // Degrees are meteorological degrees (e.g, 0 is north, 180 is south).  Stored as floats.
         public static final String COLUMN_DEGREES = "degrees";
+        public static final String CONTENT_AUTHORITY = "net.chiragaggarwal.android.sunshine.forecasts_provider";
+        public static final Uri CONTENT_URI = Uri.parse("context://" + CONTENT_AUTHORITY + "/forecasts");
     }
 }
