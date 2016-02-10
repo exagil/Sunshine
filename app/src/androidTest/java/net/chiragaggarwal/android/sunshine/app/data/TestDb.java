@@ -1,4 +1,4 @@
-package com.example.android.sunshine.app.data;
+package net.chiragaggarwal.android.sunshine.app.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -9,7 +9,7 @@ import net.chiragaggarwal.android.sunshine.data.DatabaseHelper;
 
 import java.util.HashSet;
 
-import static com.example.android.sunshine.app.data.TestUtilities.createWeatherValues;
+import static net.chiragaggarwal.android.sunshine.app.data.TestUtilities.createWeatherValues;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
