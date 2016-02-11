@@ -24,12 +24,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE = "CREATE TABLE ";
     private static final String PRIMARY_KEY = " PRIMARY KEY";
     private static final String AUTOINCREMENT = " AUTOINCREMENT";
-    private static Integer DATABASE_VERSION = 1;
 
     public static String DATABASE_NAME = WEATHER_FORECAST_TABLE_NAME + ".db";
+    public static Integer DATABASE_VERSION = 1;
+
+    private static DatabaseHelper databaseHelper;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static DatabaseHelper getInstance(Context context) {
+        if(databaseHelper == null) databaseHelper = new DatabaseHelper(context);
+        return null;
     }
 
     @Override
