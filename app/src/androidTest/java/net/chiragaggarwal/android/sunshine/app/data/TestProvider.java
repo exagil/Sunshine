@@ -195,6 +195,37 @@ public class TestProvider extends AndroidTestCase {
         TestUtilities.validateCursor("testBasicWeatherQuery", forecastsCursor, forecastsValues);
     }
 
+    public void testForecastsQueryWithLocationSettingAndDate() {
+        // insert our test records into the database
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM locations");
+        db.execSQL("DELETE FROM forecasts");
+
+        ContentValues northPoleLocationValues = TestUtilities.createNorthPoleLocationValues();
+        long northPoleLocationRowId = TestUtilities.insertNorthPoleLocationValues(mContext);
+
+        // Fantastic.  Now that we have a location, add some weather!
+        ContentValues forecastsValue = TestUtilities.createWeatherValues(northPoleLocationRowId);
+
+        long weatherRowId = db.insert(ForecastContract.ForecastEntry.TABLE_NAME, null, forecastsValue);
+        assertTrue("Unable to Insert WeatherEntry into the Database", weatherRowId != -1);
+
+        db.close();
+
+        // Test the basic content provider query
+        Cursor forecastCursor = mContext.getContentResolver().query(
+                Uri.parse("content://net.chiragaggarwal.android.sunshine.data.forecasts_provider/forecasts/99705/1419033600"),
+                null,
+                null,
+                null,
+                null
+        );
+
+        // Make sure we get the correct cursor out of the database
+        TestUtilities.validateCursor("testBasicWeatherQuery", forecastCursor, forecastsValue);
+    }
+
     /*
         This test uses the database directly to insert and then uses the ContentProvider to
         read out the data.  Uncomment this test to see if your location queries are

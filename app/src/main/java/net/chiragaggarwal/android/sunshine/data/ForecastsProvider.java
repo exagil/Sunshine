@@ -39,13 +39,20 @@ public class ForecastsProvider extends ContentProvider {
         ForecastsRepository forecastsRepository = ForecastsRepository.getInstance(databaseHelper);
 
         Cursor forecastsCursor = null;
+        String locationSelection;
+        String date;
         switch (matchCode) {
             case FORECASTS_ENDPOINT:
                 forecastsCursor = forecastsRepository.fetchAll();
                 break;
             case FORECASTS_FOR_LOCATION_ENDPOINT:
-                String locationSelection = extractLocationSelectionFromUri(uri);
+                locationSelection = extractLastElementFromUri(uri);
                 forecastsCursor = forecastsRepository.findForecastsByLocationSelection(locationSelection);
+                break;
+            case FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT:
+                locationSelection = extractSecondLastElementFromUri(uri);
+                date = extractLastElementFromUri(uri);
+                forecastsCursor = forecastsRepository.findForecastsByLocationSelectionAndDate(locationSelection, date);
                 break;
         }
         forecastsCursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -82,10 +89,16 @@ public class ForecastsProvider extends ContentProvider {
         return 0;
     }
 
-    private String extractLocationSelectionFromUri(Uri uri) {
+    private String extractLastElementFromUri(Uri uri) {
         String[] uriParts = splitUriIntoParts(uri);
         int lastUriElementIndex = getLastUriElementIndex(uriParts);
         return uriParts[lastUriElementIndex];
+    }
+
+    private String extractSecondLastElementFromUri(Uri uri) {
+        String[] uriParts = splitUriIntoParts(uri);
+        int secondLastUriElementIndex = getSecondLastUriElementIndex(uriParts);
+        return uriParts[secondLastUriElementIndex];
     }
 
     @NonNull
@@ -95,6 +108,10 @@ public class ForecastsProvider extends ContentProvider {
 
     private int getLastUriElementIndex(String[] uriParts) {
         return uriParts.length - 1;
+    }
+
+    private int getSecondLastUriElementIndex(String[] parts) {
+        return parts.length - 2;
     }
 
     private static void addUriForForecastsWithLocationAndDate(UriMatcher uriMatcher) {
