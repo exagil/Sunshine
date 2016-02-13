@@ -19,18 +19,9 @@ public class ForecastsProvider extends ContentProvider {
 
     public static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-
-        uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
-                ForecastEntry.FORECASTS_PATH,
-                FORECASTS_ENDPOINT);
-
-        uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
-                ForecastEntry.FORECASTS_FOR_LOCATION_PATH,
-                FORECASTS_FOR_LOCATION_ENDPOINT);
-
-        uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
-                ForecastEntry.FORECAST_FOR_LOCATION_AND_DATE_PATH,
-                FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT);
+        addUriForForecasts(uriMatcher);
+        addUriForForecastsWithLocation(uriMatcher);
+        addUriForForecastsWithLocationAndDate(uriMatcher);
         return uriMatcher;
     }
 
@@ -51,9 +42,11 @@ public class ForecastsProvider extends ContentProvider {
         switch (matchCode) {
             case FORECASTS_ENDPOINT:
                 forecastsCursor = forecastsRepository.fetchAll();
+                break;
             case FORECASTS_FOR_LOCATION_ENDPOINT:
                 String locationSelection = extractLocationSelectionFromUri(uri);
                 forecastsCursor = forecastsRepository.findForecastsByLocationSelection(locationSelection);
+                break;
         }
         forecastsCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return forecastsCursor;
@@ -102,5 +95,23 @@ public class ForecastsProvider extends ContentProvider {
 
     private int getLastUriElementIndex(String[] uriParts) {
         return uriParts.length - 1;
+    }
+
+    private static void addUriForForecastsWithLocationAndDate(UriMatcher uriMatcher) {
+        uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
+                ForecastEntry.FORECAST_FOR_LOCATION_AND_DATE_PATH,
+                FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT);
+    }
+
+    private static void addUriForForecastsWithLocation(UriMatcher uriMatcher) {
+        uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
+                ForecastEntry.FORECASTS_FOR_LOCATION_PATH,
+                FORECASTS_FOR_LOCATION_ENDPOINT);
+    }
+
+    private static void addUriForForecasts(UriMatcher uriMatcher) {
+        uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
+                ForecastEntry.FORECASTS_PATH,
+                FORECASTS_ENDPOINT);
     }
 }
