@@ -69,7 +69,8 @@ public class ForecastContract {
 
         // Degrees are meteorological degrees (e.g, 0 is north, 180 is south).  Stored as floats.
         public static final String COLUMN_DEGREES = "degrees";
-        public static final String CONTENT_AUTHORITY = "net.chiragaggarwal.android.sunshine.forecasts_provider";
-        public static final Uri CONTENT_URI = Uri.parse("context://" + CONTENT_AUTHORITY + "/forecasts");
+        public static final String CONTENT_AUTHORITY = "net.chiragaggarwal.android.sunshine.data.forecasts_provider";
+        public static final Uri CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY + "/forecasts");
+        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.net.chiragaggarwal.android.sunshine.data.forecasts_provider.forecasts";
     }
 }

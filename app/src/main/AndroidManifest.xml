@@ -22,7 +22,9 @@
         <activity android:name=".SettingsActivity"></activity>
         <provider
             android:name=".data.ForecastsProvider"
-            android:authorities="net.chiragaggarwal.android.sunshine.forecasts_provider"></provider>
+            android:authorities="net.chiragaggarwal.android.sunshine.data.forecasts_provider"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>
