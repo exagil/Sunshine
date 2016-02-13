@@ -48,7 +48,13 @@ public class LocationsProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        Long locationRowid = null;
+        if (uriMatcher.match(uri) == LOCATIONS_ENDPOINT_CODE) {
+            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
+            LocationsRepository locationsRepository = LocationsRepository.getInstance(databaseHelper);
+            locationRowid = locationsRepository.insert(values);
+        }
+        return buildUriForNewLocationHavingId(locationRowid, uri);
     }
 
     @Override
@@ -67,5 +73,10 @@ public class LocationsProvider extends ContentProvider {
                 ForecastContract.LocationEntry.LOCATIONS_PATH,
                 LOCATIONS_ENDPOINT_CODE);
         return uriMatcher;
+    }
+
+    private Uri buildUriForNewLocationHavingId(Long rowId, Uri uri) {
+        String rowIdPath = rowId.toString();
+        return uri.buildUpon().appendPath(rowIdPath).build();
     }
 }

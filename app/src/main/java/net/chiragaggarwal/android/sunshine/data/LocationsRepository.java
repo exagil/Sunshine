@@ -1,5 +1,6 @@
 package net.chiragaggarwal.android.sunshine.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
@@ -27,5 +28,9 @@ public class LocationsRepository {
     @NonNull
     private String buildFetchLocationsQuery() {
         return "SELECT * FROM " + LocationEntry.TABLE_NAME;
+    }
+
+    public Long insert(ContentValues values) {
+        return this.databaseHelper.getWritableDatabase().insert(LocationEntry.TABLE_NAME, null, values);
     }
 }

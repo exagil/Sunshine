@@ -1,5 +1,6 @@
 package net.chiragaggarwal.android.sunshine.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
@@ -67,5 +68,9 @@ public class ForecastsRepository {
 
     private String locationSettingAndDateQuerySQLStatement() {
         return locationSettingQuerySQLStatement() + " AND " + ForecastEntry.COLUMN_DATE + " =?";
+    }
+
+    public Integer insert(ContentValues values) {
+        return null;
     }
 }
