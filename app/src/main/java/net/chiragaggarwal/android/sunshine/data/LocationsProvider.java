@@ -8,15 +8,9 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 
 public class LocationsProvider extends ContentProvider {
-    private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static UriMatcher uriMatcher = buildUriMatcher();
 
-    private static final int LOCATIONS_ENDPOINT_CODE = 1;
-
-    static {
-        uriMatcher.addURI(ForecastContract.LocationEntry.LOCATIONS_PROVIDER_AUTHORITY,
-                ForecastContract.LocationEntry.LOCATIONS_PATH,
-                LOCATIONS_ENDPOINT_CODE);
-    }
+    public static final int LOCATIONS_ENDPOINT_CODE = 1;
 
     @Override
     public boolean onCreate() {
@@ -26,6 +20,15 @@ public class LocationsProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        int matchCode = uriMatcher.match(uri);
+
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
+        LocationsRepository locationsRepository = LocationsRepository.getInstance(databaseHelper);
+
+        switch (matchCode) {
+            case LOCATIONS_ENDPOINT_CODE:
+                return locationsRepository.fetchAll();
+        }
         return null;
     }
 
@@ -54,5 +57,13 @@ public class LocationsProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
+    }
+
+    public static UriMatcher buildUriMatcher() {
+        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+        uriMatcher.addURI(ForecastContract.LocationEntry.LOCATIONS_PROVIDER_AUTHORITY,
+                ForecastContract.LocationEntry.LOCATIONS_PATH,
+                LOCATIONS_ENDPOINT_CODE);
+        return uriMatcher;
     }
 }

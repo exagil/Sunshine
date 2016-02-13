@@ -10,14 +10,15 @@ import android.support.annotation.Nullable;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 
 public class ForecastsProvider extends ContentProvider {
-    private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static UriMatcher uriMatcher = buildUriMatcher();
 
-    private static final int FORECASTS_ENDPOINT = 1;
-    private static final int FORECASTS_FOR_LOCATION_ENDPOINT = 2;
+    public static final int FORECASTS_ENDPOINT = 1;
+    public static final int FORECASTS_FOR_LOCATION_ENDPOINT = 2;
+    public static final int FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT = 3;
 
-    private static final int FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT = 3;
+    public static UriMatcher buildUriMatcher() {
+        UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-    static {
         uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
                 ForecastEntry.FORECASTS_PATH,
                 FORECASTS_ENDPOINT);
@@ -29,6 +30,7 @@ public class ForecastsProvider extends ContentProvider {
         uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
                 ForecastEntry.FORECAST_FOR_LOCATION_AND_DATE_PATH,
                 FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT);
+        return uriMatcher;
     }
 
     @Override
@@ -47,6 +49,7 @@ public class ForecastsProvider extends ContentProvider {
         switch (matchCode) {
             case FORECASTS_ENDPOINT:
                 Cursor forecastsCursor = forecastsRepository.fetchAll();
+                forecastsCursor.setNotificationUri(getContext().getContentResolver(), uri);
                 return forecastsCursor;
         }
         return null;
