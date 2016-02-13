@@ -39,6 +39,16 @@ public class ForecastsProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        int matchCode = uriMatcher.match(uri);
+
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
+        ForecastsRepository forecastsRepository = ForecastsRepository.getInstance(databaseHelper);
+
+        switch (matchCode) {
+            case FORECASTS_ENDPOINT:
+                Cursor forecastsCursor = forecastsRepository.fetchAll();
+                return forecastsCursor;
+        }
         return null;
     }
 
