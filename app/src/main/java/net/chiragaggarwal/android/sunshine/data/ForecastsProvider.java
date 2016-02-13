@@ -18,15 +18,15 @@ public class ForecastsProvider extends ContentProvider {
     private static final int FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT = 3;
 
     static {
-        uriMatcher.addURI(ForecastEntry.CONTENT_AUTHORITY,
+        uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
                 ForecastEntry.FORECASTS_PATH,
                 FORECASTS_ENDPOINT);
 
-        uriMatcher.addURI(ForecastEntry.CONTENT_AUTHORITY,
+        uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
                 ForecastEntry.FORECASTS_FOR_LOCATION_PATH,
                 FORECASTS_FOR_LOCATION_ENDPOINT);
 
-        uriMatcher.addURI(ForecastEntry.CONTENT_AUTHORITY,
+        uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
                 ForecastEntry.FORECAST_FOR_LOCATION_AND_DATE_PATH,
                 FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT);
     }

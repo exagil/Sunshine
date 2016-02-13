@@ -112,8 +112,8 @@ public class TestProvider extends AndroidTestCase {
 
             // Make sure that the registered authority matches the authority from the Contract.
             assertEquals("Error: WeatherProvider registered with authority: " + providerInfo.authority +
-                            " instead of authority: " + ForecastEntry.CONTENT_AUTHORITY,
-                    providerInfo.authority, ForecastEntry.CONTENT_AUTHORITY);
+                            " instead of authority: " + ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
+                    providerInfo.authority, ForecastEntry.FORECASTS_PROVIDER_AUTHORITY);
         } catch (PackageManager.NameNotFoundException e) {
             // I guess the provider isn't registered correctly.
             assertTrue("Error: WeatherProvider not registered at " + mContext.getPackageName(),
@@ -147,12 +147,12 @@ public class TestProvider extends AndroidTestCase {
         // vnd.android.cursor.item/com.example.android.sunshine.app/weather/1419120000
         assertEquals("Error: the ForecastEntry CONTENT_URI with location and date should return ForecastEntry.DATA_TYPE_FORECAST_ITEM",
                 ForecastEntry.DATA_TYPE_FORECAST_ITEM, type);
-//
-//        // content://com.example.android.sunshine.app/location/
-//        type = mContext.getContentResolver().getType(LocationEntry.CONTENT_URI);
-//        // vnd.android.cursor.dir/com.example.android.sunshine.app/location
-//        assertEquals("Error: the LocationEntry CONTENT_URI should return LocationEntry.CONTENT_TYPE",
-//                LocationEntry.CONTENT_TYPE, type);
+
+        // content://com.example.android.sunshine.app/location/
+        type = mContext.getContentResolver().getType(LocationEntry.CONTENT_URI);
+        // vnd.android.cursor.dir/com.example.android.sunshine.app/location
+        assertEquals("Error: the LocationEntry CONTENT_URI should return LocationEntry.CONTENT_TYPE",
+                LocationEntry.DATA_TYPE_LOCATIONS_COLLECTION, type);
     }
 
 

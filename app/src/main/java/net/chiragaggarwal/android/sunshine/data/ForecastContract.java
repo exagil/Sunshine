@@ -42,8 +42,13 @@ public class ForecastContract {
         public static final String COLUMN_CITY_NAME = "city_name";
         public static final String COLUMN_LATITUDE = "latitude";
         public static final String COLUMN_LONGITUDE = "longitude";
-        public static final Uri CONTENT_URI = Uri.parse("context://net.chiragaggarwal.android." +
-                "sunshine.locations_provider/locations");
+
+        public static final String LOCATIONS_PROVIDER_AUTHORITY = "net.chiragaggarwal.android.sunshine.data.locations_provider";
+        public static final String LOCATIONS_PATH = "locations";
+
+        public static final String DATA_TYPE_LOCATIONS_COLLECTION = "vnd.android.cursor.dir/vnd." + LOCATIONS_PROVIDER_AUTHORITY + SLASH + LOCATIONS_PATH;
+
+        public static final Uri CONTENT_URI = Uri.parse(CONTENT_URI_SCHEME + LOCATIONS_PROVIDER_AUTHORITY + SLASH + LOCATIONS_PATH);
     }
 
     public static final class ForecastEntry implements BaseColumns {
@@ -75,16 +80,16 @@ public class ForecastContract {
         // Degrees are meteorological degrees (e.g, 0 is north, 180 is south).  Stored as floats.
         public static final String COLUMN_DEGREES = "degrees";
 
-        public static final String CONTENT_AUTHORITY = "net.chiragaggarwal.android.sunshine.data.forecasts_provider";
+        public static final String FORECASTS_PROVIDER_AUTHORITY = "net.chiragaggarwal.android.sunshine.data.forecasts_provider";
 
         public static final String FORECASTS_PATH = TABLE_NAME;
         public static final String FORECASTS_FOR_LOCATION_PATH = FORECASTS_PATH + SLASH + CHARACTERS_OF_ANY_LENGTH_PATH;
         public static final String FORECAST_FOR_LOCATION_AND_DATE_PATH = FORECASTS_PATH + SLASH + CHARACTERS_OF_ANY_LENGTH_PATH + SLASH + NUMBERS_OF_ANY_LENGTH;
 
-        public static final Uri CONTENT_URI = Uri.parse(CONTENT_URI_SCHEME + CONTENT_AUTHORITY + SLASH + FORECASTS_PATH);
+        public static final Uri CONTENT_URI = Uri.parse(CONTENT_URI_SCHEME + FORECASTS_PROVIDER_AUTHORITY + SLASH + FORECASTS_PATH);
 
-        public static final String DATA_TYPE_FORECASTS_COLLECTION = "vnd.android.cursor.dir/vnd." + CONTENT_AUTHORITY + DOT + FORECASTS_PATH;
-        public static final String DATA_TYPE_FORECAST_ITEM = "vnd.android.cursor.item/vnd." + CONTENT_AUTHORITY + DOT + FORECASTS_PATH;
+        public static final String DATA_TYPE_FORECASTS_COLLECTION = "vnd.android.cursor.dir/vnd." + FORECASTS_PROVIDER_AUTHORITY + DOT + FORECASTS_PATH;
+        public static final String DATA_TYPE_FORECAST_ITEM = "vnd.android.cursor.item/vnd." + FORECASTS_PROVIDER_AUTHORITY + DOT + FORECASTS_PATH;
 
         public static Uri buildForecastsForLocationEndpoint(String locationZipCode) {
             return CONTENT_URI.buildUpon().appendPath(locationZipCode).build();

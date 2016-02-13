@@ -25,6 +25,11 @@
             android:authorities="net.chiragaggarwal.android.sunshine.data.forecasts_provider"
             android:enabled="true"
             android:exported="true"></provider>
+        <provider
+            android:name=".data.LocationsProvider"
+            android:authorities="net.chiragaggarwal.android.sunshine.data.locations_provider"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>
