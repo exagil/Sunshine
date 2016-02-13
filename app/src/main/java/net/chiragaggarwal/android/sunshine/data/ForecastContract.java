@@ -23,6 +23,9 @@ import android.text.format.Time;
  * Defines table and column names for the forecast database.
  */
 public class ForecastContract {
+    private static final String SLASH = "/";
+    private static final String CONTENT_URI_SCHEME = "content://";
+    private static final String CHARACTERS_OF_ANY_LENGTH_PATH = "*";
 
     public static long normalizeDate(long startDate) {
         Time time = new Time();
@@ -69,8 +72,15 @@ public class ForecastContract {
 
         // Degrees are meteorological degrees (e.g, 0 is north, 180 is south).  Stored as floats.
         public static final String COLUMN_DEGREES = "degrees";
+
         public static final String CONTENT_AUTHORITY = "net.chiragaggarwal.android.sunshine.data.forecasts_provider";
-        public static final Uri CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY + "/forecasts");
-        public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.net.chiragaggarwal.android.sunshine.data.forecasts_provider.forecasts";
+        public static final String DATA_TYPE_FORECASTS_COLLECTION = "vnd.android.cursor.dir/vnd." + CONTENT_AUTHORITY + ".forecasts";
+        public static final String FORECASTS_PATH = TABLE_NAME;
+        public static final Uri CONTENT_URI = Uri.parse(CONTENT_URI_SCHEME + CONTENT_AUTHORITY + "/forecasts");
+        public static final String FORECAST_FOR_LOCATION_PATH = TABLE_NAME + SLASH + CHARACTERS_OF_ANY_LENGTH_PATH;
+
+        public static Uri buildForecastsForLocationEndpoint(String locationZipCode) {
+            return CONTENT_URI.buildUpon().appendPath(locationZipCode).build();
+        }
     }
 }

@@ -112,7 +112,7 @@ public class TestProvider extends AndroidTestCase {
 
             // Make sure that the registered authority matches the authority from the Contract.
             assertEquals("Error: WeatherProvider registered with authority: " + providerInfo.authority +
-                    " instead of authority: " + ForecastEntry.CONTENT_AUTHORITY,
+                            " instead of authority: " + ForecastEntry.CONTENT_AUTHORITY,
                     providerInfo.authority, ForecastEntry.CONTENT_AUTHORITY);
         } catch (PackageManager.NameNotFoundException e) {
             // I guess the provider isn't registered correctly.
@@ -131,16 +131,15 @@ public class TestProvider extends AndroidTestCase {
         // content://com.example.android.sunshine.app/weather/
         String type = mContext.getContentResolver().getType(ForecastEntry.CONTENT_URI);
         // vnd.android.cursor.dir/com.example.android.sunshine.app/weather
-        assertEquals("Error: the WeatherEntry CONTENT_URI should return WeatherEntry.CONTENT_TYPE",
-                ForecastEntry.CONTENT_TYPE, type);
+        assertEquals("Error: the WeatherEntry CONTENT_URI should return WeatherEntry.DATA_TYPE_FORECASTS_COLLECTION",
+                ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION, type);
 
-//        String testLocation = "94074";
-//        // content://com.example.android.sunshine.app/weather/94074
-//        type = mContext.getContentResolver().getType(
-//                ForecastEntry.buildWeatherLocation(testLocation));
-//        // vnd.android.cursor.dir/com.example.android.sunshine.app/weather
-//        assertEquals("Error: the WeatherEntry CONTENT_URI with location should return WeatherEntry.CONTENT_TYPE",
-//                ForecastEntry.CONTENT_TYPE, type);
+        String testLocation = "94074";
+        // content://com.example.android.sunshine.app/weather/94074
+        type = mContext.getContentResolver().getType(ForecastEntry.buildForecastsForLocationEndpoint(testLocation));
+        // vnd.android.cursor.dir/com.example.android.sunshine.app/weather
+        assertEquals("Error: the ForecastEntry CONTENT_URI with location should return ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION",
+                ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION, type);
 //
 //        long testDate = 1419120000L; // December 21st, 2014
 //        // content://com.example.android.sunshine.app/weather/94074/20140612
@@ -355,7 +354,7 @@ public class TestProvider extends AndroidTestCase {
 //
 //        // Get the joined Weather and Location data
 //        weatherCursor = mContext.getContentResolver().query(
-//                WeatherEntry.buildWeatherLocation(TestUtilities.TEST_LOCATION),
+//                WeatherEntry.buildForecastsForLocationEndpoint(TestUtilities.TEST_LOCATION),
 //                null, // leaving "columns" null just returns all the columns.
 //                null, // cols for "where" clause
 //                null, // values for "where" clause

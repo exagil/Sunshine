@@ -13,11 +13,16 @@ public class ForecastsProvider extends ContentProvider {
     private static UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     private static final int FORECASTS_ENDPOINT = 1;
+    private static final int FORECASTS_FOR_LOCATION_ENDPOINT = 2;
 
     static {
         uriMatcher.addURI(ForecastEntry.CONTENT_AUTHORITY,
-                ForecastEntry.TABLE_NAME,
+                ForecastEntry.FORECASTS_PATH,
                 FORECASTS_ENDPOINT);
+
+        uriMatcher.addURI(ForecastEntry.CONTENT_AUTHORITY,
+                ForecastEntry.FORECAST_FOR_LOCATION_PATH,
+                FORECASTS_FOR_LOCATION_ENDPOINT);
     }
 
     @Override
@@ -37,7 +42,8 @@ public class ForecastsProvider extends ContentProvider {
         int matchedCode = uriMatcher.match(uri);
         switch (matchedCode) {
             case FORECASTS_ENDPOINT:
-                return ForecastEntry.CONTENT_TYPE;
+            case FORECASTS_FOR_LOCATION_ENDPOINT:
+                return ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION;
         }
         return null;
     }
