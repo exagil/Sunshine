@@ -140,14 +140,13 @@ public class TestProvider extends AndroidTestCase {
         // vnd.android.cursor.dir/com.example.android.sunshine.app/weather
         assertEquals("Error: the ForecastEntry CONTENT_URI with location should return ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION",
                 ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION, type);
-//
-//        long testDate = 1419120000L; // December 21st, 2014
-//        // content://com.example.android.sunshine.app/weather/94074/20140612
-//        type = mContext.getContentResolver().getType(
-//                ForecastEntry.buildWeatherLocationWithDate(testLocation, testDate));
-//        // vnd.android.cursor.item/com.example.android.sunshine.app/weather/1419120000
-//        assertEquals("Error: the WeatherEntry CONTENT_URI with location and date should return WeatherEntry.CONTENT_ITEM_TYPE",
-//                ForecastEntry.CONTENT_ITEM_TYPE, type);
+
+        long testDate = 1419120000L; // December 21st, 2014
+        // content://com.example.android.sunshine.app/weather/94074/20140612
+        type = mContext.getContentResolver().getType(ForecastEntry.buildForecastsForLocationWithDateEndpoint(testLocation, testDate));
+        // vnd.android.cursor.item/com.example.android.sunshine.app/weather/1419120000
+        assertEquals("Error: the ForecastEntry CONTENT_URI with location and date should return ForecastEntry.DATA_TYPE_FORECAST_ITEM",
+                ForecastEntry.DATA_TYPE_FORECAST_ITEM, type);
 //
 //        // content://com.example.android.sunshine.app/location/
 //        type = mContext.getContentResolver().getType(LocationEntry.CONTENT_URI);

@@ -15,14 +15,20 @@ public class ForecastsProvider extends ContentProvider {
     private static final int FORECASTS_ENDPOINT = 1;
     private static final int FORECASTS_FOR_LOCATION_ENDPOINT = 2;
 
+    private static final int FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT = 3;
+
     static {
         uriMatcher.addURI(ForecastEntry.CONTENT_AUTHORITY,
                 ForecastEntry.FORECASTS_PATH,
                 FORECASTS_ENDPOINT);
 
         uriMatcher.addURI(ForecastEntry.CONTENT_AUTHORITY,
-                ForecastEntry.FORECAST_FOR_LOCATION_PATH,
+                ForecastEntry.FORECASTS_FOR_LOCATION_PATH,
                 FORECASTS_FOR_LOCATION_ENDPOINT);
+
+        uriMatcher.addURI(ForecastEntry.CONTENT_AUTHORITY,
+                ForecastEntry.FORECAST_FOR_LOCATION_AND_DATE_PATH,
+                FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT);
     }
 
     @Override
@@ -44,6 +50,8 @@ public class ForecastsProvider extends ContentProvider {
             case FORECASTS_ENDPOINT:
             case FORECASTS_FOR_LOCATION_ENDPOINT:
                 return ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION;
+            case FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT:
+                return ForecastEntry.DATA_TYPE_FORECAST_ITEM;
         }
         return null;
     }
