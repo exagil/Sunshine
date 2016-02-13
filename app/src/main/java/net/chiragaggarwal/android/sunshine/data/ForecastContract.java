@@ -107,5 +107,9 @@ public class ForecastContract {
                     appendPath(location).
                     build();
         }
+
+        public static Uri buildWeatherLocationWithDate(String query, long date) {
+            return buildForecastsForLocationWithDateEndpoint(query, date);
+        }
     }
 }

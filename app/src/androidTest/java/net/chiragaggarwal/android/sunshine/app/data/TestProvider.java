@@ -6,13 +6,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
+import android.os.Build;
 import android.test.AndroidTestCase;
 
 import net.chiragaggarwal.android.sunshine.data.DatabaseHelper;
+import net.chiragaggarwal.android.sunshine.data.ForecastContract;
 import net.chiragaggarwal.android.sunshine.data.ForecastsProvider;
-
-import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
-import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
 /*
     Note: This is not a complete set of tests of the Sunshine ContentProvider, but it does test
@@ -36,18 +36,18 @@ public class TestProvider extends AndroidTestCase {
      */
     public void deleteAllRecordsFromProvider() {
         mContext.getContentResolver().delete(
-                ForecastEntry.CONTENT_URI,
+                ForecastContract.ForecastEntry.CONTENT_URI,
                 null,
                 null
         );
         mContext.getContentResolver().delete(
-                LocationEntry.CONTENT_URI,
+                ForecastContract.LocationEntry.CONTENT_URI,
                 null,
                 null
         );
 
         Cursor cursor = mContext.getContentResolver().query(
-                ForecastEntry.CONTENT_URI,
+                ForecastContract.ForecastEntry.CONTENT_URI,
                 null,
                 null,
                 null,
@@ -57,7 +57,7 @@ public class TestProvider extends AndroidTestCase {
         cursor.close();
 
         cursor = mContext.getContentResolver().query(
-                LocationEntry.CONTENT_URI,
+                ForecastContract.LocationEntry.CONTENT_URI,
                 null,
                 null,
                 null,
@@ -72,30 +72,30 @@ public class TestProvider extends AndroidTestCase {
        functions only.  This is designed to be used to reset the state of the database until the
        delete functionality is available in the ContentProvider.
      */
-//    public void deleteAllRecordsFromDB() {
-//        WeatherDbHelper dbHelper = new WeatherDbHelper(mContext);
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//
-//        db.delete(WeatherEntry.TABLE_NAME, null, null);
-//        db.delete(LocationEntry.TABLE_NAME, null, null);
-//        db.close();
-//    }
-//
-//    /*
-//        Student: Refactor this function to use the deleteAllRecordsFromProvider functionality once
-//        you have implemented delete functionality there.
-//     */
-//    public void deleteAllRecords() {
-//        deleteAllRecordsFromDB();
-//    }
-//
-//    // Since we want each test to start with a clean slate, run deleteAllRecords
-//    // in setUp (called by the test runner before each test).
-//    @Override
-//    protected void setUp() throws Exception {
-//        super.setUp();
-//        deleteAllRecords();
-//    }
+    public void deleteAllRecordsFromDB() {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(mContext);
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        db.delete(ForecastContract.ForecastEntry.TABLE_NAME, null, null);
+        db.delete(ForecastContract.LocationEntry.TABLE_NAME, null, null);
+        db.close();
+    }
+
+    /*
+        Student: Refactor this function to use the deleteAllRecordsFromProvider functionality once
+        you have implemented delete functionality there.
+     */
+    public void deleteAllRecords() {
+        deleteAllRecordsFromDB();
+    }
+
+    // Since we want each test to start with a clean slate, run deleteAllRecords
+    // in setUp (called by the test runner before each test).
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        deleteAllRecords();
+    }
 
     /*
         This test checks to make sure that the content provider is registered correctly.
@@ -115,8 +115,8 @@ public class TestProvider extends AndroidTestCase {
 
             // Make sure that the registered authority matches the authority from the Contract.
             assertEquals("Error: WeatherProvider registered with authority: " + providerInfo.authority +
-                            " instead of authority: " + ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
-                    providerInfo.authority, ForecastEntry.FORECASTS_PROVIDER_AUTHORITY);
+                            " instead of authority: " + ForecastContract.ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
+                    providerInfo.authority, ForecastContract.ForecastEntry.FORECASTS_PROVIDER_AUTHORITY);
         } catch (PackageManager.NameNotFoundException e) {
             // I guess the provider isn't registered correctly.
             assertTrue("Error: WeatherProvider not registered at " + mContext.getPackageName(),
@@ -132,30 +132,30 @@ public class TestProvider extends AndroidTestCase {
          */
     public void testGetType() {
         // content://com.example.android.sunshine.app/weather/
-        String type = mContext.getContentResolver().getType(ForecastEntry.CONTENT_URI);
+        String type = mContext.getContentResolver().getType(ForecastContract.ForecastEntry.CONTENT_URI);
         // vnd.android.cursor.dir/com.example.android.sunshine.app/weather
         assertEquals("Error: the WeatherEntry CONTENT_URI should return WeatherEntry.DATA_TYPE_FORECASTS_COLLECTION",
-                ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION, type);
+                ForecastContract.ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION, type);
 
         String testLocation = "94074";
         // content://com.example.android.sunshine.app/weather/94074
-        type = mContext.getContentResolver().getType(ForecastEntry.buildForecastsForLocationEndpoint(testLocation));
+        type = mContext.getContentResolver().getType(ForecastContract.ForecastEntry.buildForecastsForLocationEndpoint(testLocation));
         // vnd.android.cursor.dir/com.example.android.sunshine.app/weather
         assertEquals("Error: the ForecastEntry CONTENT_URI with location should return ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION",
-                ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION, type);
+                ForecastContract.ForecastEntry.DATA_TYPE_FORECASTS_COLLECTION, type);
 
         long testDate = 1419120000L; // December 21st, 2014
         // content://com.example.android.sunshine.app/weather/94074/20140612
-        type = mContext.getContentResolver().getType(ForecastEntry.buildForecastsForLocationWithDateEndpoint(testLocation, testDate));
+        type = mContext.getContentResolver().getType(ForecastContract.ForecastEntry.buildForecastsForLocationWithDateEndpoint(testLocation, testDate));
         // vnd.android.cursor.item/com.example.android.sunshine.app/weather/1419120000
         assertEquals("Error: the ForecastEntry CONTENT_URI with location and date should return ForecastEntry.DATA_TYPE_FORECAST_ITEM",
-                ForecastEntry.DATA_TYPE_FORECAST_ITEM, type);
+                ForecastContract.ForecastEntry.DATA_TYPE_FORECAST_ITEM, type);
 
         // content://com.example.android.sunshine.app/location/
-        type = mContext.getContentResolver().getType(LocationEntry.CONTENT_URI);
+        type = mContext.getContentResolver().getType(ForecastContract.LocationEntry.CONTENT_URI);
         // vnd.android.cursor.dir/com.example.android.sunshine.app/location
         assertEquals("Error: the LocationEntry CONTENT_URI should return LocationEntry.CONTENT_TYPE",
-                LocationEntry.DATA_TYPE_LOCATIONS_COLLECTION, type);
+                ForecastContract.LocationEntry.DATA_TYPE_LOCATIONS_COLLECTION, type);
     }
 
 
@@ -166,7 +166,7 @@ public class TestProvider extends AndroidTestCase {
      */
     public void testBasicForecastsQuery() {
         // insert our test records into the database
-        DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("DELETE FROM locations");
         db.execSQL("DELETE FROM forecasts");
@@ -177,14 +177,14 @@ public class TestProvider extends AndroidTestCase {
         // Fantastic.  Now that we have a location, add some weather!
         ContentValues forecastsValues = TestUtilities.createWeatherValues(northPoleLocationRowId);
 
-        long weatherRowId = db.insert(ForecastEntry.TABLE_NAME, null, forecastsValues);
+        long weatherRowId = db.insert(ForecastContract.ForecastEntry.TABLE_NAME, null, forecastsValues);
         assertTrue("Unable to Insert WeatherEntry into the Database", weatherRowId != -1);
 
         db.close();
 
         // Test the basic content provider query
         Cursor forecastsCursor = mContext.getContentResolver().query(
-                ForecastEntry.CONTENT_URI,
+                Uri.parse("content://net.chiragaggarwal.android.sunshine.data.forecasts_provider/forecasts"),
                 null,
                 null,
                 null,
@@ -200,33 +200,31 @@ public class TestProvider extends AndroidTestCase {
         read out the data.  Uncomment this test to see if your location queries are
         performing correctly.
      */
-//    public void testBasicLocationQueries() {
-//        // insert our test records into the database
-//        WeatherDbHelper dbHelper = new WeatherDbHelper(mContext);
-//        SQLiteDatabase db = dbHelper.getWritableDatabase();
-//
-//        ContentValues testValues = TestUtilities.createNorthPoleLocationValues();
-//        long locationRowId = TestUtilities.insertNorthPoleLocationValues(mContext);
-//
-//        // Test the basic content provider query
-//        Cursor locationCursor = mContext.getContentResolver().query(
-//                LocationEntry.CONTENT_URI,
-//                null,
-//                null,
-//                null,
-//                null
-//        );
-//
-//        // Make sure we get the correct cursor out of the database
-//        TestUtilities.validateCursor("testBasicLocationQueries, location query", locationCursor, testValues);
-//
-//        // Has the NotificationUri been set correctly? --- we can only test this easily against API
-//        // level 19 or greater because getNotificationUri was added in API level 19.
-//        if ( Build.VERSION.SDK_INT >= 19 ) {
-//            assertEquals("Error: Location Query did not properly set NotificationUri",
-//                    locationCursor.getNotificationUri(), LocationEntry.CONTENT_URI);
-//        }
-//    }
+    public void testBasicLocationQueries() {
+        // insert our test records into the database
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM locations");
+        db.execSQL("DELETE FROM forecasts");
+
+        ContentValues testValues = TestUtilities.createNorthPoleLocationValues();
+        long locationRowId = TestUtilities.insertNorthPoleLocationValues(mContext);
+
+        Uri locationsUri = Uri.parse("content://net.chiragaggarwal.android.sunshine.data.locations_provider/locations");
+
+        // Test the basic content provider query
+        Cursor locationCursor = mContext.getContentResolver().query(locationsUri, null, null, null, null);
+
+        // Make sure we get the correct cursor out of the database
+        TestUtilities.validateCursor("testBasicLocationQueries, location query", locationCursor, testValues);
+
+        // Has the NotificationUri been set correctly? --- we can only test this easily against API
+        // level 19 or greater because getNotificationUri was added in API level 19.
+        if (Build.VERSION.SDK_INT >= 19) {
+            assertEquals("Error: Location Query did not properly set NotificationUri",
+                    locationCursor.getNotificationUri(), ForecastContract.LocationEntry.CONTENT_URI);
+        }
+    }
 
     /*
         This test uses the provider to insert and then update the data. Uncomment this test to

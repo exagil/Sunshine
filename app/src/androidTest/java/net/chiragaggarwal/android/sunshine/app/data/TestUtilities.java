@@ -69,7 +69,7 @@ public class TestUtilities extends AndroidTestCase {
     }
 
     static long insertNorthPoleLocationValues(Context context) {
-        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues testValues = TestUtilities.createNorthPoleLocationValues();
 

@@ -27,7 +27,9 @@ public class LocationsProvider extends ContentProvider {
 
         switch (matchCode) {
             case LOCATIONS_ENDPOINT_CODE:
-                return locationsRepository.fetchAll();
+                Cursor locationsCursor = locationsRepository.fetchAll();
+                locationsCursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return locationsCursor;
         }
         return null;
     }

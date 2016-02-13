@@ -28,8 +28,7 @@ public class TestDb extends AndroidTestCase {
         tableNameHashSet.add(ForecastEntry.TABLE_NAME);
 
         mContext.deleteDatabase(DatabaseHelper.DATABASE_NAME);
-        SQLiteDatabase db = new DatabaseHelper(
-                this.mContext).getWritableDatabase();
+        SQLiteDatabase db = DatabaseHelper.getInstance(this.mContext).getWritableDatabase();
         assertEquals(true, db.isOpen());
 
         Cursor tablesCursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
@@ -69,7 +68,7 @@ public class TestDb extends AndroidTestCase {
     }
 
     public void testLocationTable() {
-        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
         SQLiteDatabase writableDatabase = databaseHelper.getWritableDatabase();
         ContentValues locationValues = createLocationValues();
         long locationId = insertLocation(locationValues, writableDatabase);
@@ -82,7 +81,7 @@ public class TestDb extends AndroidTestCase {
     }
 
     public void testWeatherTable() {
-        DatabaseHelper databaseHelper = new DatabaseHelper(getContext());
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
         SQLiteDatabase writableDatabase = databaseHelper.getWritableDatabase();
         long locationId = insertLocation(createLocationValues(), writableDatabase);
         assertNotSame(-1, locationId);
