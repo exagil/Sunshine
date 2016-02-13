@@ -101,5 +101,11 @@ public class ForecastContract {
                     appendPath(String.valueOf(date)).
                     build();
         }
+
+        public static Uri buildWeatherLocation(String location) {
+            return CONTENT_URI.buildUpon().
+                    appendPath(location).
+                    build();
+        }
     }
 }
