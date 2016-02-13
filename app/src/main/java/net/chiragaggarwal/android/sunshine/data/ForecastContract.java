@@ -28,6 +28,7 @@ public class ForecastContract {
     private static final String CHARACTERS_OF_ANY_LENGTH_PATH = "*";
     private static final String NUMBERS_OF_ANY_LENGTH = "#";
     private static final String DOT = ".";
+    private static final String COMMA = ", ";
 
     public static long normalizeDate(long startDate) {
         Time time = new Time();
@@ -90,6 +91,10 @@ public class ForecastContract {
 
         public static final String DATA_TYPE_FORECASTS_COLLECTION = "vnd.android.cursor.dir/vnd." + FORECASTS_PROVIDER_AUTHORITY + DOT + FORECASTS_PATH;
         public static final String DATA_TYPE_FORECAST_ITEM = "vnd.android.cursor.item/vnd." + FORECASTS_PROVIDER_AUTHORITY + DOT + FORECASTS_PATH;
+        public static final String FORECAST_COLUMNS = COLUMN_LOC_KEY + COMMA +
+                COLUMN_DATE + COMMA + COLUMN_WEATHER_ID + COMMA + COLUMN_SHORT_DESC + COMMA +
+                COLUMN_MIN_TEMP + COMMA + COLUMN_MAX_TEMP + COMMA + COLUMN_HUMIDITY + COMMA +
+                COLUMN_PRESSURE + COMMA + COLUMN_WIND_SPEED + COMMA + COLUMN_DEGREES;
 
         public static Uri buildForecastsForLocationEndpoint(String locationZipCode) {
             return CONTENT_URI.buildUpon().appendPath(locationZipCode).build();

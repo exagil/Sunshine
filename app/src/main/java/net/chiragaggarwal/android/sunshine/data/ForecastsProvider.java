@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
@@ -46,13 +47,16 @@ public class ForecastsProvider extends ContentProvider {
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
         ForecastsRepository forecastsRepository = ForecastsRepository.getInstance(databaseHelper);
 
+        Cursor forecastsCursor = null;
         switch (matchCode) {
             case FORECASTS_ENDPOINT:
-                Cursor forecastsCursor = forecastsRepository.fetchAll();
-                forecastsCursor.setNotificationUri(getContext().getContentResolver(), uri);
-                return forecastsCursor;
+                forecastsCursor = forecastsRepository.fetchAll();
+            case FORECASTS_FOR_LOCATION_ENDPOINT:
+                String locationSelection = extractLocationSelectionFromUri(uri);
+                forecastsCursor = forecastsRepository.findForecastsByLocationSelection(locationSelection);
         }
-        return null;
+        forecastsCursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return forecastsCursor;
     }
 
     @Nullable
@@ -83,5 +87,20 @@ public class ForecastsProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
+    }
+
+    private String extractLocationSelectionFromUri(Uri uri) {
+        String[] uriParts = splitUriIntoParts(uri);
+        int lastUriElementIndex = getLastUriElementIndex(uriParts);
+        return uriParts[lastUriElementIndex];
+    }
+
+    @NonNull
+    private String[] splitUriIntoParts(Uri uri) {
+        return uri.toString().split("/");
+    }
+
+    private int getLastUriElementIndex(String[] uriParts) {
+        return uriParts.length - 1;
     }
 }
