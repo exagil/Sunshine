@@ -2,6 +2,7 @@ package net.chiragaggarwal.android.sunshine.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
@@ -48,9 +49,10 @@ public class ForecastsRepository {
         return this.databaseHelper.getWritableDatabase().delete(ForecastEntry.TABLE_NAME, null, null);
     }
 
-    @NonNull
-    private String buildFetchForecastsQuery() {
-        return "SELECT * FROM " + ForecastEntry.TABLE_NAME;
+    public int bulkInsert(ContentValues[] values) {
+        SQLiteDatabase db = this.databaseHelper.getWritableDatabase();
+        int numberOfForecastsInserted = bulkInsertForecastsAsTransaction(values, db);
+        return numberOfForecastsInserted;
     }
 
     @NonNull
@@ -79,5 +81,33 @@ public class ForecastsRepository {
 
     private String locationSettingAndDateQuerySQLStatement() {
         return locationSettingQuerySQLStatement() + " AND " + ForecastEntry.COLUMN_DATE + " =?";
+    }
+
+    private int bulkInsertForecastsAsTransaction(ContentValues[] values, SQLiteDatabase db) {
+        int numberOfForecastsInserted = 0;
+
+        db.beginTransaction();
+        for (ContentValues value : values) {
+            ContentValues forecastContentValueWithNormalizedDate =
+                    buildForecastContentValueWithNormalizedDate(value);
+            long rowId = db.insert(ForecastEntry.TABLE_NAME, null,
+                    forecastContentValueWithNormalizedDate);
+            if (isForecastSuccessfullyInserted(rowId)) numberOfForecastsInserted++;
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        return numberOfForecastsInserted;
+    }
+
+    private ContentValues buildForecastContentValueWithNormalizedDate(ContentValues value) {
+        if (value.containsKey(ForecastEntry.COLUMN_DATE)) {
+            Long date = value.getAsLong(ForecastEntry.COLUMN_DATE);
+            value.put(ForecastEntry.COLUMN_DATE, ForecastContract.normalizeDate(date));
+        }
+        return value;
+    }
+
+    private boolean isForecastSuccessfullyInserted(long rowId) {
+        return rowId != -1;
     }
 }

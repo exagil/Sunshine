@@ -14,6 +14,7 @@ public class ForecastsProvider extends ContentProvider {
     private static UriMatcher uriMatcher = buildUriMatcher();
 
     public static final int FORECASTS_ENDPOINT = 1;
+
     public static final int FORECASTS_FOR_LOCATION_ENDPOINT = 2;
     public static final int FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT = 3;
 
@@ -104,6 +105,19 @@ public class ForecastsProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
+        ForecastsRepository forecastsRepository = ForecastsRepository.getInstance(databaseHelper);
+
+        int numberOfForecastsInserted = 0;
+        if (hasHitForecastsEndpoint(uri)) {
+            numberOfForecastsInserted = forecastsRepository.bulkInsert(values);
+            notifyDatasetChanged(uri);
+        }
+        return numberOfForecastsInserted;
     }
 
     private String extractLastElementFromUri(Uri uri) {
