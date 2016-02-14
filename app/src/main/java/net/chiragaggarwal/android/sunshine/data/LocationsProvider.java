@@ -60,7 +60,15 @@ public class LocationsProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
+        LocationsRepository locationsRepository = LocationsRepository.getInstance(databaseHelper);
+        int numberOfLocationsDeleted = 0;
+
+        if (hasHitLocationsEndpoint(uri)) {
+            numberOfLocationsDeleted = locationsRepository.deleteAll();
+        }
+        notifyDatasetChanged(uri);
+        return numberOfLocationsDeleted;
     }
 
     @Override

@@ -42,6 +42,10 @@ public class ForecastsRepository {
                 insert(ForecastEntry.TABLE_NAME, null, values);
     }
 
+    public int deleteAll() {
+        return this.databaseHelper.getWritableDatabase().delete(ForecastEntry.TABLE_NAME, null, null);
+    }
+
     @NonNull
     private String buildFetchForecastsQuery() {
         return "SELECT * FROM " + ForecastEntry.TABLE_NAME;
@@ -59,7 +63,7 @@ public class ForecastsRepository {
 
     @NonNull
     private String forecastsByLocationJoinSQLStatement() {
-        return "SELECT " + ForecastEntry.FORECAST_COLUMNS + " FROM " + ForecastEntry.TABLE_NAME +
+        return "SELECT *" + " FROM " + ForecastEntry.TABLE_NAME +
                 " INNER JOIN " + LocationEntry.TABLE_NAME + " ON " +
                 ForecastEntry.TABLE_NAME + "." + ForecastEntry.COLUMN_LOC_KEY +
                 "=" +

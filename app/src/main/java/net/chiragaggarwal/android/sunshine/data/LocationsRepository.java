@@ -31,6 +31,10 @@ public class LocationsRepository {
                         selectionArgs, null, null, sortOrder);
     }
 
+    public int deleteAll() {
+        return this.databaseHelper.getWritableDatabase().delete(LocationEntry.TABLE_NAME, null, null);
+    }
+
     private LocationsRepository(DatabaseHelper databaseHelper) {
         this.databaseHelper = databaseHelper;
     }

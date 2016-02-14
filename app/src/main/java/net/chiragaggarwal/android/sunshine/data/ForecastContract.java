@@ -91,13 +91,9 @@ public class ForecastContract {
 
         public static final String DATA_TYPE_FORECASTS_COLLECTION = "vnd.android.cursor.dir/vnd." + FORECASTS_PROVIDER_AUTHORITY + DOT + FORECASTS_PATH;
         public static final String DATA_TYPE_FORECAST_ITEM = "vnd.android.cursor.item/vnd." + FORECASTS_PROVIDER_AUTHORITY + DOT + FORECASTS_PATH;
-        public static final String FORECAST_COLUMNS = COLUMN_LOC_KEY + COMMA +
-                COLUMN_DATE + COMMA + COLUMN_WEATHER_ID + COMMA + COLUMN_SHORT_DESC + COMMA +
-                COLUMN_MIN_TEMP + COMMA + COLUMN_MAX_TEMP + COMMA + COLUMN_HUMIDITY + COMMA +
-                COLUMN_PRESSURE + COMMA + COLUMN_WIND_SPEED + COMMA + COLUMN_DEGREES;
 
-        public static Uri buildForecastsForLocationEndpoint(String locationZipCode) {
-            return CONTENT_URI.buildUpon().appendPath(locationZipCode).build();
+        public static Uri buildForecastsForLocationEndpoint(String locationSetting) {
+            return CONTENT_URI.buildUpon().appendPath(locationSetting).build();
         }
 
         public static Uri buildForecastsForLocationWithDateEndpoint(String locationZipCode, long date) {
@@ -115,6 +111,10 @@ public class ForecastContract {
 
         public static Uri buildWeatherLocationWithDate(String query, long date) {
             return buildForecastsForLocationWithDateEndpoint(query, date);
+        }
+
+        public static Uri buildWeatherLocationWithStartDate(String location, long date) {
+            return buildWeatherLocationWithDate(location, date);
         }
     }
 }

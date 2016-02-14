@@ -84,12 +84,21 @@ public class ForecastsProvider extends ContentProvider {
             Long id = forecastsRepository.insert(values);
             newForecastUri = buildUriForForecastWithId(id);
         }
+        notifyDatasetChanged(uri);
         return newForecastUri;
     }
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
+        ForecastsRepository forecastsRepository = ForecastsRepository.getInstance(databaseHelper);
+
+        int numberOfForecastsDeleted = 0;
+        if (hasHitForecastsEndpoint(uri)) {
+            numberOfForecastsDeleted = forecastsRepository.deleteAll();
+        }
+        notifyDatasetChanged(uri);
+        return numberOfForecastsDeleted;
     }
 
     @Override
@@ -147,5 +156,9 @@ public class ForecastsProvider extends ContentProvider {
     private Uri buildUriForForecastWithId(Long id) {
         String forecastIdPath = id.toString();
         return ForecastEntry.CONTENT_URI.buildUpon().appendPath(forecastIdPath).build();
+    }
+
+    private void notifyDatasetChanged(Uri uri) {
+        getContext().getContentResolver().notifyChange(uri, null);
     }
 }
