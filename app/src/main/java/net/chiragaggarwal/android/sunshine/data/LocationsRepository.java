@@ -2,7 +2,6 @@ package net.chiragaggarwal.android.sunshine.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
@@ -17,20 +16,22 @@ public class LocationsRepository {
         return locationsRepository;
     }
 
-    private LocationsRepository(DatabaseHelper databaseHelper) {
-        this.databaseHelper = databaseHelper;
-    }
-
-    public Cursor fetchAll() {
-        return this.databaseHelper.getWritableDatabase().rawQuery(buildFetchLocationsQuery(), null);
-    }
-
-    @NonNull
-    private String buildFetchLocationsQuery() {
-        return "SELECT * FROM " + LocationEntry.TABLE_NAME;
-    }
-
     public Long insert(ContentValues values) {
         return this.databaseHelper.getWritableDatabase().insert(LocationEntry.TABLE_NAME, null, values);
+    }
+
+    public int updateLocation(ContentValues values, String selection, String[] selectionArgs) {
+        return this.databaseHelper.getWritableDatabase().update(LocationEntry.TABLE_NAME,
+                values, selection, selectionArgs);
+    }
+
+    public Cursor query(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        return this.databaseHelper.getReadableDatabase().
+                query(LocationEntry.TABLE_NAME, projection, selection,
+                        selectionArgs, null, null, sortOrder);
+    }
+
+    private LocationsRepository(DatabaseHelper databaseHelper) {
+        this.databaseHelper = databaseHelper;
     }
 }

@@ -27,7 +27,7 @@ public class LocationsProvider extends ContentProvider {
 
         switch (matchCode) {
             case LOCATIONS_ENDPOINT_CODE:
-                Cursor locationsCursor = locationsRepository.fetchAll();
+                Cursor locationsCursor = locationsRepository.query(projection, selection, selectionArgs, sortOrder);
                 locationsCursor.setNotificationUri(getContext().getContentResolver(), uri);
                 return locationsCursor;
         }
@@ -54,6 +54,7 @@ public class LocationsProvider extends ContentProvider {
             LocationsRepository locationsRepository = LocationsRepository.getInstance(databaseHelper);
             locationRowid = locationsRepository.insert(values);
         }
+        notifyDatasetChanged(uri);
         return buildUriForNewLocationHavingId(locationRowid, uri);
     }
 
@@ -64,7 +65,14 @@ public class LocationsProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        Integer numberOfRowsAffected = null;
+        if (uriMatcher.match(uri) == LOCATIONS_ENDPOINT_CODE) {
+            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
+            LocationsRepository locationsRepository = LocationsRepository.getInstance(databaseHelper);
+            numberOfRowsAffected = locationsRepository.updateLocation(values, selection, selectionArgs);
+        }
+        notifyDatasetChanged(uri);
+        return numberOfRowsAffected;
     }
 
     public static UriMatcher buildUriMatcher() {
@@ -73,6 +81,10 @@ public class LocationsProvider extends ContentProvider {
                 ForecastContract.LocationEntry.LOCATIONS_PATH,
                 LOCATIONS_ENDPOINT_CODE);
         return uriMatcher;
+    }
+
+    private void notifyDatasetChanged(Uri uri) {
+        getContext().getContentResolver().notifyChange(uri, null);
     }
 
     private Uri buildUriForNewLocationHavingId(Long rowId, Uri uri) {

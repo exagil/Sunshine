@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 import net.chiragaggarwal.android.sunshine.data.DatabaseHelper;
 import net.chiragaggarwal.android.sunshine.data.ForecastsProvider;
@@ -272,48 +273,48 @@ public class TestProvider extends AndroidTestCase {
                 insert(LocationEntry.CONTENT_URI, values);
         long locationRowId = ContentUris.parseId(locationUri);
 
-//        // Verify we got a row back.
-//        assertTrue(locationRowId != -1);
-//        Log.d(LOG_TAG, "New row id: " + locationRowId);
-//
-//        ContentValues updatedValues = new ContentValues(values);
-//        updatedValues.put(LocationEntry._ID, locationRowId);
-//        updatedValues.put(LocationEntry.COLUMN_CITY_NAME, "Santa's Village");
-//
-//        // Create a cursor with observer to make sure that the content provider is notifying
-//        // the observers as expected
-//        Cursor locationCursor = mContext.getContentResolver().query(LocationEntry.CONTENT_URI, null, null, null, null);
-//
-//        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
-//        locationCursor.registerContentObserver(tco);
-//
-//        int count = mContext.getContentResolver().update(
-//                LocationEntry.CONTENT_URI, updatedValues, LocationEntry._ID + "= ?",
-//                new String[] { Long.toString(locationRowId)});
-//        assertEquals(count, 1);
-//
-//        // Test to make sure our observer is called.  If not, we throw an assertion.
-//        //
-//        // Students: If your code is failing here, it means that your content provider
-//        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
-//        tco.waitForNotificationOrFail();
-//
-//        locationCursor.unregisterContentObserver(tco);
-//        locationCursor.close();
-//
-//        // A cursor is your primary interface to the query results.
-//        Cursor cursor = mContext.getContentResolver().query(
-//                LocationEntry.CONTENT_URI,
-//                null,   // projection
-//                LocationEntry._ID + " = " + locationRowId,
-//                null,   // Values for the "where" clause
-//                null    // sort order
-//        );
-//
-//        TestUtilities.validateCursor("testUpdateLocation.  Error validating location entry update.",
-//                cursor, updatedValues);
-//
-//        cursor.close();
+        // Verify we got a row back.
+        assertTrue(locationRowId != -1);
+        Log.d(LOG_TAG, "New row id: " + locationRowId);
+
+        ContentValues updatedValues = new ContentValues(values);
+        updatedValues.put(LocationEntry._ID, locationRowId);
+        updatedValues.put(LocationEntry.COLUMN_CITY_NAME, "Santa's Village");
+
+        // Create a cursor with observer to make sure that the content provider is notifying
+        // the observers as expected
+        Cursor locationCursor = mContext.getContentResolver().query(LocationEntry.CONTENT_URI, null, null, null, null);
+
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        locationCursor.registerContentObserver(tco);
+
+        int count = mContext.getContentResolver().update(
+                LocationEntry.CONTENT_URI, updatedValues, LocationEntry._ID + "= ?",
+                new String[] { Long.toString(locationRowId)});
+        assertEquals(count, 1);
+
+        // Test to make sure our observer is called.  If not, we throw an assertion.
+        //
+        // Students: If your code is failing here, it means that your content provider
+        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
+        tco.waitForNotificationOrFail();
+
+        locationCursor.unregisterContentObserver(tco);
+        locationCursor.close();
+
+        // A cursor is your primary interface to the query results.
+        Cursor cursor = mContext.getContentResolver().query(
+                LocationEntry.CONTENT_URI,
+                null,   // projection
+                LocationEntry._ID + " = " + locationRowId,
+                null,   // Values for the "where" clause
+                null    // sort order
+        );
+
+        TestUtilities.validateCursor("testUpdateLocation.  Error validating location entry update.",
+                cursor, updatedValues);
+
+        cursor.close();
     }
 
 
