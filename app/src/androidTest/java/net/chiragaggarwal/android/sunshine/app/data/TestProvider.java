@@ -323,50 +323,50 @@ public class TestProvider extends AndroidTestCase {
     // Student: Uncomment this test after you have completed writing the insert functionality
     // in your provider.  It relies on insertions with testInsertReadProvider, so insert and
     // query functionality must also be complete before this test can be used.
-//    public void testInsertReadProvider() {
-//        ContentValues testValues = TestUtilities.createNorthPoleLocationValues();
-//
-//        // Register a content observer for our insert.  This time, directly with the content resolver
-//        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
-//        mContext.getContentResolver().registerContentObserver(LocationEntry.CONTENT_URI, true, tco);
-//        Uri locationUri = mContext.getContentResolver().insert(LocationEntry.CONTENT_URI, testValues);
-//
-//        // Did our content observer get called?  Students:  If this fails, your insert location
-//        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
-//        tco.waitForNotificationOrFail();
-//        mContext.getContentResolver().unregisterContentObserver(tco);
-//
-//        long locationRowId = ContentUris.parseId(locationUri);
-//
-//        // Verify we got a row back.
-//        assertTrue(locationRowId != -1);
-//
-//        // Data's inserted.  IN THEORY.  Now pull some out to stare at it and verify it made
-//        // the round trip.
-//
-//        // A cursor is your primary interface to the query results.
-//        Cursor cursor = mContext.getContentResolver().query(
-//                LocationEntry.CONTENT_URI,
-//                null, // leaving "columns" null just returns all the columns.
-//                null, // cols for "where" clause
-//                null, // values for "where" clause
-//                null  // sort order
-//        );
-//
-//        TestUtilities.validateCursor("testInsertReadProvider. Error validating LocationEntry.",
-//                cursor, testValues);
-//
-//        // Fantastic.  Now that we have a location, add some weather!
-//        ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
-//        // The TestContentObserver is a one-shot class
-//        tco = TestUtilities.getTestContentObserver();
-//
-//        mContext.getContentResolver().registerContentObserver(WeatherEntry.CONTENT_URI, true, tco);
-//
-//        Uri weatherInsertUri = mContext.getContentResolver()
-//                .insert(WeatherEntry.CONTENT_URI, weatherValues);
-//        assertTrue(weatherInsertUri != null);
-//
+    public void testInsertReadProvider() {
+        ContentValues testValues = TestUtilities.createNorthPoleLocationValues();
+
+        // Register a content observer for our insert.  This time, directly with the content resolver
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(LocationEntry.CONTENT_URI, true, tco);
+        Uri locationUri = mContext.getContentResolver().insert(LocationEntry.CONTENT_URI, testValues);
+
+        // Did our content observer get called?  Students:  If this fails, your insert location
+        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
+
+        long locationRowId = ContentUris.parseId(locationUri);
+
+        // Verify we got a row back.
+        assertTrue(locationRowId != -1);
+
+        // Data's inserted.  IN THEORY.  Now pull some out to stare at it and verify it made
+        // the round trip.
+
+        // A cursor is your primary interface to the query results.
+        Cursor cursor = mContext.getContentResolver().query(
+                LocationEntry.CONTENT_URI,
+                null, // leaving "columns" null just returns all the columns.
+                null, // cols for "where" clause
+                null, // values for "where" clause
+                null  // sort order
+        );
+
+        TestUtilities.validateCursor("testInsertReadProvider. Error validating LocationEntry.",
+                cursor, testValues);
+
+        // Fantastic.  Now that we have a location, add some weather!
+        ContentValues weatherValues = TestUtilities.createWeatherValues(locationRowId);
+        // The TestContentObserver is a one-shot class
+        tco = TestUtilities.getTestContentObserver();
+
+        mContext.getContentResolver().registerContentObserver(ForecastEntry.CONTENT_URI, true, tco);
+
+        Uri weatherInsertUri = mContext.getContentResolver()
+                .insert(ForecastEntry.CONTENT_URI, weatherValues);
+        assertTrue(weatherInsertUri != null);
+
 //        // Did our content observer get called?  Students:  If this fails, your insert weather
 //        // in your ContentProvider isn't calling
 //        // getContext().getContentResolver().notifyChange(uri, null);
@@ -422,7 +422,7 @@ public class TestProvider extends AndroidTestCase {
 //        );
 //        TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location data for a specific date.",
 //                weatherCursor, weatherValues);
-//    }
+    }
 
     // Make sure we can still delete after adding/updating stuff
     //

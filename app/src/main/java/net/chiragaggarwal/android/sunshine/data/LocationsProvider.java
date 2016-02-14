@@ -49,7 +49,7 @@ public class LocationsProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         Long locationRowid = null;
-        if (uriMatcher.match(uri) == LOCATIONS_ENDPOINT_CODE) {
+        if (hasHitLocationsEndpoint(uri)) {
             DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
             LocationsRepository locationsRepository = LocationsRepository.getInstance(databaseHelper);
             locationRowid = locationsRepository.insert(values);
@@ -66,7 +66,7 @@ public class LocationsProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         Integer numberOfRowsAffected = null;
-        if (uriMatcher.match(uri) == LOCATIONS_ENDPOINT_CODE) {
+        if (hasHitLocationsEndpoint(uri)) {
             DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
             LocationsRepository locationsRepository = LocationsRepository.getInstance(databaseHelper);
             numberOfRowsAffected = locationsRepository.updateLocation(values, selection, selectionArgs);
@@ -90,5 +90,9 @@ public class LocationsProvider extends ContentProvider {
     private Uri buildUriForNewLocationHavingId(Long rowId, Uri uri) {
         String rowIdPath = rowId.toString();
         return uri.buildUpon().appendPath(rowIdPath).build();
+    }
+
+    private boolean hasHitLocationsEndpoint(Uri uri) {
+        return uriMatcher.match(uri) == LOCATIONS_ENDPOINT_CODE;
     }
 }

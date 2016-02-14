@@ -76,7 +76,15 @@ public class ForecastsProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getContext());
+        ForecastsRepository forecastsRepository = ForecastsRepository.getInstance(databaseHelper);
+
+        Uri newForecastUri = null;
+        if (hasHitForecastsEndpoint(uri)) {
+            Long id = forecastsRepository.insert(values);
+            newForecastUri = buildUriForForecastWithId(id);
+        }
+        return newForecastUri;
     }
 
     @Override
@@ -130,5 +138,14 @@ public class ForecastsProvider extends ContentProvider {
         uriMatcher.addURI(ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
                 ForecastEntry.FORECASTS_PATH,
                 FORECASTS_ENDPOINT);
+    }
+
+    private boolean hasHitForecastsEndpoint(Uri uri) {
+        return uriMatcher.match(uri) == FORECASTS_ENDPOINT;
+    }
+
+    private Uri buildUriForForecastWithId(Long id) {
+        String forecastIdPath = id.toString();
+        return ForecastEntry.CONTENT_URI.buildUpon().appendPath(forecastIdPath).build();
     }
 }

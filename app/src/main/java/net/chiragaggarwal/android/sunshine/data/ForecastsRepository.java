@@ -37,6 +37,11 @@ public class ForecastsRepository {
                         new String[]{selection, date});
     }
 
+    public Long insert(ContentValues values) {
+        return this.databaseHelper.getWritableDatabase().
+                insert(ForecastEntry.TABLE_NAME, null, values);
+    }
+
     @NonNull
     private String buildFetchForecastsQuery() {
         return "SELECT * FROM " + ForecastEntry.TABLE_NAME;
@@ -68,9 +73,5 @@ public class ForecastsRepository {
 
     private String locationSettingAndDateQuerySQLStatement() {
         return locationSettingQuerySQLStatement() + " AND " + ForecastEntry.COLUMN_DATE + " =?";
-    }
-
-    public Integer insert(ContentValues values) {
-        return null;
     }
 }
