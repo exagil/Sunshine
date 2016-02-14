@@ -23,18 +23,26 @@ public class ForecastsRepository {
         this.databaseHelper = databaseHelper;
     }
 
-    public Cursor query(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(String[] projection, String selection, String[] selectionArgs,
+                        String sortOrder) {
         return this.databaseHelper.getReadableDatabase().
                 query(ForecastEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
     }
 
-    public Cursor findForecastsByLocationSelection(String locationSelection) {
-        return this.databaseHelper.getReadableDatabase().
-                rawQuery(forecastsByLocationSettingSqlStatement(), new String[]{locationSelection});
+    public Cursor findForecastsByLocationSelectionAndStartDateIfAny(String locationSelection,
+                                                                    String dateSelectionArgs) {
+        SQLiteDatabase db = this.databaseHelper.getReadableDatabase();
+        if (dateSelectionArgs == null) {
+            return db.rawQuery(forecastsByLocationSettingSqlStatement(),
+                    new String[]{locationSelection});
+        } else {
+            return db.rawQuery(forecastsByLocationSettingAndStartDateSqlStatement(),
+                    new String[]{locationSelection, dateSelectionArgs});
+        }
     }
 
-    public Cursor findForecastsByLocationSelectionAndDate(String selection, String date) {
+    public Cursor findForecastByLocationSelectionAndDate(String selection, String date) {
         return this.databaseHelper.getReadableDatabase().
                 rawQuery(forecastsByLocationSettingAndDateSQLStatement(),
                         new String[]{selection, date});
@@ -55,9 +63,13 @@ public class ForecastsRepository {
         return numberOfForecastsInserted;
     }
 
-    @NonNull
     private String forecastsByLocationSettingSqlStatement() {
-        return forecastsByLocationJoinSQLStatement() + locationSettingQuerySQLStatement();
+        return forecastsByLocationJoinSQLStatement() + locationSettingSQLStatement();
+    }
+
+    @NonNull
+    private String forecastsByLocationSettingAndStartDateSqlStatement() {
+        return forecastsByLocationJoinSQLStatement() + locationSettingAndStartDateQuerySQLStatement();
     }
 
     @NonNull
@@ -75,12 +87,22 @@ public class ForecastsRepository {
     }
 
     @NonNull
-    private String locationSettingQuerySQLStatement() {
+    private String locationSettingAndStartDateQuerySQLStatement() {
+        return locationSettingSQLStatement() + " AND " + startDateSQLStatement();
+    }
+
+    @NonNull
+    private String locationSettingSQLStatement() {
         return " WHERE " + LocationEntry.COLUMN_LOCATION_SETTING + " =?";
     }
 
+    @NonNull
+    private String startDateSQLStatement() {
+        return ForecastEntry.COLUMN_DATE + ">=?";
+    }
+
     private String locationSettingAndDateQuerySQLStatement() {
-        return locationSettingQuerySQLStatement() + " AND " + ForecastEntry.COLUMN_DATE + " =?";
+        return locationSettingSQLStatement() + " AND " + ForecastEntry.COLUMN_DATE + "=?";
     }
 
     private int bulkInsertForecastsAsTransaction(ContentValues[] values, SQLiteDatabase db) {

@@ -113,8 +113,8 @@ public class ForecastContract {
             return buildForecastsForLocationWithDateEndpoint(query, date);
         }
 
-        public static Uri buildWeatherLocationWithStartDate(String location, long date) {
-            return buildWeatherLocationWithDate(location, date);
+        public static String buildForecastsSelectionForLocationIdWithStartDate() {
+            return ForecastEntry.COLUMN_LOC_KEY + "=? AND " + ForecastEntry.COLUMN_DATE + ">=?";
         }
     }
 }

@@ -402,11 +402,10 @@ public class TestProvider extends AndroidTestCase {
 
         // Get the joined Weather and Location data with a start date
         weatherCursor = mContext.getContentResolver().query(
-                ForecastEntry.buildWeatherLocationWithStartDate(
-                        TestUtilities.TEST_LOCATION, TestUtilities.TEST_DATE),
+                ForecastEntry.buildWeatherLocation(TestUtilities.TEST_LOCATION),
                 null, // leaving "columns" null just returns all the columns.
                 null, // cols for "where" clause
-                null, // values for "where" clause
+                new String[]{String.valueOf(TestUtilities.TEST_DATE)}, // values for "where" clause
                 null  // sort order
         );
         TestUtilities.validateCursor("testInsertReadProvider.  Error validating joined Weather and Location Data with start date.",

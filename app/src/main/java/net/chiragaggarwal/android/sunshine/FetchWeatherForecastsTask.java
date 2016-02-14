@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 
 import net.chiragaggarwal.android.sunshine.models.Callback;
-import net.chiragaggarwal.android.sunshine.models.Forecasts;
+import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,7 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> {
+public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, ForecastsForLocation> {
     private static final String RESPONSE_ACCEPTABLE_RANGE = "^2.*";
     private static final String HTTP = "http";
     private static final String AUTHORITY = "api.openweathermap.org";
@@ -32,6 +32,7 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
     private static final String COUNT = "cnt";
     private static final String SEVEN = "7";
     private static final String APPID = "APPID";
+    private static final String DATA = "data";
 
     private final Callback callback;
     private final String postalCode;
@@ -41,7 +42,7 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
     public FetchWeatherForecastsTask(String postalCode,
                                      String countryCode,
                                      String temperatureUnit,
-                                     Callback<Forecasts> callback) {
+                                     Callback<ForecastsForLocation> callback) {
 
         this.postalCode = postalCode;
         this.countryCode = countryCode;
@@ -50,27 +51,28 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
     }
 
     @Override
-    protected Forecasts doInBackground(Void... params) {
-        Forecasts forecasts = null;
+    protected ForecastsForLocation doInBackground(Void... params) {
+        ForecastsForLocation forecastsForLocation = null;
         try {
             URL url = buildWeatherForecastsURL();
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-            if (isResponseAcceptable(httpURLConnection))
-                forecasts = getForecasts(httpURLConnection);
+            if (isResponseAcceptable(httpURLConnection)) {
+                forecastsForLocation = getForecastsForLocation(httpURLConnection, this.postalCode);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return forecasts;
+        return forecastsForLocation;
     }
 
     @Override
-    protected void onPostExecute(Forecasts forecasts) {
-        if (forecasts != null) {
-            this.callback.onSuccess(forecasts);
+    protected void onPostExecute(ForecastsForLocation forecastsForLocation) {
+        if (forecastsForLocation != null) {
+            this.callback.onSuccess(forecastsForLocation);
         } else {
             this.callback.onFailure();
         }
@@ -80,7 +82,7 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
         Uri fetchWeatherForecastsUri = new Uri.Builder()
                 .scheme(HTTP)
                 .authority(AUTHORITY)
-                .path("data")
+                .path(DATA)
                 .appendPath(PATH_2_5)
                 .appendPath(PATH_FORECAST)
                 .appendPath(PATH_DAILY)
@@ -97,15 +99,21 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
         return String.valueOf(httpURLConnection.getResponseCode()).matches(RESPONSE_ACCEPTABLE_RANGE);
     }
 
-    private Forecasts getForecasts(HttpURLConnection httpURLConnection) throws IOException, JSONException {
-        Forecasts forecasts = null;
-        InputStream forecastsResponseStream = httpURLConnection.getInputStream();
-        BufferedReader forecastsResponseReader = new BufferedReader(new InputStreamReader(forecastsResponseStream));
-        String forecastsResponseString = buildResponseString(forecastsResponseReader);
+    private ForecastsForLocation getForecastsForLocation(
+            HttpURLConnection connection,
+            String postalCode) throws IOException, JSONException {
 
-        if (forecastsResponseString != null)
-            forecasts = buildForecastsFromResponseString(forecastsResponseString);
-        return forecasts;
+        ForecastsForLocation forecastsForLocation = null;
+        InputStream forecastsForLocationStream = connection.getInputStream();
+        BufferedReader forecastsForLocationResponseReader =
+                new BufferedReader(new InputStreamReader(forecastsForLocationStream));
+        String forecastsForLocationResponseString = buildResponseString(forecastsForLocationResponseReader);
+
+        if (forecastsForLocationResponseString != null) {
+            forecastsForLocation = buildForecastsForLocationFromResponseString(
+                    forecastsForLocationResponseString, postalCode);
+        }
+        return forecastsForLocation;
     }
 
     private String buildResponseString(BufferedReader bufferedReader) throws IOException {
@@ -117,8 +125,10 @@ public class FetchWeatherForecastsTask extends AsyncTask<Void, Void, Forecasts> 
         return responseString.toString();
     }
 
-    private Forecasts buildForecastsFromResponseString(String forecastsResponseString) throws JSONException {
-        JSONObject forecastsJSONResponse = new JSONObject(forecastsResponseString);
-        return Forecasts.fromJSON(forecastsJSONResponse);
+    private ForecastsForLocation buildForecastsForLocationFromResponseString(
+            String forecastsForLocationResponseString, String postalCode) throws JSONException {
+
+        JSONObject forecastsFromLocationJSONResponse = new JSONObject(forecastsForLocationResponseString);
+        return ForecastsForLocation.fromJSON(forecastsFromLocationJSONResponse, postalCode);
     }
 }

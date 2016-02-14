@@ -1,8 +1,10 @@
 package net.chiragaggarwal.android.sunshine;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,11 +21,21 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import net.chiragaggarwal.android.sunshine.data.DatabaseHelper;
 import net.chiragaggarwal.android.sunshine.models.Callback;
 import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
+import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
+import net.chiragaggarwal.android.sunshine.models.Location;
+
+import java.util.Calendar;
+import java.util.Date;
+
+import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
+import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
 public class ForecastFragment extends Fragment {
+    private static final long ONE_THOUSAND_MILLISECONDS = 1000;
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
     private WeatherForecastAdapter weatherForecastAdapter;
@@ -31,8 +43,15 @@ public class ForecastFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        fetchWeatherForecast(sharedPreferences);
+        Cursor forecastsCursor = queryForecastsForLocationFromForecastsProviderStartingFromToday(savedZipCode(sharedPreferences));
+        if (isOneWeeksForecastsNotPresent(forecastsCursor)) {
+            fetchWeatherForecast(sharedPreferences);
+        } else {
+            Forecasts forecasts = Forecasts.fromCursor(forecastsCursor);
+            showForecasts(forecasts);
+        }
     }
 
     @Override
@@ -48,6 +67,12 @@ public class ForecastFragment extends Fragment {
         initializeWidgets(view);
         setOnItemClickListenerForForecastList();
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        DatabaseHelper.getInstance(getContext()).close();
     }
 
     @Override
@@ -80,15 +105,16 @@ public class ForecastFragment extends Fragment {
                 savedZipCode(sharedPreferences),
                 savedCountryCode(sharedPreferences),
                 savedTemperatureUnit(sharedPreferences),
-                new Callback<Forecasts>() {
+                new Callback<ForecastsForLocation>() {
                     @Override
-                    public void onSuccess(Forecasts forecasts) {
+                    public void onSuccess(ForecastsForLocation forecastsForLocation) {
                         if (isForecastListGone()) {
                             removeInvalidPreferences();
-                            showForecaseList();
+                            showForecastList();
                         }
-                        weatherForecastAdapter = new WeatherForecastAdapter(getContext(), forecasts);
-                        forecastList.setAdapter(weatherForecastAdapter);
+                        save(forecastsForLocation);
+                        Forecasts forecasts = forecastsForLocation.forecasts;
+                        showForecasts(forecasts);
                     }
 
                     @Override
@@ -101,6 +127,29 @@ public class ForecastFragment extends Fragment {
                 }).execute();
     }
 
+    private void showForecasts(Forecasts forecasts) {
+        weatherForecastAdapter = new WeatherForecastAdapter(getContext(), forecasts);
+        forecastList.setAdapter(weatherForecastAdapter);
+    }
+
+    private Cursor queryForecastsForLocationFromForecastsProviderStartingFromToday(String zipCode) {
+        String dateArgument = parsedCurrentDateArgument();
+        return getContext().getContentResolver().query(
+                ForecastEntry.buildForecastsForLocationEndpoint(zipCode),
+                null,
+                ForecastEntry.buildForecastsSelectionForLocationIdWithStartDate(),
+                new String[]{zipCode, dateArgument},
+                null
+        );
+    }
+
+    private void save(ForecastsForLocation forecastsForLocation) {
+        Forecasts forecasts = forecastsForLocation.forecasts;
+        Location location = forecastsForLocation.location;
+
+        Long locationRowId = insertLocationIfNotPresent(location);
+        insertForecastsForLocationIfNotPresent(forecasts, locationRowId);
+    }
 
     private void launchSettings() {
         Intent intent = new Intent(getContext(), SettingsActivity.class);
@@ -139,7 +188,7 @@ public class ForecastFragment extends Fragment {
         this.forecastList.setOnItemClickListener(onItemClickListenerForForecastList());
     }
 
-    private void showForecaseList() {
+    private void showForecastList() {
         this.forecastList.setVisibility(ListView.VISIBLE);
     }
 
@@ -187,11 +236,94 @@ public class ForecastFragment extends Fragment {
         return (forecastList.getVisibility() == ListView.GONE);
     }
 
-    public boolean isInvalidPreferencesGone() {
+    private Long insertLocationIfNotPresent(Location location) {
+        Cursor locationCursor = queryLocationFromLocationProvider(location);
+        Long locationRowId = null;
+
+        if (isLocationNotPresent(locationCursor)) {
+            Uri locationUri = insertLocationInLocationProvider(location);
+            locationRowId = Long.decode(locationUri.getLastPathSegment());
+        } else {
+            locationRowId = getIdOfLocationAlreadyPresent(locationCursor);
+        }
+
+        return locationRowId;
+    }
+
+    private void insertForecastsForLocationIfNotPresent(Forecasts forecasts, Long locationRowId) {
+        Cursor forecastsCursor = queryForecastsForLocationFromForecastsProviderStartingFromToday(locationRowId);
+        if (isOneWeeksForecastsNotPresent(forecastsCursor)) {
+            ContentValues[] forecastsValues = forecasts.toContentValues(locationRowId);
+            insertForecastsInForecastsProvider(forecastsValues);
+        }
+    }
+
+    private boolean isInvalidPreferencesGone() {
         return (this.invalidPreferencesTextView.getVisibility() == TextView.GONE);
     }
 
     private boolean canDisplayMaps(Intent intent) {
         return intent.resolveActivity(getActivity().getPackageManager()) != null;
+    }
+
+    private Cursor queryLocationFromLocationProvider(Location location) {
+        return getContext().getContentResolver().
+                query(LocationEntry.CONTENT_URI,
+                        null,
+                        LocationEntry.TABLE_NAME + "." + LocationEntry.COLUMN_LOCATION_SETTING + "=?",
+                        new String[]{location.postalCode},
+                        null);
+    }
+
+    private boolean isLocationNotPresent(Cursor locationCursor) {
+        return locationCursor.getCount() == 0;
+    }
+
+    private Uri insertLocationInLocationProvider(Location location) {
+        return getContext().getContentResolver().insert(
+                LocationEntry.CONTENT_URI,
+                location.toContentValues()
+        );
+    }
+
+    @NonNull
+    private Long getIdOfLocationAlreadyPresent(Cursor locationCursor) {
+        locationCursor.moveToFirst();
+        return locationCursor.getLong(0);
+    }
+
+    private Cursor queryForecastsForLocationFromForecastsProviderStartingFromToday(Long locationRowId) {
+        String locationRowIdArgument = locationRowId.toString();
+        String dateArgument = parsedCurrentDateArgument();
+
+        return getContext().getContentResolver().query(
+                ForecastEntry.CONTENT_URI,
+                null,
+                ForecastEntry.buildForecastsSelectionForLocationIdWithStartDate(),
+                new String[]{locationRowIdArgument, dateArgument},
+                null
+        );
+    }
+
+    @NonNull
+    private String parsedCurrentDateArgument() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.ZONE_OFFSET, 0);
+        long timeInMillis = calendar.getTimeInMillis() / ONE_THOUSAND_MILLISECONDS;
+        return String.valueOf(timeInMillis);
+    }
+
+    private boolean isOneWeeksForecastsNotPresent(Cursor forecastsCursor) {
+        return forecastsCursor.getCount() < 7;
+    }
+
+    private void insertForecastsInForecastsProvider(ContentValues[] forecastsValues) {
+        getContext().getContentResolver().bulkInsert(
+                ForecastEntry.CONTENT_URI, forecastsValues
+        );
     }
 }

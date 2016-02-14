@@ -40,20 +40,23 @@ public class ForecastsProvider extends ContentProvider {
         ForecastsRepository forecastsRepository = ForecastsRepository.getInstance(databaseHelper);
 
         Cursor forecastsCursor = null;
-        String locationSelection;
+        String locationSelectionArgs;
         String date;
         switch (matchCode) {
             case FORECASTS_ENDPOINT:
                 forecastsCursor = forecastsRepository.query(projection, selection, selectionArgs, sortOrder);
                 break;
             case FORECASTS_FOR_LOCATION_ENDPOINT:
-                locationSelection = extractLastElementFromUri(uri);
-                forecastsCursor = forecastsRepository.findForecastsByLocationSelection(locationSelection);
+                locationSelectionArgs = extractLastElementFromUri(uri);
+                String dateSelectionArgs = extractDateSelectionArgs(selectionArgs);
+                forecastsCursor = forecastsRepository.
+                        findForecastsByLocationSelectionAndStartDateIfAny(locationSelectionArgs,
+                                dateSelectionArgs);
                 break;
             case FORECAST_FOR_LOCATION_AND_DATE_ENDPOINT:
-                locationSelection = extractSecondLastElementFromUri(uri);
+                locationSelectionArgs = extractSecondLastElementFromUri(uri);
                 date = extractLastElementFromUri(uri);
-                forecastsCursor = forecastsRepository.findForecastsByLocationSelectionAndDate(locationSelection, date);
+                forecastsCursor = forecastsRepository.findForecastByLocationSelectionAndDate(locationSelectionArgs, date);
                 break;
         }
         forecastsCursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -130,6 +133,12 @@ public class ForecastsProvider extends ContentProvider {
         String[] uriParts = splitUriIntoParts(uri);
         int secondLastUriElementIndex = getSecondLastUriElementIndex(uriParts);
         return uriParts[secondLastUriElementIndex];
+    }
+
+    @Nullable
+    private String extractDateSelectionArgs(String[] selectionArgs) {
+        if (selectionArgs == null) return null;
+        return selectionArgs.length > 1 ? selectionArgs[1] : null;
     }
 
     @NonNull

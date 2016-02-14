@@ -1,10 +1,13 @@
 package net.chiragaggarwal.android.sunshine.models;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import net.chiragaggarwal.android.sunshine.R;
+import net.chiragaggarwal.android.sunshine.data.ForecastContract;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,17 +31,35 @@ public class Forecast implements Parcelable {
     private static final long ONE_THOUSAND_MILLISECONDS = 1000;
     public static final String TAG = "net.chiragaggarwal.android.sunshine.models.Forecast";
     private static final String SPACE = " ";
+    private static final String DEGREES = "deg";
+    private static final String HUMIDITY = "humidity";
+    private static final String PRESSURE = "pressure";
+    private static final String WIND_SPEED = "speed";
+    private static final String WEATHER_ID = "id";
 
     private final Date date;
     private final Double minimumTemperature;
     private final String mainDescription;
+    private Double degrees;
+    private Double humidity;
+    private Double pressure;
+    private Double windSpeed;
+    private Long weatherId;
     private final Double maximumTemperature;
 
-    public Forecast(Date date, Double minimumTemperature, Double maximumTemperature, String mainDescription) {
+    public Forecast(Date date, Double minimumTemperature, Double maximumTemperature,
+                    String mainDescription, Double degrees, Double humidity,
+                    Double pressure, Double windSpeed, Long weatherId) {
+
         this.date = date;
         this.minimumTemperature = minimumTemperature;
         this.maximumTemperature = maximumTemperature;
         this.mainDescription = mainDescription;
+        this.degrees = degrees;
+        this.humidity = humidity;
+        this.pressure = pressure;
+        this.windSpeed = windSpeed;
+        this.weatherId = weatherId;
     }
 
     public static Forecast fromJSON(JSONObject dayForecast) throws JSONException {
@@ -49,7 +70,54 @@ public class Forecast implements Parcelable {
         Double minimumTemperature = temperature.getDouble(MINIMUM_TEMPERATURE);
         Double maximumTemperature = temperature.getDouble(MAXIMUM_TEMPERATURE);
         String mainDescription = weather.getString(MAIN_DESCRIPTION);
-        return new Forecast(date, minimumTemperature, maximumTemperature, mainDescription);
+        Double degrees = dayForecast.getDouble(DEGREES);
+        Double humidity = dayForecast.getDouble(HUMIDITY);
+        Double pressure = dayForecast.getDouble(PRESSURE);
+        Double windSpeed = dayForecast.getDouble(WIND_SPEED);
+        Long weatherId = weather.getLong(WEATHER_ID);
+
+        return new Forecast(date, minimumTemperature, maximumTemperature, mainDescription, degrees,
+                humidity, pressure, windSpeed, weatherId);
+    }
+
+    public static Forecast fromCursor(Cursor forecastsCursor) {
+        int dateIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_DATE);
+        int minimumTemperatureIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_MIN_TEMP);
+        int maximumTemperatureIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_MAX_TEMP);
+        int degreesIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_DEGREES);
+        int humidityIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_HUMIDITY);
+        int pressureIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_PRESSURE);
+        int mainDescriptionIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_SHORT_DESC);
+        int weatherIdIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_WEATHER_ID);
+        int windSpeedIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_WIND_SPEED);
+
+        Date date = new Date(forecastsCursor.getLong(dateIndex));
+        Double minimumTemperature = forecastsCursor.getDouble(minimumTemperatureIndex);
+        Double maximumTemperature = forecastsCursor.getDouble(maximumTemperatureIndex);
+        String mainDescription = forecastsCursor.getString(mainDescriptionIndex);
+        Double degrees = forecastsCursor.getDouble(degreesIndex);
+        Double humidity = forecastsCursor.getDouble(humidityIndex);
+        Double pressure = forecastsCursor.getDouble(pressureIndex);
+        Double windSpeed = forecastsCursor.getDouble(windSpeedIndex);
+        Long weatherId = forecastsCursor.getLong(weatherIdIndex);
+
+        return new Forecast(date, minimumTemperature, maximumTemperature, mainDescription, degrees,
+                humidity, pressure, windSpeed, weatherId);
+    }
+
+    public ContentValues toContentValues(Long locationRowId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_MAX_TEMP, maximumTemperature);
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_MIN_TEMP, minimumTemperature);
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_DATE, date.getTime());
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_SHORT_DESC, mainDescription);
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_LOC_KEY, locationRowId);
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_DEGREES, degrees);
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_HUMIDITY, humidity);
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_PRESSURE, pressure);
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_WIND_SPEED, windSpeed);
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_WEATHER_ID, weatherId);
+        return contentValues;
     }
 
     public String summary() {
@@ -58,6 +126,15 @@ public class Forecast implements Parcelable {
 
     public String summaryWithHashtag(Context context) {
         return summary() + SPACE + context.getString(R.string.hashtag);
+    }
+
+    private String formattedTemperatures() {
+        return this.maximumTemperature + "/" + this.minimumTemperature;
+    }
+
+    private String formattedDate() {
+        return new SimpleDateFormat(DAY_KEYWORD + COMMA + MONTH_NAME_KEYWORD + DATE_KEYWORD,
+                Locale.US).format(this.date);
     }
 
     @Override
@@ -70,7 +147,25 @@ public class Forecast implements Parcelable {
         dest.writeLong(date != null ? date.getTime() : -1);
         dest.writeValue(this.minimumTemperature);
         dest.writeString(this.mainDescription);
+        dest.writeValue(this.degrees);
+        dest.writeValue(this.humidity);
+        dest.writeValue(this.pressure);
+        dest.writeValue(this.windSpeed);
+        dest.writeValue(this.weatherId);
         dest.writeValue(this.maximumTemperature);
+    }
+
+    protected Forecast(Parcel in) {
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.minimumTemperature = (Double) in.readValue(Double.class.getClassLoader());
+        this.mainDescription = in.readString();
+        this.degrees = (Double) in.readValue(Double.class.getClassLoader());
+        this.humidity = (Double) in.readValue(Double.class.getClassLoader());
+        this.pressure = (Double) in.readValue(Double.class.getClassLoader());
+        this.windSpeed = (Double) in.readValue(Double.class.getClassLoader());
+        this.weatherId = (Long) in.readValue(Long.class.getClassLoader());
+        this.maximumTemperature = (Double) in.readValue(Double.class.getClassLoader());
     }
 
     public static final Creator<Forecast> CREATOR = new Creator<Forecast>() {
@@ -82,21 +177,4 @@ public class Forecast implements Parcelable {
             return new Forecast[size];
         }
     };
-
-    protected Forecast(Parcel in) {
-        long tmpDate = in.readLong();
-        this.date = tmpDate == -1 ? null : new Date(tmpDate);
-        this.minimumTemperature = (Double) in.readValue(Double.class.getClassLoader());
-        this.mainDescription = in.readString();
-        this.maximumTemperature = (Double) in.readValue(Double.class.getClassLoader());
-    }
-
-    private String formattedTemperatures() {
-        return this.maximumTemperature + "/" + this.minimumTemperature;
-    }
-
-    private String formattedDate() {
-        return new SimpleDateFormat(DAY_KEYWORD + COMMA + MONTH_NAME_KEYWORD + DATE_KEYWORD,
-                Locale.US).format(this.date);
-    }
 }

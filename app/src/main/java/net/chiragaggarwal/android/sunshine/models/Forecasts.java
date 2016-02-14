@@ -1,5 +1,7 @@
 package net.chiragaggarwal.android.sunshine.models;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -28,8 +30,19 @@ public class Forecasts implements Parcelable {
         return forecasts;
     }
 
+    public static Forecasts fromCursor(Cursor forecastsCursor) {
+        Forecasts forecasts = new Forecasts();
+
+        while (forecastsCursor.moveToNext()) {
+            Forecast forecast = Forecast.fromCursor(forecastsCursor);
+            forecasts.add(forecast);
+        }
+
+        return forecasts;
+    }
+
     public int getCount() {
-        return this.forecasts.size();
+        return this.count();
     }
 
     public Forecast getItem(int position) {
@@ -56,6 +69,17 @@ public class Forecasts implements Parcelable {
         }
     };
 
+    public ContentValues[] toContentValues(long locationRowId) {
+        int numberOfForecasts = this.count();
+        ContentValues[] contentValues = new ContentValues[numberOfForecasts];
+
+        for (int forecastIndex = 0; forecastIndex < numberOfForecasts; forecastIndex++) {
+            Forecast forecast = this.forecasts.get(forecastIndex);
+            contentValues[forecastIndex] = forecast.toContentValues(locationRowId);
+        }
+        return contentValues;
+    }
+
     protected Forecasts(Parcel in) {
         this.forecasts = in.createTypedArrayList(Forecast.CREATOR);
     }
@@ -68,5 +92,9 @@ public class Forecasts implements Parcelable {
         for (int forecastPosition = 0; forecastPosition < forecasts.length; forecastPosition++) {
             this.forecasts.add(forecasts[forecastPosition]);
         }
+    }
+
+    private int count() {
+        return this.forecasts.size();
     }
 }
