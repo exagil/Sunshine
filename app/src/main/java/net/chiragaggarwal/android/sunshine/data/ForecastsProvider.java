@@ -43,7 +43,7 @@ public class ForecastsProvider extends ContentProvider {
         String date;
         switch (matchCode) {
             case FORECASTS_ENDPOINT:
-                forecastsCursor = forecastsRepository.fetchAll();
+                forecastsCursor = forecastsRepository.query(projection, selection, selectionArgs, sortOrder);
                 break;
             case FORECASTS_FOR_LOCATION_ENDPOINT:
                 locationSelection = extractLastElementFromUri(uri);

@@ -22,8 +22,10 @@ public class ForecastsRepository {
         this.databaseHelper = databaseHelper;
     }
 
-    public Cursor fetchAll() {
-        return this.databaseHelper.getWritableDatabase().rawQuery(buildFetchForecastsQuery(), null);
+    public Cursor query(String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        return this.databaseHelper.getReadableDatabase().
+                query(ForecastEntry.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
     }
 
     public Cursor findForecastsByLocationSelection(String locationSelection) {
