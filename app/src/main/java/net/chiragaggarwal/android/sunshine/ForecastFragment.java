@@ -28,14 +28,14 @@ import net.chiragaggarwal.android.sunshine.models.Forecasts;
 import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
 import net.chiragaggarwal.android.sunshine.models.Location;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
 public class ForecastFragment extends Fragment {
-    private static final long ONE_THOUSAND_MILLISECONDS = 1000;
+    private static final String DD_MM_YYYY = "ddMMyyyy";
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
     private WeatherForecastAdapter weatherForecastAdapter;
@@ -307,14 +307,9 @@ public class ForecastFragment extends Fragment {
 
     @NonNull
     private String parsedCurrentDateArgument() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR_OF_DAY, 20);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.ZONE_OFFSET, 0);
-        long timeInMillis = calendar.getTimeInMillis() / ONE_THOUSAND_MILLISECONDS;
-        return String.valueOf(timeInMillis);
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat(DD_MM_YYYY);
+        String formattedCurrentDate = currentDateFormat.format(new Date());
+        return formattedCurrentDate;
     }
 
     private boolean isOneWeeksForecastsNotPresent(Cursor forecastsCursor) {

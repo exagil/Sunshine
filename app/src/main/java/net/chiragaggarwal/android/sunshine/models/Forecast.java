@@ -36,6 +36,7 @@ public class Forecast implements Parcelable {
     private static final String WIND_SPEED = "speed";
     private static final String WEATHER_ID = "id";
     private static final String DD_MM_YYYY = "ddMMyyyy";
+    private static final long ONE_THOUSAND_MILLISECONDS = 1000;
 
     private final Date date;
     private final Double minimumTemperature;
@@ -65,9 +66,9 @@ public class Forecast implements Parcelable {
     public static Forecast fromJSON(JSONObject dayForecast) throws JSONException {
         JSONObject temperature = dayForecast.getJSONObject(TEMPERATURE);
         JSONObject weather = dayForecast.getJSONArray(WEATHER).getJSONObject(0);
-        long extractedDate = dayForecast.getLong(DATE);
+        long extractedDateInMillisecondsFrom1970 = extractedUnixTimestampInSeconds(dayForecast) * ONE_THOUSAND_MILLISECONDS;
 
-        Date date = new Date(extractedDate);
+        Date date = new Date(extractedDateInMillisecondsFrom1970);
         Double minimumTemperature = temperature.getDouble(MINIMUM_TEMPERATURE);
         Double maximumTemperature = temperature.getDouble(MAXIMUM_TEMPERATURE);
         String mainDescription = weather.getString(MAIN_DESCRIPTION);
@@ -110,7 +111,7 @@ public class Forecast implements Parcelable {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ForecastContract.ForecastEntry.COLUMN_MAX_TEMP, maximumTemperature);
         contentValues.put(ForecastContract.ForecastEntry.COLUMN_MIN_TEMP, minimumTemperature);
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_DATE, date.getTime());
+        contentValues.put(ForecastContract.ForecastEntry.COLUMN_DATE, persistableDate());
         contentValues.put(ForecastContract.ForecastEntry.COLUMN_SHORT_DESC, mainDescription);
         contentValues.put(ForecastContract.ForecastEntry.COLUMN_LOC_KEY, locationRowId);
         contentValues.put(ForecastContract.ForecastEntry.COLUMN_DEGREES, degrees);
@@ -127,12 +128,6 @@ public class Forecast implements Parcelable {
 
     public String summaryWithHashtag(Context context) {
         return summary() + SPACE + context.getString(R.string.hashtag);
-    }
-
-    public long persistableDate() {
-        SimpleDateFormat persistableDateFormat = new SimpleDateFormat(DD_MM_YYYY);
-        String formattedPersistableDate = persistableDateFormat.format(this.date);
-        return Long.parseLong(formattedPersistableDate);
     }
 
     @Override
@@ -176,6 +171,10 @@ public class Forecast implements Parcelable {
         }
     };
 
+    private static long extractedUnixTimestampInSeconds(JSONObject dayForecast) throws JSONException {
+        return dayForecast.getLong(DATE);
+    }
+
     private String formattedTemperatures() {
         return this.maximumTemperature + "/" + this.minimumTemperature;
     }
@@ -183,5 +182,11 @@ public class Forecast implements Parcelable {
     private String formattedDate() {
         return new SimpleDateFormat(DAY_KEYWORD + COMMA + MONTH_NAME_KEYWORD + DATE_KEYWORD,
                 Locale.US).format(this.date);
+    }
+
+    private long persistableDate() {
+        SimpleDateFormat persistableDateFormat = new SimpleDateFormat(DD_MM_YYYY);
+        String formattedPersistableDate = persistableDateFormat.format(this.date);
+        return Long.parseLong(formattedPersistableDate);
     }
 }

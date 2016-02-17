@@ -110,23 +110,12 @@ public class ForecastsRepository {
 
         db.beginTransaction();
         for (ContentValues value : values) {
-            ContentValues forecastContentValueWithNormalizedDate =
-                    buildForecastContentValueWithNormalizedDate(value);
-            long rowId = db.insert(ForecastEntry.TABLE_NAME, null,
-                    forecastContentValueWithNormalizedDate);
+            long rowId = db.insert(ForecastEntry.TABLE_NAME, null, value);
             if (isForecastSuccessfullyInserted(rowId)) numberOfForecastsInserted++;
         }
         db.setTransactionSuccessful();
         db.endTransaction();
         return numberOfForecastsInserted;
-    }
-
-    private ContentValues buildForecastContentValueWithNormalizedDate(ContentValues value) {
-        if (value.containsKey(ForecastEntry.COLUMN_DATE)) {
-            Long date = value.getAsLong(ForecastEntry.COLUMN_DATE);
-            value.put(ForecastEntry.COLUMN_DATE, ForecastContract.normalizeDate(date));
-        }
-        return value;
     }
 
     private boolean isForecastSuccessfullyInserted(long rowId) {

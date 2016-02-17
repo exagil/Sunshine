@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COMMA +
                 ForecastEntry.COLUMN_LOC_KEY + INTEGER + NOT_NULL +
                 COMMA +
-                ForecastEntry.COLUMN_DATE + INTEGER + NOT_NULL +
+                ForecastEntry.COLUMN_DATE + NUMERIC + NOT_NULL +
                 COMMA +
                 ForecastEntry.COLUMN_SHORT_DESC + TEXT + NOT_NULL +
                 COMMA +
