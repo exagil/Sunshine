@@ -28,7 +28,6 @@ public class Forecast implements Parcelable {
     private static final String MONTH_NAME_KEYWORD = "MMMM";
     private static final String COMMA = ", ";
     private static final String DATE_KEYWORD = " d";
-    private static final long ONE_THOUSAND_MILLISECONDS = 1000;
     public static final String TAG = "net.chiragaggarwal.android.sunshine.models.Forecast";
     private static final String SPACE = " ";
     private static final String DEGREES = "deg";
@@ -36,6 +35,7 @@ public class Forecast implements Parcelable {
     private static final String PRESSURE = "pressure";
     private static final String WIND_SPEED = "speed";
     private static final String WEATHER_ID = "id";
+    private static final String DD_MM_YYYY = "ddMMyyyy";
 
     private final Date date;
     private final Double minimumTemperature;
@@ -65,8 +65,9 @@ public class Forecast implements Parcelable {
     public static Forecast fromJSON(JSONObject dayForecast) throws JSONException {
         JSONObject temperature = dayForecast.getJSONObject(TEMPERATURE);
         JSONObject weather = dayForecast.getJSONArray(WEATHER).getJSONObject(0);
+        long extractedDate = dayForecast.getLong(DATE);
 
-        Date date = new Date(Long.parseLong(dayForecast.getString(DATE)) * ONE_THOUSAND_MILLISECONDS);
+        Date date = new Date(extractedDate);
         Double minimumTemperature = temperature.getDouble(MINIMUM_TEMPERATURE);
         Double maximumTemperature = temperature.getDouble(MAXIMUM_TEMPERATURE);
         String mainDescription = weather.getString(MAIN_DESCRIPTION);
@@ -128,13 +129,10 @@ public class Forecast implements Parcelable {
         return summary() + SPACE + context.getString(R.string.hashtag);
     }
 
-    private String formattedTemperatures() {
-        return this.maximumTemperature + "/" + this.minimumTemperature;
-    }
-
-    private String formattedDate() {
-        return new SimpleDateFormat(DAY_KEYWORD + COMMA + MONTH_NAME_KEYWORD + DATE_KEYWORD,
-                Locale.US).format(this.date);
+    public long persistableDate() {
+        SimpleDateFormat persistableDateFormat = new SimpleDateFormat(DD_MM_YYYY);
+        String formattedPersistableDate = persistableDateFormat.format(this.date);
+        return Long.parseLong(formattedPersistableDate);
     }
 
     @Override
@@ -177,4 +175,13 @@ public class Forecast implements Parcelable {
             return new Forecast[size];
         }
     };
+
+    private String formattedTemperatures() {
+        return this.maximumTemperature + "/" + this.minimumTemperature;
+    }
+
+    private String formattedDate() {
+        return new SimpleDateFormat(DAY_KEYWORD + COMMA + MONTH_NAME_KEYWORD + DATE_KEYWORD,
+                Locale.US).format(this.date);
+    }
 }
