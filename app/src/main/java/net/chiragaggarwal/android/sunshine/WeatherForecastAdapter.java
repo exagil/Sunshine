@@ -12,7 +12,7 @@ import net.chiragaggarwal.android.sunshine.models.Forecasts;
 
 public class WeatherForecastAdapter extends BaseAdapter {
     private final Context context;
-    private final Forecasts forecasts;
+    private Forecasts forecasts;
 
     public WeatherForecastAdapter(Context context, Forecasts forecasts) {
         this.context = context;
@@ -46,5 +46,10 @@ public class WeatherForecastAdapter extends BaseAdapter {
         TextView weatherForecastSummary = (TextView) view.findViewById(R.id.list_item_forecast_summary);
         weatherForecastSummary.setText(forecast.summary());
         return view;
+    }
+
+    public void replaceForecasts(Forecasts forecasts) {
+        this.forecasts = forecasts;
+        notifyDataSetChanged();
     }
 }

@@ -11,6 +11,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,36 +31,26 @@ import net.chiragaggarwal.android.sunshine.models.Forecasts;
 import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
 import net.chiragaggarwal.android.sunshine.models.Location;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
-public class ForecastFragment extends Fragment {
+public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String DD_MM_YYYY = "ddMMyyyy";
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
     private WeatherForecastAdapter weatherForecastAdapter;
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        Cursor forecastsCursor = queryForecastsForLocationFromForecastsProviderStartingFromToday(savedZipCode(sharedPreferences));
-        if (isOneWeeksForecastsNotPresent(forecastsCursor)) {
-            fetchWeatherForecast(sharedPreferences);
-        } else {
-            Forecasts forecasts = Forecasts.fromCursor(forecastsCursor);
-            showForecasts(forecasts);
-        }
-    }
+    private TextView locationName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        this.weatherForecastAdapter = new WeatherForecastAdapter(getContext(),
+                new Forecasts());
     }
 
     @Nullable
@@ -67,6 +60,12 @@ public class ForecastFragment extends Fragment {
         initializeWidgets(view);
         setOnItemClickListenerForForecastList();
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadWeeklyForecastsStartingFromToday();
     }
 
     @Override
@@ -84,14 +83,11 @@ public class ForecastFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sharedPreferences = getSharedPreferences();
         switch (item.getItemId()) {
             case R.id.forecast_action_show_location:
                 String zipCode = savedZipCode(sharedPreferences);
                 showLocationAt(zipCode);
-                break;
-            case R.id.forecast_action_refresh:
-                fetchWeatherForecast(sharedPreferences);
                 break;
             case R.id.forecast_action_settings:
                 launchSettings();
@@ -113,8 +109,7 @@ public class ForecastFragment extends Fragment {
                             showForecastList();
                         }
                         save(forecastsForLocation);
-                        Forecasts forecasts = forecastsForLocation.forecasts;
-                        showForecasts(forecasts);
+                        reloadWeeklyForecastsStartingFromToday();
                     }
 
                     @Override
@@ -128,19 +123,7 @@ public class ForecastFragment extends Fragment {
     }
 
     private void showForecasts(Forecasts forecasts) {
-        weatherForecastAdapter = new WeatherForecastAdapter(getContext(), forecasts);
-        forecastList.setAdapter(weatherForecastAdapter);
-    }
-
-    private Cursor queryForecastsForLocationFromForecastsProviderStartingFromToday(String zipCode) {
-        String dateArgument = parsedCurrentDateArgument();
-        return getContext().getContentResolver().query(
-                ForecastEntry.buildForecastsForLocationEndpoint(zipCode),
-                null,
-                ForecastEntry.buildForecastsSelectionForLocationIdWithStartDate(),
-                new String[]{zipCode, dateArgument},
-                null
-        );
+        this.weatherForecastAdapter.replaceForecasts(forecasts);
     }
 
     private void save(ForecastsForLocation forecastsForLocation) {
@@ -181,6 +164,8 @@ public class ForecastFragment extends Fragment {
 
     private void initializeWidgets(View view) {
         this.forecastList = (ListView) view.findViewById(R.id.forecast_list);
+        this.forecastList.setAdapter(this.weatherForecastAdapter);
+        this.locationName = ((TextView) view.findViewById(R.id.location_name));
         this.invalidPreferencesTextView = (TextView) view.findViewById(R.id.invalid_preferences);
     }
 
@@ -313,12 +298,90 @@ public class ForecastFragment extends Fragment {
     }
 
     private boolean isOneWeeksForecastsNotPresent(Cursor forecastsCursor) {
-        return forecastsCursor.getCount() < 7;
+        return forecastsCursor.getCount() < 6;
     }
 
     private void insertForecastsInForecastsProvider(ContentValues[] forecastsValues) {
         getContext().getContentResolver().bulkInsert(
                 ForecastEntry.CONTENT_URI, forecastsValues
+        );
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle arguments) {
+        Loader<Cursor> forecastsLoader = buildLoaderToFetchForecastsStartingFromToday(arguments);
+        return forecastsLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor dataCursor) {
+        if (didNotFindAnyForecasts(dataCursor)) onLoaderReset(loader);
+        if (dataCursor == null) return;
+
+        onForecastsLoaded(dataCursor);
+    }
+
+    private boolean didNotFindAnyForecasts(Cursor dataCursor) {
+        return dataCursor == null || dataCursor.getCount() == 0;
+    }
+
+    private void onForecastsLoaded(Cursor forecastsCursor) {
+        if (isOneWeeksForecastsNotPresent(forecastsCursor)) {
+            fetchWeatherForecast(getSharedPreferences());
+        } else {
+            try {
+                Forecasts forecasts = null;
+                forecasts = Forecasts.fromCursor(forecastsCursor);
+                showForecasts(forecasts);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        loader.reset();
+    }
+
+    private void loadWeeklyForecastsStartingFromToday() {
+        Bundle forecastsBundle = forecastsBundle();
+        getLoaderManager().initLoader(buildUniqueLoaderId(), forecastsBundle, this);
+    }
+
+    private int buildUniqueLoaderId() {
+        String zipCode = this.savedZipCode(getSharedPreferences());
+        return Integer.parseInt(zipCode);
+    }
+
+    private void reloadWeeklyForecastsStartingFromToday() {
+        Bundle forecastsBundle = forecastsBundle();
+        getLoaderManager().restartLoader(buildUniqueLoaderId(), forecastsBundle, this);
+    }
+
+    @NonNull
+    private Bundle forecastsBundle() {
+        SharedPreferences sharedPreferences = getSharedPreferences();
+        String savedZipCode = savedZipCode(sharedPreferences);
+        Bundle forecastsBundle = new Bundle();
+        forecastsBundle.putString(LocationEntry.COLUMN_LOCATION_SETTING, savedZipCode);
+        return forecastsBundle;
+    }
+
+    private SharedPreferences getSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(getContext());
+    }
+
+    private Loader<Cursor> buildLoaderToFetchForecastsStartingFromToday(Bundle arguments) {
+        String savedZipCode = arguments.getString(LocationEntry.COLUMN_LOCATION_SETTING);
+
+        return new CursorLoader(getContext(),
+                ForecastEntry.buildForecastsForLocationEndpoint(savedZipCode),
+                null,
+                ForecastEntry.buildForecastsSelectionForLocationIdWithStartDate(),
+                new String[]{savedZipCode, parsedCurrentDateArgument()},
+                null
         );
     }
 }

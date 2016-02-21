@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class Forecasts implements Parcelable {
@@ -30,12 +31,15 @@ public class Forecasts implements Parcelable {
         return forecasts;
     }
 
-    public static Forecasts fromCursor(Cursor forecastsCursor) {
+    public static Forecasts fromCursor(Cursor forecastsCursor) throws ParseException {
         Forecasts forecasts = new Forecasts();
 
-        while (forecastsCursor.moveToNext()) {
+        int forecastsIndex = 0;
+        forecastsCursor.moveToFirst();
+        while (forecastsIndex++ < forecastsCursor.getCount()) {
             Forecast forecast = Forecast.fromCursor(forecastsCursor);
             forecasts.add(forecast);
+            forecastsCursor.moveToNext();
         }
 
         return forecasts;

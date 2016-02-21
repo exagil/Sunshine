@@ -15,7 +15,7 @@ public class Location {
     private static final String LONGITUDE = "lon";
     private static final String LATITUDE = "lat";
 
-    private String name;
+    public String name;
     public String postalCode;
     private Double latitude;
     private Double longitude;

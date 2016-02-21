@@ -12,6 +12,7 @@ import net.chiragaggarwal.android.sunshine.data.ForecastContract;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -35,8 +36,8 @@ public class Forecast implements Parcelable {
     private static final String PRESSURE = "pressure";
     private static final String WIND_SPEED = "speed";
     private static final String WEATHER_ID = "id";
-    private static final String DD_MM_YYYY = "ddMMyyyy";
     private static final long ONE_THOUSAND_MILLISECONDS = 1000;
+    private static final String DD_MM_YYYY = "ddMMyyyy";
 
     private final Date date;
     private final Double minimumTemperature;
@@ -82,7 +83,7 @@ public class Forecast implements Parcelable {
                 humidity, pressure, windSpeed, weatherId);
     }
 
-    public static Forecast fromCursor(Cursor forecastsCursor) {
+    public static Forecast fromCursor(Cursor forecastsCursor) throws ParseException {
         int dateIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_DATE);
         int minimumTemperatureIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_MIN_TEMP);
         int maximumTemperatureIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_MAX_TEMP);
@@ -93,7 +94,8 @@ public class Forecast implements Parcelable {
         int weatherIdIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_WEATHER_ID);
         int windSpeedIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_WIND_SPEED);
 
-        Date date = new Date(forecastsCursor.getLong(dateIndex));
+        String dateString = forecastsCursor.getString(dateIndex);
+        Date date = new SimpleDateFormat(DD_MM_YYYY).parse(dateString);
         Double minimumTemperature = forecastsCursor.getDouble(minimumTemperatureIndex);
         Double maximumTemperature = forecastsCursor.getDouble(maximumTemperatureIndex);
         String mainDescription = forecastsCursor.getString(mainDescriptionIndex);
