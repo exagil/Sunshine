@@ -42,6 +42,9 @@ public class Forecast implements Parcelable {
     private static final String TOMORROW = "Tomorrow";
     private static final String TODAY = "Today";
     private static final String YESTERDAY = "Yesterday";
+    private static final String HECTOPASCAL_PRESSURE_UNIT = " hPa";
+    private static final String KMPH_NORTH_WIND_UNIT = " km/h NW";
+    private static final String PERCENT_SYMBOL = "%";
 
     private final Date date;
     private final Double minimumTemperature;
@@ -207,7 +210,7 @@ public class Forecast implements Parcelable {
         return this.maximumTemperature + "/" + this.minimumTemperature;
     }
 
-    private String formattedDate() {
+    public String formattedDate() {
         return new SimpleDateFormat(DAY_KEYWORD + COMMA + MONTH_NAME_KEYWORD + DATE_KEYWORD,
                 Locale.US).format(this.date);
     }
@@ -216,5 +219,17 @@ public class Forecast implements Parcelable {
         SimpleDateFormat persistableDateFormat = new SimpleDateFormat(DD_MM_YYYY);
         String formattedPersistableDate = persistableDateFormat.format(this.date);
         return Long.parseLong(formattedPersistableDate);
+    }
+
+    public String pressureInHectopascal() {
+        return this.pressure + HECTOPASCAL_PRESSURE_UNIT;
+    }
+
+    public String northWindSpeedInKmph() {
+        return this.windSpeed + KMPH_NORTH_WIND_UNIT;
+    }
+
+    public String humidityInPercentage() {
+        return this.humidity + PERCENT_SYMBOL;
     }
 }
