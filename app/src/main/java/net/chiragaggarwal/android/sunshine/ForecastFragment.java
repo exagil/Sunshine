@@ -43,7 +43,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
     private WeatherForecastAdapter weatherForecastAdapter;
-    private TextView locationName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -165,7 +164,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private void initializeWidgets(View view) {
         this.forecastList = (ListView) view.findViewById(R.id.forecast_list);
         this.forecastList.setAdapter(this.weatherForecastAdapter);
-        this.locationName = ((TextView) view.findViewById(R.id.location_name));
         this.invalidPreferencesTextView = (TextView) view.findViewById(R.id.invalid_preferences);
     }
 

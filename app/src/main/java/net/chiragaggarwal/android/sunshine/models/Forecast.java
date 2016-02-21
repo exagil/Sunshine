@@ -136,6 +136,14 @@ public class Forecast implements Parcelable {
         return summary() + SPACE + context.getString(R.string.hashtag);
     }
 
+    public String formattedMaximumTemperature(Context context) {
+        return String.valueOf(this.maximumTemperature) + SPACE + context.getString(R.string.degrees_symbol);
+    }
+
+    public String formattedMinimumTemperature(Context context) {
+        return String.valueOf(this.minimumTemperature) + SPACE + context.getString(R.string.degrees_symbol);
+    }
+
     public String friendlyDay(Date todaysDate) {
         SimpleDateFormat dayFormat = new SimpleDateFormat(DAY_PATTERN);
         String todaysDayString = dayFormat.format(todaysDate);
@@ -144,8 +152,7 @@ public class Forecast implements Parcelable {
         Day todaysDay = Day.parse(todaysDayString);
         Day forecastDay = Day.parse(forecastDayString);
 
-        if (todaysDay.previous() == forecastDay) return YESTERDAY;
-        else if (todaysDay == forecastDay) return TODAY;
+        if (todaysDay == forecastDay) return TODAY;
         else if (todaysDay.next() == forecastDay) return TOMORROW;
 
         return forecastDayString;

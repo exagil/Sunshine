@@ -74,39 +74,4 @@ public class DayTest {
     public void knowsHowToParseSunday() {
         assertEquals(Day.SUNDAY, Day.parse("Sunday"));
     }
-
-    @Test
-    public void sundayShouldHaveSaturdayAsPreviousDay() {
-        assertEquals(Day.SATURDAY, Day.SUNDAY.previous());
-    }
-
-    @Test
-    public void mondayShouldHaveSaturdayAsPreviousDay() {
-        assertEquals(Day.SUNDAY, Day.MONDAY.previous());
-    }
-
-    @Test
-    public void tuesdayShouldHaveMondayAsPreviousDay() {
-        assertEquals(Day.MONDAY, Day.TUESDAY.previous());
-    }
-
-    @Test
-    public void wednesdayShouldHaveThursdayAsPreviousDay() {
-        assertEquals(Day.TUESDAY, Day.WEDNESDAY.previous());
-    }
-
-    @Test
-    public void thursdayShouldHaveFridayAsPreviousDay() {
-        assertEquals(Day.WEDNESDAY, Day.THURSDAY.previous());
-    }
-
-    @Test
-    public void fridayShouldHaveThursdayAsPreviousDay() {
-        assertEquals(Day.THURSDAY, Day.FRIDAY.previous());
-    }
-
-    @Test
-    public void saturdayShouldHaveFridayAsPreviousDay() {
-        assertEquals(Day.FRIDAY, Day.SATURDAY.previous());
-    }
 }

@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    style="@style/layout_forecast_list_item"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/list_item_forecast_summary"
-        style="@style/list_item_text_view"
-        tools:text="Weather in Delhi"/>
+    <ImageView
+        android:id="@+id/img_weather_icon"
+        style="@style/img_weather_icon"
+        tools:src="@drawable/ic_cloud_black_24dp"/>
+
+    <LinearLayout style="@style/layout_forecast_description_and_day">
+
+        <TextView
+            android:id="@+id/text_forecast_day"
+            style="@style/text_forecast_info"
+            tools:text="Thursday"/>
+
+        <TextView
+            android:id="@+id/text_forecast_description"
+            style="@style/text_forecast_info"
+            tools:text="Cloudy"/>
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/layout_forecast_temperatures">
+
+        <TextView
+            android:id="@+id/text_max_temperature"
+            style="@style/text_forecast_info"
+            tools:text="21"/>
+
+        <TextView
+            android:id="@+id/text_min_temperature"
+            style="@style/text_forecast_info"
+            tools:text="8"/>
+
+    </LinearLayout>
 
 </LinearLayout>

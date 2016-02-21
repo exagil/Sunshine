@@ -2,15 +2,8 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent" xmlns:tools="http://schemas.android.com/tools">
-
-    <TextView
-        android:id="@+id/location_name"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        tools:text="Location Name"
-        android:gravity="center"/>
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ListView
         android:id="@+id/forecast_list"

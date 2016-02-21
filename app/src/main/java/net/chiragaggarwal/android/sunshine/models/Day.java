@@ -5,66 +5,34 @@ public enum Day {
         public Day next() {
             return Day.MONDAY;
         }
-
-        public Day previous() {
-            return Day.SATURDAY;
-        }
     }, MONDAY {
         public Day next() {
             return Day.TUESDAY;
-        }
-
-        public Day previous() {
-            return Day.SUNDAY;
         }
     }, TUESDAY {
         public Day next() {
             return Day.WEDNESDAY;
         }
-
-        public Day previous() {
-            return Day.MONDAY;
-        }
     }, WEDNESDAY {
         public Day next() {
             return Day.THURSDAY;
-        }
-
-        public Day previous() {
-            return Day.TUESDAY;
         }
     }, THURSDAY {
         public Day next() {
             return Day.FRIDAY;
         }
-
-        public Day previous() {
-            return Day.WEDNESDAY;
-        }
     }, FRIDAY {
         public Day next() {
             return Day.SATURDAY;
-        }
-
-        public Day previous() {
-            return Day.THURSDAY;
         }
     }, SATURDAY {
         public Day next() {
             return Day.SUNDAY;
         }
-
-        public Day previous() {
-            return Day.FRIDAY;
-        }
     };
 
     public Day next() {
         return this.next();
-    }
-
-    public Day previous() {
-        return this.previous();
     }
 
     public static Day parse(String dayString) {

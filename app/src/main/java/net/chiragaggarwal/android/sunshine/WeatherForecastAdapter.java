@@ -5,18 +5,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
 
 public class WeatherForecastAdapter extends BaseAdapter {
+    private static final int DEFAULT_FORECAST_VIEW_ID = 0;
+    private static final int TODAYS_FORECAST_VIEW_ID = 1;
+    private static final int MAX_FORECAST_LAYOUT_TYPES = 2;
     private final Context context;
     private Forecasts forecasts;
 
     public WeatherForecastAdapter(Context context, Forecasts forecasts) {
         this.context = context;
         this.forecasts = forecasts;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return MAX_FORECAST_LAYOUT_TYPES;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        int viewType = DEFAULT_FORECAST_VIEW_ID;
+        if (isFirstForecast(position)) viewType = TODAYS_FORECAST_VIEW_ID;
+        return viewType;
     }
 
     @Override
@@ -37,19 +51,58 @@ public class WeatherForecastAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
-        Forecast forecast = getItem(position);
+        int viewType = getItemViewType(position);
+
+        if (viewType == TODAYS_FORECAST_VIEW_ID) {
+            view = loadTodaysForecastView(position, convertView);
+        } else {
+            view = loadForecastView(position, convertView);
+        }
+
+        return view;
+    }
+
+    private View loadForecastView(int position, View convertView) {
+        View view;
+        ForecastHolder forecastHolder;
+
         if (convertView == null) {
-            view = LayoutInflater.from(this.context).inflate(R.layout.list_item_forecast, parent, false);
+            view = LayoutInflater.from(this.context).inflate(R.layout.list_item_forecast, null);
+            forecastHolder = new ForecastHolder(view);
+            view.setTag(forecastHolder);
         } else {
             view = convertView;
+            forecastHolder = (ForecastHolder) view.getTag();
         }
-        TextView weatherForecastSummary = (TextView) view.findViewById(R.id.list_item_forecast_summary);
-        weatherForecastSummary.setText(forecast.summary());
+
+        Forecast forecast = getItem(position);
+        forecastHolder.bindView(forecast, this.context);
+        return view;
+    }
+
+    private View loadTodaysForecastView(int position, View convertView) {
+        View view;
+        TodaysForecastHolder todaysForecastHolder;
+
+        if (convertView == null) {
+            view = LayoutInflater.from(this.context).inflate(R.layout.list_item_forecast_today, null);
+            todaysForecastHolder = new TodaysForecastHolder(view);
+            view.setTag(todaysForecastHolder);
+        } else {
+            view = convertView;
+            todaysForecastHolder = (TodaysForecastHolder) view.getTag();
+        }
+        Forecast forecast = getItem(position);
+        todaysForecastHolder.bindView(forecast, this.context);
         return view;
     }
 
     public void replaceForecasts(Forecasts forecasts) {
         this.forecasts = forecasts;
         notifyDataSetChanged();
+    }
+
+    private boolean isFirstForecast(int position) {
+        return position == 0;
     }
 }

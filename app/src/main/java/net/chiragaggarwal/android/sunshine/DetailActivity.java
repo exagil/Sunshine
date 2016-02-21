@@ -21,7 +21,7 @@ public class DetailActivity extends AppCompatActivity {
         initializeAppToolbar();
 
         this.forecast = getIntent().getParcelableExtra(Forecast.TAG);
-        TextView forecastSummary = (TextView) findViewById(R.id.list_item_forecast_summary);
+        TextView forecastSummary = (TextView) findViewById(R.id.text_forecast_description);
         forecastSummary.setText(forecast.summary());
     }
 
