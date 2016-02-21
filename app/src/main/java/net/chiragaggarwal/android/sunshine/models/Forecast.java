@@ -38,10 +38,14 @@ public class Forecast implements Parcelable {
     private static final String WEATHER_ID = "id";
     private static final long ONE_THOUSAND_MILLISECONDS = 1000;
     private static final String DD_MM_YYYY = "ddMMyyyy";
+    private static final String DAY_PATTERN = "EEEE";
+    private static final String TOMORROW = "Tomorrow";
+    private static final String TODAY = "Today";
+    private static final String YESTERDAY = "Yesterday";
 
     private final Date date;
     private final Double minimumTemperature;
-    private final String mainDescription;
+    public final String mainDescription;
     private Double degrees;
     private Double humidity;
     private Double pressure;
@@ -130,6 +134,21 @@ public class Forecast implements Parcelable {
 
     public String summaryWithHashtag(Context context) {
         return summary() + SPACE + context.getString(R.string.hashtag);
+    }
+
+    public String friendlyDay(Date todaysDate) {
+        SimpleDateFormat dayFormat = new SimpleDateFormat(DAY_PATTERN);
+        String todaysDayString = dayFormat.format(todaysDate);
+        String forecastDayString = dayFormat.format(this.date);
+
+        Day todaysDay = Day.parse(todaysDayString);
+        Day forecastDay = Day.parse(forecastDayString);
+
+        if (todaysDay.previous() == forecastDay) return YESTERDAY;
+        else if (todaysDay == forecastDay) return TODAY;
+        else if (todaysDay.next() == forecastDay) return TOMORROW;
+
+        return forecastDayString;
     }
 
     @Override
