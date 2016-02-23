@@ -1,80 +1,87 @@
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:weightSum="2"
-    tools:context="net.chiragaggarwal.android.sunshine.DetailActivity">
+    android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:weightSum="2"
+        tools:context="net.chiragaggarwal.android.sunshine.DetailActivity">
 
-        <TextView
-            android:id="@+id/text_forecast_date"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24dp"
-            tools:text="Today, June 24"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_forecast_max_temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="40dp"
-            tools:text="21"/>
+            <TextView
+                android:id="@+id/text_forecast_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24dp"
+                tools:text="Today, June 24"/>
 
-        <TextView
-            android:id="@+id/text_forecast_min_temperature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:textSize="28dp"
-            tools:text="8"/>
+            <TextView
+                android:id="@+id/text_forecast_max_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="40dp"
+                tools:text="21"/>
 
-        <TextView
-            android:id="@+id/text_forecast_humidity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="84%"/>
+            <TextView
+                android:id="@+id/text_forecast_min_temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:textSize="28dp"
+                tools:text="8"/>
 
-        <TextView
-            android:id="@+id/text_forecast_wind"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="6 km/H NW"/>
+            <TextView
+                android:id="@+id/text_forecast_humidity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="84%"/>
 
-        <TextView
-            android:id="@+id/text_forecast_pressure"
+            <TextView
+                android:id="@+id/text_forecast_wind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="6 km/H NW"/>
+
+            <TextView
+                android:id="@+id/text_forecast_pressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="1014 hPa"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="1014 hPa"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_forecast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:src="@drawable/ic_cloud_black_24dp"/>
+
+            <TextView
+                android:id="@+id/text_forecast_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Rainy"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/image_forecast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:src="@drawable/ic_cloud_black_24dp"/>
-
-        <TextView
-            android:id="@+id/text_forecast_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Rainy"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</ScrollView>
