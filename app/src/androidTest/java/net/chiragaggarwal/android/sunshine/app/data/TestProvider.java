@@ -471,6 +471,7 @@ public class TestProvider extends AndroidTestCase {
             weatherValues.put(ForecastEntry.COLUMN_SHORT_DESC, "Asteroids");
             weatherValues.put(ForecastEntry.COLUMN_WIND_SPEED, 5.5 + 0.2 * (float) i);
             weatherValues.put(ForecastEntry.COLUMN_WEATHER_ID, 321);
+            weatherValues.put(ForecastEntry.COLUMN_ICON, "01d");
             returnContentValues[i] = weatherValues;
         }
         return returnContentValues;

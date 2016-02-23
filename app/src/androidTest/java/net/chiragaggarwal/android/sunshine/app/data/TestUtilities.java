@@ -54,6 +54,7 @@ public class TestUtilities extends AndroidTestCase {
         forecastValues.put(ForecastEntry.COLUMN_SHORT_DESC, "Asteroids");
         forecastValues.put(ForecastEntry.COLUMN_WIND_SPEED, 5.5);
         forecastValues.put(ForecastEntry.COLUMN_WEATHER_ID, 321);
+        forecastValues.put(ForecastEntry.COLUMN_ICON, "01n");
 
         return forecastValues;
     }

@@ -1,6 +1,5 @@
 package net.chiragaggarwal.android.sunshine.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -46,7 +45,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(createLocationTableSQLQuery());
         db.execSQL(createWeatherForecastTableSQLQuery());
-        createSeedData(db);
     }
 
     @Override
@@ -82,6 +80,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COMMA +
                 ForecastEntry.COLUMN_WEATHER_ID + NUMERIC + NOT_NULL +
                 COMMA +
+                ForecastEntry.COLUMN_ICON + TEXT + NOT_NULL +
+                COMMA +
 
                 FOREIGN_KEY + START_BRACKET + ForecastEntry.COLUMN_LOC_KEY + END_BRACKET +
                 REFERENCES + LocationEntry.TABLE_NAME + START_BRACKET + LocationEntry._ID + END_BRACKET +
@@ -110,32 +110,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 LocationEntry.COLUMN_LONGITUDE + END_BRACKET +
 
                 END_BRACKET;
-    }
-
-    private void createSeedData(SQLiteDatabase db) {
-        long id = insertIndiranagarInLocationsTable(db);
-        insertIndiranagarSampleWeather(id, db);
-    }
-
-    private long insertIndiranagarInLocationsTable(SQLiteDatabase db) {
-        ContentValues indiranagarValues = new ContentValues();
-        indiranagarValues.put(LocationEntry.COLUMN_CITY_NAME, CITY_NAME_INDIRANAGAR);
-        indiranagarValues.put(LocationEntry.COLUMN_LATITUDE, 12);
-        indiranagarValues.put(LocationEntry.COLUMN_LONGITUDE, 24);
-        indiranagarValues.put(LocationEntry.COLUMN_LOCATION_SETTING, RANDOM_SETTING);
-        return db.insert(LocationEntry.TABLE_NAME, null, indiranagarValues);
-    }
-
-    private long insertIndiranagarSampleWeather(long id, SQLiteDatabase db) {
-        ContentValues indiranagarForecastValues = new ContentValues();
-        indiranagarForecastValues.put(ForecastEntry.COLUMN_LOC_KEY, id);
-        indiranagarForecastValues.put(ForecastEntry.COLUMN_DATE, 123456);
-        indiranagarForecastValues.put(ForecastEntry.COLUMN_SHORT_DESC, "blablabla");
-        indiranagarForecastValues.put(ForecastEntry.COLUMN_MIN_TEMP, 12);
-        indiranagarForecastValues.put(ForecastEntry.COLUMN_MAX_TEMP, 23);
-        indiranagarForecastValues.put(ForecastEntry.COLUMN_HUMIDITY, 122);
-        indiranagarForecastValues.put(ForecastEntry.COLUMN_PRESSURE, 1234);
-        indiranagarForecastValues.put(ForecastEntry.COLUMN_WEATHER_ID, 9);
-        return db.insert(ForecastEntry.TABLE_NAME, null, indiranagarForecastValues);
     }
 }

@@ -7,7 +7,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import net.chiragaggarwal.android.sunshine.R;
-import net.chiragaggarwal.android.sunshine.data.ForecastContract;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 
 public class Forecast implements Parcelable {
     private static final String TEMPERATURE = "temp";
@@ -45,6 +46,7 @@ public class Forecast implements Parcelable {
     private static final String HECTOPASCAL_PRESSURE_UNIT = " hPa";
     private static final String KMPH_NORTH_WIND_UNIT = " km/h NW";
     private static final String PERCENT_SYMBOL = "%";
+    private static final String WEATHER_ICON = "icon";
 
     private final Date date;
     private final Double minimumTemperature;
@@ -54,11 +56,12 @@ public class Forecast implements Parcelable {
     private Double pressure;
     private Double windSpeed;
     private Long weatherId;
+    private String icon;
     private final Double maximumTemperature;
 
     public Forecast(Date date, Double minimumTemperature, Double maximumTemperature,
                     String mainDescription, Double degrees, Double humidity,
-                    Double pressure, Double windSpeed, Long weatherId) {
+                    Double pressure, Double windSpeed, Long weatherId, String icon) {
 
         this.date = date;
         this.minimumTemperature = minimumTemperature;
@@ -69,6 +72,7 @@ public class Forecast implements Parcelable {
         this.pressure = pressure;
         this.windSpeed = windSpeed;
         this.weatherId = weatherId;
+        this.icon = icon;
     }
 
     public static Forecast fromJSON(JSONObject dayForecast) throws JSONException {
@@ -85,21 +89,23 @@ public class Forecast implements Parcelable {
         Double pressure = dayForecast.getDouble(PRESSURE);
         Double windSpeed = dayForecast.getDouble(WIND_SPEED);
         Long weatherId = weather.getLong(WEATHER_ID);
+        String icon = weather.getString(WEATHER_ICON);
 
         return new Forecast(date, minimumTemperature, maximumTemperature, mainDescription, degrees,
-                humidity, pressure, windSpeed, weatherId);
+                humidity, pressure, windSpeed, weatherId, icon);
     }
 
     public static Forecast fromCursor(Cursor forecastsCursor) throws ParseException {
-        int dateIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_DATE);
-        int minimumTemperatureIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_MIN_TEMP);
-        int maximumTemperatureIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_MAX_TEMP);
-        int degreesIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_DEGREES);
-        int humidityIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_HUMIDITY);
-        int pressureIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_PRESSURE);
-        int mainDescriptionIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_SHORT_DESC);
-        int weatherIdIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_WEATHER_ID);
-        int windSpeedIndex = forecastsCursor.getColumnIndex(ForecastContract.ForecastEntry.COLUMN_WIND_SPEED);
+        int dateIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_DATE);
+        int minimumTemperatureIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_MIN_TEMP);
+        int maximumTemperatureIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_MAX_TEMP);
+        int degreesIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_DEGREES);
+        int humidityIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_HUMIDITY);
+        int pressureIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_PRESSURE);
+        int mainDescriptionIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_SHORT_DESC);
+        int weatherIdIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_WEATHER_ID);
+        int windSpeedIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_WIND_SPEED);
+        int iconIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_ICON);
 
         String dateString = forecastsCursor.getString(dateIndex);
         Date date = new SimpleDateFormat(DD_MM_YYYY).parse(dateString);
@@ -111,23 +117,25 @@ public class Forecast implements Parcelable {
         Double pressure = forecastsCursor.getDouble(pressureIndex);
         Double windSpeed = forecastsCursor.getDouble(windSpeedIndex);
         Long weatherId = forecastsCursor.getLong(weatherIdIndex);
+        String icon = forecastsCursor.getString(iconIndex);
 
         return new Forecast(date, minimumTemperature, maximumTemperature, mainDescription, degrees,
-                humidity, pressure, windSpeed, weatherId);
+                humidity, pressure, windSpeed, weatherId, icon);
     }
 
     public ContentValues toContentValues(Long locationRowId) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_MAX_TEMP, maximumTemperature);
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_MIN_TEMP, minimumTemperature);
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_DATE, persistableDate());
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_SHORT_DESC, mainDescription);
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_LOC_KEY, locationRowId);
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_DEGREES, degrees);
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_HUMIDITY, humidity);
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_PRESSURE, pressure);
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_WIND_SPEED, windSpeed);
-        contentValues.put(ForecastContract.ForecastEntry.COLUMN_WEATHER_ID, weatherId);
+        contentValues.put(ForecastEntry.COLUMN_MAX_TEMP, maximumTemperature);
+        contentValues.put(ForecastEntry.COLUMN_MIN_TEMP, minimumTemperature);
+        contentValues.put(ForecastEntry.COLUMN_DATE, persistableDate());
+        contentValues.put(ForecastEntry.COLUMN_SHORT_DESC, mainDescription);
+        contentValues.put(ForecastEntry.COLUMN_LOC_KEY, locationRowId);
+        contentValues.put(ForecastEntry.COLUMN_DEGREES, degrees);
+        contentValues.put(ForecastEntry.COLUMN_HUMIDITY, humidity);
+        contentValues.put(ForecastEntry.COLUMN_PRESSURE, pressure);
+        contentValues.put(ForecastEntry.COLUMN_WIND_SPEED, windSpeed);
+        contentValues.put(ForecastEntry.COLUMN_WEATHER_ID, weatherId);
+        contentValues.put(ForecastEntry.COLUMN_ICON, icon);
         return contentValues;
     }
 

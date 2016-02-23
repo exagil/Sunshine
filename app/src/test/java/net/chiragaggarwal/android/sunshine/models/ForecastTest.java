@@ -34,25 +34,19 @@ public class ForecastTest {
     @Test
     public void friendlyDayShouldBeTodayIfDateIsTodays() {
         Date forecastDate = new Date(millisecondsFromJanOne1970At00HrUntilFeb212016At1600Hr);
-        Forecast forecast = new Forecast(forecastDate, null, null, null, null, null, null, null, null);
+        Forecast forecast = new Forecast(forecastDate, null, null, null, null, null, null, null, null, null);
         assertEquals("Today", forecast.friendlyDay(todaysDate));
     }
 
     @Test
     public void friendlyDayShouldBeTomorrowIfDateIsTomorrows() {
-        Forecast forecast = new Forecast(tomorrowsDate, null, null, null, null, null, null, null, null);
+        Forecast forecast = new Forecast(tomorrowsDate, null, null, null, null, null, null, null, null, null);
         assertEquals("Tomorrow", forecast.friendlyDay(todaysDate));
     }
 
     @Test
-    public void friendlyDayShouldBeYesterdayIfDateIsYesterdays() {
-        Forecast forecast = new Forecast(yesterdaysDate, null, null, null, null, null, null, null, null);
-        assertEquals("Yesterday", forecast.friendlyDay(todaysDate));
-    }
-
-    @Test
     public void friendlyDayShouldBeNameOfDayIfDateIsNotTodaysTomorrowsOrYesterdays() {
-        Forecast forecast = new Forecast(dayAfterTomorrowsDate, null, null, null, null, null, null, null, null);
+        Forecast forecast = new Forecast(dayAfterTomorrowsDate, null, null, null, null, null, null, null, null, null);
         assertEquals("Tuesday", forecast.friendlyDay(todaysDate));
     }
 }
