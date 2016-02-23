@@ -278,4 +278,41 @@ public class Forecast implements Parcelable {
         }
         return iconResource;
     }
+
+    public int todaysIconResource() {
+        int iconResource;
+        switch (icon) {
+            case "01d":
+                iconResource = R.drawable.art_clear;
+                break;
+            case "02d":
+                iconResource = R.drawable.art_light_clouds;
+                break;
+            case "03d":
+                iconResource = R.drawable.art_clouds;
+                break;
+            case "04d":
+                iconResource = R.drawable.art_clouds;
+                break;
+            case "09d":
+                iconResource = R.drawable.art_rain;
+                break;
+            case "10d":
+                iconResource = R.drawable.art_light_rain;
+                break;
+            case "11d":
+                iconResource = R.drawable.art_storm;
+                break;
+            case "13d":
+                iconResource = R.drawable.art_snow;
+                break;
+            case "50d":
+                iconResource = R.drawable.art_fog;
+                break;
+            default:
+                iconResource = NO_ICON_RESOURCE;
+                break;
+        }
+        return iconResource;
+    }
 }

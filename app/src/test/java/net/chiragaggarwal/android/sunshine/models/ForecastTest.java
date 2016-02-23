@@ -12,11 +12,9 @@ import static org.junit.Assert.assertEquals;
 public class ForecastTest {
     private long millisecondsFromJanOne1970At00HrUntilFeb212016At1600Hr;
     private long millisecondsFromJanOne1970At00HrUntilFeb222016At1600Hr;
-    private long millisecondsFromJanOne1970At00HrUntilFeb202016At1600Hr;
     private long millisecondsFromJanOne1970At00HrUntilFeb232016At1600Hr;
     private Date todaysDate;
     private Date tomorrowsDate;
-    private Date yesterdaysDate;
     private Date dayAfterTomorrowsDate;
 
 
@@ -24,10 +22,8 @@ public class ForecastTest {
     public void beforeEach() {
         this.millisecondsFromJanOne1970At00HrUntilFeb212016At1600Hr = Long.parseLong("1456050025000");
         this.millisecondsFromJanOne1970At00HrUntilFeb222016At1600Hr = Long.parseLong("1456156800000");
-        this.millisecondsFromJanOne1970At00HrUntilFeb202016At1600Hr = Long.parseLong("1455984000000");
         this.millisecondsFromJanOne1970At00HrUntilFeb232016At1600Hr = Long.parseLong("1456243200000");
 
-        this.yesterdaysDate = new Date(millisecondsFromJanOne1970At00HrUntilFeb202016At1600Hr);
         this.todaysDate = new Date(millisecondsFromJanOne1970At00HrUntilFeb212016At1600Hr);
         this.tomorrowsDate = new Date(millisecondsFromJanOne1970At00HrUntilFeb222016At1600Hr);
         this.dayAfterTomorrowsDate = new Date(millisecondsFromJanOne1970At00HrUntilFeb232016At1600Hr);
@@ -129,5 +125,84 @@ public class ForecastTest {
         Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, fogIcon);
         assertEquals("Forecast should have `Fog Icon` but was something else",
                 R.drawable.ic_fog, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysIconResourceAsClearSkyArtIfHasIconIdThatOfClearSky() {
+        String clearSkyIcon = "01d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, clearSkyIcon);
+        assertEquals("Forecast should have `Clear Sky Icon` but was something else",
+                R.drawable.art_clear, forecast.todaysIconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysIconResourceAsLightCloudsArtIfHasIconIdThatOfFewClouds() {
+        String fewCloudsIcon = "02d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, fewCloudsIcon);
+        assertEquals("Forecast should have `Light Clouds Art` but was something else",
+                R.drawable.art_light_clouds, forecast.todaysIconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysNoIconResourceIfHasInexistantIconId() {
+        String inexistantIcon = "some_inexistant_icon_resource";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, inexistantIcon);
+        assertEquals("Forecast should have `no Art` but was something else", 0, forecast.todaysIconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysIconResourceAsCloudsArtIfHasIconIdThatOfScatteredClouds() {
+        String scatteredCloudsIcon = "03d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, scatteredCloudsIcon);
+        assertEquals("Forecast should have `Clouds Art` but was something else",
+                R.drawable.art_clouds, forecast.todaysIconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysIconResourceAsCloudsArtIfHasIconIdThatOfBrokenClouds() {
+        String brokenCloudsIcon = "04d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, brokenCloudsIcon);
+        assertEquals("Forecast should have `Clouds Art` but was something else",
+                R.drawable.art_clouds, forecast.todaysIconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysIconResourceAsRainArtIfHasIconIdThatOfShowerRain() {
+        String showerRainIcon = "09d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, showerRainIcon);
+        assertEquals("Forecast should have `Rain Art` but was something else",
+                R.drawable.art_rain, forecast.todaysIconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysIconResourceAsRainArtIfHasIconIdThatOfRain() {
+        String rainIcon = "10d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, rainIcon);
+        assertEquals("Forecast should have `Light Rain Art` but was something else",
+                R.drawable.art_light_rain, forecast.todaysIconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysIconResourceAsRainArtIfHasIconIdThatOfThunderstorm() {
+        String thunderstormIcon = "11d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, thunderstormIcon);
+        assertEquals("Forecast should have `Thunderstorm Art` but was something else",
+                R.drawable.art_storm, forecast.todaysIconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysIconResourceAsSnowArtIfHasIconIdThatOfSnow() {
+        String snowIcon = "13d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, snowIcon);
+        assertEquals("Forecast should have `Snow Art` but was something else",
+                R.drawable.art_snow, forecast.todaysIconResource());
+    }
+
+    @Test
+    public void shouldHaveTodaysIconResourceAsFogArtIfHasIconIdThatOfFog() {
+        String fogIcon = "50d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, fogIcon);
+        assertEquals("Forecast should have `Fog Art` but was something else",
+                R.drawable.art_fog, forecast.todaysIconResource());
     }
 }
