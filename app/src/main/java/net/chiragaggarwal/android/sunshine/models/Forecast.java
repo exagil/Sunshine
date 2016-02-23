@@ -47,6 +47,7 @@ public class Forecast implements Parcelable {
     private static final String KMPH_NORTH_WIND_UNIT = " km/h NW";
     private static final String PERCENT_SYMBOL = "%";
     private static final String WEATHER_ICON = "icon";
+    private static final int NO_ICON_RESOURCE = 0;
 
     private final Date date;
     private final Double minimumTemperature;
@@ -239,5 +240,42 @@ public class Forecast implements Parcelable {
 
     public String humidityInPercentage() {
         return this.humidity + PERCENT_SYMBOL;
+    }
+
+    public int iconResource() {
+        int iconResource;
+        switch (icon) {
+            case "01d":
+                iconResource = R.drawable.ic_clear;
+                break;
+            case "02d":
+                iconResource = R.drawable.ic_light_clouds;
+                break;
+            case "03d":
+                iconResource = R.drawable.ic_cloudy;
+                break;
+            case "04d":
+                iconResource = R.drawable.ic_cloudy;
+                break;
+            case "09d":
+                iconResource = R.drawable.ic_rain;
+                break;
+            case "10d":
+                iconResource = R.drawable.ic_light_rain;
+                break;
+            case "11d":
+                iconResource = R.drawable.ic_storm;
+                break;
+            case "13d":
+                iconResource = R.drawable.ic_snow;
+                break;
+            case "50d":
+                iconResource = R.drawable.ic_fog;
+                break;
+            default:
+                iconResource = NO_ICON_RESOURCE;
+                break;
+        }
+        return iconResource;
     }
 }
