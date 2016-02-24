@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements
         initializeAppToolbar();
         loadDefaultPreferences();
 
-        showForecastList();
+        showForecastList(savedInstanceState);
     }
 
     @Override
@@ -65,10 +65,12 @@ public class MainActivity extends AppCompatActivity implements
         return detailsFragment;
     }
 
-    private void showForecastList() {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.placeholder_forecast_list, new ForecastFragment())
-                .commit();
+    private void showForecastList(Bundle savedInstanceState) {
+        if(savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.placeholder_forecast_list, new ForecastFragment())
+                    .commit();
+        }
     }
 
     private boolean isTablet() {
