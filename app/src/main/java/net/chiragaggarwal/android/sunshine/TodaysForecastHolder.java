@@ -29,6 +29,6 @@ class TodaysForecastHolder {
         this.textMaxTemperature.setText(forecast.formattedMaximumTemperature(context));
         this.textMinTemperature.setText(forecast.formattedMinimumTemperature(context));
         this.textForecastDescription.setText(forecast.mainDescription);
-        this.imageWeatherIcon.setImageResource(R.drawable.ic_cloud_black_24dp);
+        this.imageWeatherIcon.setImageResource(forecast.todaysIconResource());
     }
 }

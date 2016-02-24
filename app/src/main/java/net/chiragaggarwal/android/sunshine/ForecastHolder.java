@@ -25,7 +25,7 @@ class ForecastHolder {
     }
 
     public void bindView(Forecast forecast, Context context) {
-        this.imageWeatherIcon.setImageResource(R.drawable.ic_cloud_black_24dp);
+        this.imageWeatherIcon.setImageResource(forecast.iconResource());
         this.textForecastDay.setText(forecast.friendlyDay(new Date()));
         this.textForecastDescription.setText(forecast.mainDescription);
         this.textForecastMaxTemperature.setText(forecast.formattedMaximumTemperature(context));
