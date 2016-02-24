@@ -2,6 +2,7 @@ package net.chiragaggarwal.android.sunshine;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -43,6 +44,22 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
     private WeatherForecastAdapter weatherForecastAdapter;
+    private OnForecastSelectedListener onForecastSelectedListener;
+
+    public interface OnForecastSelectedListener {
+        void onForecastSelected(Forecast forecast);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            onForecastSelectedListener = ((OnForecastSelectedListener) context);
+        } catch (ClassCastException exception) {
+            throw new ClassCastException(context.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -204,9 +221,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Forecast forecast = weatherForecastAdapter.getItem(position);
-                Intent detailActivityIntent = new Intent(getContext(), DetailActivity.class);
-                detailActivityIntent.putExtra(Forecast.TAG, forecast);
-                startActivity(detailActivityIntent);
+                onForecastSelectedListener.onForecastSelected(forecast);
             }
         };
     }

@@ -30,6 +30,12 @@
             android:authorities="net.chiragaggarwal.android.sunshine.data.locations_provider"
             android:enabled="true"
             android:exported="true"></provider>
+        <supports-screens android:anyDensity="true"
+                          android:largeScreens="true"
+                          android:normalScreens="true"
+                          android:resizeable="true"
+                          android:smallScreens="true"
+                          android:xlargeScreens="true"/>
     </application>
 
 </manifest>
