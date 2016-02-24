@@ -170,47 +170,6 @@ public class Forecast implements Parcelable {
         return forecastDayString;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(date != null ? date.getTime() : -1);
-        dest.writeValue(this.minimumTemperature);
-        dest.writeString(this.mainDescription);
-        dest.writeValue(this.degrees);
-        dest.writeValue(this.humidity);
-        dest.writeValue(this.pressure);
-        dest.writeValue(this.windSpeed);
-        dest.writeValue(this.weatherId);
-        dest.writeValue(this.maximumTemperature);
-    }
-
-    protected Forecast(Parcel in) {
-        long tmpDate = in.readLong();
-        this.date = tmpDate == -1 ? null : new Date(tmpDate);
-        this.minimumTemperature = (Double) in.readValue(Double.class.getClassLoader());
-        this.mainDescription = in.readString();
-        this.degrees = (Double) in.readValue(Double.class.getClassLoader());
-        this.humidity = (Double) in.readValue(Double.class.getClassLoader());
-        this.pressure = (Double) in.readValue(Double.class.getClassLoader());
-        this.windSpeed = (Double) in.readValue(Double.class.getClassLoader());
-        this.weatherId = (Long) in.readValue(Long.class.getClassLoader());
-        this.maximumTemperature = (Double) in.readValue(Double.class.getClassLoader());
-    }
-
-    public static final Creator<Forecast> CREATOR = new Creator<Forecast>() {
-        public Forecast createFromParcel(Parcel source) {
-            return new Forecast(source);
-        }
-
-        public Forecast[] newArray(int size) {
-            return new Forecast[size];
-        }
-    };
-
     private static long extractedUnixTimestampInSeconds(JSONObject dayForecast) throws JSONException {
         return dayForecast.getLong(DATE);
     }
@@ -315,4 +274,47 @@ public class Forecast implements Parcelable {
         }
         return iconResource;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(date != null ? date.getTime() : -1);
+        dest.writeValue(this.minimumTemperature);
+        dest.writeString(this.mainDescription);
+        dest.writeValue(this.degrees);
+        dest.writeValue(this.humidity);
+        dest.writeValue(this.pressure);
+        dest.writeValue(this.windSpeed);
+        dest.writeValue(this.weatherId);
+        dest.writeString(this.icon);
+        dest.writeValue(this.maximumTemperature);
+    }
+
+    protected Forecast(Parcel in) {
+        long tmpDate = in.readLong();
+        this.date = tmpDate == -1 ? null : new Date(tmpDate);
+        this.minimumTemperature = (Double) in.readValue(Double.class.getClassLoader());
+        this.mainDescription = in.readString();
+        this.degrees = (Double) in.readValue(Double.class.getClassLoader());
+        this.humidity = (Double) in.readValue(Double.class.getClassLoader());
+        this.pressure = (Double) in.readValue(Double.class.getClassLoader());
+        this.windSpeed = (Double) in.readValue(Double.class.getClassLoader());
+        this.weatherId = (Long) in.readValue(Long.class.getClassLoader());
+        this.icon = in.readString();
+        this.maximumTemperature = (Double) in.readValue(Double.class.getClassLoader());
+    }
+
+    public static final Creator<Forecast> CREATOR = new Creator<Forecast>() {
+        public Forecast createFromParcel(Parcel source) {
+            return new Forecast(source);
+        }
+
+        public Forecast[] newArray(int size) {
+            return new Forecast[size];
+        }
+    };
 }
