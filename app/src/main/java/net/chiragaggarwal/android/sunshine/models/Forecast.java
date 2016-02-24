@@ -279,7 +279,7 @@ public class Forecast implements Parcelable {
         return iconResource;
     }
 
-    public int todaysIconResource() {
+    public int iconArt() {
         int iconResource;
         switch (icon) {
             case "01d":

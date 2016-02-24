@@ -45,7 +45,7 @@ public class DetailActivity extends AppCompatActivity {
         String formattedDate = forecast.formattedDate();
 
         this.textForecastDescription.setText(mainDescription);
-        this.imageForecast.setImageResource(R.drawable.ic_cloud_black_24dp);
+        this.imageForecast.setImageResource(forecast.iconArt());
         this.textForecastPressure.setText(pressureInHectopascal);
         this.textForecastWind.setText(northWindSpeedInKmph);
         this.textForecastHumidity.setText(humidityInPercentage);
