@@ -55,7 +55,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_forecast, container, false);
+        View view = inflater.inflate(R.layout.fragment_forecasts, container, false);
         initializeWidgets(view);
         setOnItemClickListenerForForecastList();
         return view;
