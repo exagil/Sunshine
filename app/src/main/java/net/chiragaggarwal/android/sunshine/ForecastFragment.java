@@ -39,7 +39,7 @@ import static net.chiragaggarwal.android.sunshine.data.ForecastContract.Forecast
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String DD_MM_YYYY = "ddMMyyyy";
+    private static final String YYYY_MM_DD = "yyyyMMdd";
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
     private WeatherForecastAdapter weatherForecastAdapter;
@@ -290,7 +290,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @NonNull
     private String parsedCurrentDateArgument() {
-        SimpleDateFormat currentDateFormat = new SimpleDateFormat(DD_MM_YYYY);
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat(YYYY_MM_DD);
         String formattedCurrentDate = currentDateFormat.format(new Date());
         return formattedCurrentDate;
     }

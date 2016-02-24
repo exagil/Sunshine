@@ -38,7 +38,7 @@ public class Forecast implements Parcelable {
     private static final String WIND_SPEED = "speed";
     private static final String WEATHER_ID = "id";
     private static final long ONE_THOUSAND_MILLISECONDS = 1000;
-    private static final String DD_MM_YYYY = "ddMMyyyy";
+    private static final String YYYY_MM_DD = "yyyyMMdd";
     private static final String DAY_PATTERN = "EEEE";
     private static final String TOMORROW = "Tomorrow";
     private static final String TODAY = "Today";
@@ -109,7 +109,7 @@ public class Forecast implements Parcelable {
         int iconIndex = forecastsCursor.getColumnIndex(ForecastEntry.COLUMN_ICON);
 
         String dateString = forecastsCursor.getString(dateIndex);
-        Date date = new SimpleDateFormat(DD_MM_YYYY).parse(dateString);
+        Date date = new SimpleDateFormat(YYYY_MM_DD).parse(dateString);
         Double minimumTemperature = forecastsCursor.getDouble(minimumTemperatureIndex);
         Double maximumTemperature = forecastsCursor.getDouble(maximumTemperatureIndex);
         String mainDescription = forecastsCursor.getString(mainDescriptionIndex);
@@ -184,7 +184,7 @@ public class Forecast implements Parcelable {
     }
 
     private long persistableDate() {
-        SimpleDateFormat persistableDateFormat = new SimpleDateFormat(DD_MM_YYYY);
+        SimpleDateFormat persistableDateFormat = new SimpleDateFormat(YYYY_MM_DD);
         String formattedPersistableDate = persistableDateFormat.format(this.date);
         return Long.parseLong(formattedPersistableDate);
     }
