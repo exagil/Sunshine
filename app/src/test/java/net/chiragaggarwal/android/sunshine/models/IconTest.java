@@ -12,7 +12,7 @@ public class IconTest {
 
     @Test
     public void clearNightSkyCodeForAForecastShouldRepresentClearSkyIcon() {
-        assertEquals(Icon.CLEAR_SKY, Icon.parse("01n"));
+        assertEquals(Icon.CLEAR_SKY_NIGHT, Icon.parse("01n"));
     }
 
     @Test
@@ -22,7 +22,7 @@ public class IconTest {
 
     @Test
     public void fewCloudsNightIconCodeShouldRepresentLightCloudsIcon() {
-        assertEquals(Icon.LIGHT_CLOUDS, Icon.parse("02n"));
+        assertEquals(Icon.LIGHT_CLOUDS_NIGHT, Icon.parse("02n"));
     }
 
     @Test
@@ -32,7 +32,7 @@ public class IconTest {
 
     @Test
     public void scatteredCloudsNightIconCodeShouldRepresentCloudyIcon() {
-        assertEquals(Icon.CLOUDY, Icon.parse("03n"));
+        assertEquals(Icon.CLOUDY_NIGHT, Icon.parse("03n"));
     }
 
     @Test
@@ -42,7 +42,7 @@ public class IconTest {
 
     @Test
     public void brokenCloudsNightIconCodeShouldRepresentCloudyIcon() {
-        assertEquals(Icon.CLOUDY, Icon.parse("04n"));
+        assertEquals(Icon.CLOUDY_NIGHT, Icon.parse("04n"));
     }
 
     @Test
@@ -52,7 +52,7 @@ public class IconTest {
 
     @Test
     public void showerRainNightIconCodeShouldRepresentRainIcon() {
-        assertEquals(Icon.RAIN, Icon.parse("09n"));
+        assertEquals(Icon.RAIN_NIGHT, Icon.parse("09n"));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class IconTest {
 
     @Test
     public void rainNightIconCodeShouldRepresentLightRainIcon() {
-        assertEquals(Icon.LIGHT_RAIN, Icon.parse("10n"));
+        assertEquals(Icon.LIGHT_RAIN_NIGHT, Icon.parse("10n"));
     }
 
     @Test
@@ -72,7 +72,7 @@ public class IconTest {
 
     @Test
     public void thunderstormNightIconCodeShouldRepresentStormIcon() {
-        assertEquals(Icon.STORM, Icon.parse("11n"));
+        assertEquals(Icon.STORM_NIGHT, Icon.parse("11n"));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class IconTest {
 
     @Test
     public void snowNightIconCodeShouldRepresentSnowIcon() {
-        assertEquals(Icon.SNOW, Icon.parse("13n"));
+        assertEquals(Icon.SNOW_NIGHT, Icon.parse("13n"));
     }
 
     @Test
@@ -92,6 +92,6 @@ public class IconTest {
 
     @Test
     public void mistNightIconCodeShouldRepresentFogIcon() {
-        assertEquals(Icon.FOG, Icon.parse("50n"));
+        assertEquals(Icon.FOG_NIGHT, Icon.parse("50n"));
     }
 }
