@@ -131,8 +131,18 @@ public class IconTest {
     }
 
     @Test
+    public void stormIconShouldHave11dCode() {
+        assertEquals("11d", Icon.STORM.code());
+    }
+
+    @Test
     public void thunderstormNightIconCodeShouldRepresentStormIcon() {
         assertEquals(Icon.STORM_NIGHT, Icon.parse("11n"));
+    }
+
+    @Test
+    public void stormNightIconShouldHave11nCode() {
+        assertEquals("11n", Icon.STORM_NIGHT.code());
     }
 
     @Test
