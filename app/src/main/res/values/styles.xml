@@ -27,6 +27,7 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:weightSum">8</item>
         <item name="android:padding">8dp</item>
+        <item name="android:background">@drawable/state_drawable_forecast_list_item</item>
     </style>
     <style name="img_weather_icon">
         <item name="android:layout_width">wrap_content</item>
