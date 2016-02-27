@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="activity_main" type="layout">@layout/activity_main_twopanes</item>
     <item name="fragment_forecast" type="layout">@layout/fragment_forecast_land</item>
 </resources>
