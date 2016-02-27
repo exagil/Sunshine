@@ -143,6 +143,11 @@ public class IconTest {
     }
 
     @Test
+    public void brokenCloudsIconShouldHaveCloudsIconArt() {
+        assertEquals(R.drawable.art_clouds, Icon.BROKEN_CLOUDS.art());
+    }
+
+    @Test
     public void brokenCloudsNightIconCodeShouldRepresentBrokenCloudsIcon() {
         assertEquals(Icon.BROKEN_CLOUDS_NIGHT, Icon.parse("04n"));
     }
@@ -155,6 +160,11 @@ public class IconTest {
     @Test
     public void brokenCloudsNightIconShouldHaveCloudyIconResource() {
         assertEquals(R.drawable.ic_cloudy, Icon.BROKEN_CLOUDS_NIGHT.resource());
+    }
+
+    @Test
+    public void brokenCloudsNightIconShouldHaveCloudsIconArt() {
+        assertEquals(R.drawable.art_clouds, Icon.BROKEN_CLOUDS_NIGHT.art());
     }
 
     @Test
