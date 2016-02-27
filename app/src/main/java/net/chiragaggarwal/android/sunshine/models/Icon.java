@@ -82,9 +82,17 @@ public enum Icon {
         public String code() {
             return "03d";
         }
+
+        public int resource() {
+            return R.drawable.ic_cloudy;
+        }
     }, SCATTERED_CLOUDS_NIGHT {
         public String code() {
             return "03n";
+        }
+
+        public int resource() {
+            return R.drawable.ic_cloudy;
         }
     }, BROKEN_CLOUDS_NIGHT {
         public String code() {
