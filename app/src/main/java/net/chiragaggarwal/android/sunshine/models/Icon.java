@@ -4,7 +4,15 @@ package net.chiragaggarwal.android.sunshine.models;
 // which is mapped to a forecast description using a code
 
 public enum Icon {
-    CLEAR_SKY, LIGHT_CLOUDS, CLOUDY, RAIN, LIGHT_RAIN, STORM, SNOW, FOG, CLEAR_SKY_NIGHT,
+    CLEAR_SKY {
+        public String code() {
+            return "01d";
+        }
+    }, LIGHT_CLOUDS, CLOUDY, RAIN, LIGHT_RAIN, STORM, SNOW, FOG, CLEAR_SKY_NIGHT {
+        public String code() {
+            return "01n";
+        }
+    },
     LIGHT_CLOUDS_NIGHT, CLOUDY_NIGHT, RAIN_NIGHT, LIGHT_RAIN_NIGHT, STORM_NIGHT, SNOW_NIGHT,
     FOG_NIGHT;
 
@@ -67,5 +75,9 @@ public enum Icon {
                 break;
         }
         return icon;
+    }
+
+    public String code() {
+        return this.code();
     }
 }

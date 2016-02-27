@@ -11,8 +11,18 @@ public class IconTest {
     }
 
     @Test
+    public void clearDaySkyIconShouldHave01dCode() {
+        assertEquals("01d", Icon.CLEAR_SKY.code());
+    }
+
+    @Test
     public void clearNightSkyCodeForAForecastShouldRepresentClearSkyIcon() {
         assertEquals(Icon.CLEAR_SKY_NIGHT, Icon.parse("01n"));
+    }
+
+    @Test
+    public void clearSkyNightIconShouldHave01nCode() {
+        assertEquals("01n", Icon.CLEAR_SKY_NIGHT.code());
     }
 
     @Test
