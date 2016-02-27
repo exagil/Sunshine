@@ -54,4 +54,14 @@ public class IconTest {
     public void showerRainNightIconCodeShouldRepresentRainIcon() {
         assertEquals(Icon.RAIN, Icon.parse("09n"));
     }
+
+    @Test
+    public void rainDayIconCodeShouldRepresentLightRainIcon() {
+        assertEquals(Icon.LIGHT_RAIN, Icon.parse("10d"));
+    }
+
+    @Test
+    public void rainNightIconCodeShouldRepresentLightRainIcon() {
+        assertEquals(Icon.LIGHT_RAIN, Icon.parse("10n"));
+    }
 }
