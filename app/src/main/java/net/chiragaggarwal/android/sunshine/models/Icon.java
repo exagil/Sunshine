@@ -27,6 +27,12 @@ public enum Icon {
             case "03n":
                 icon = Icon.CLOUDY;
                 break;
+            case "04d":
+                icon = Icon.CLOUDY;
+                break;
+            case "04n":
+                icon = Icon.CLOUDY;
+                break;
         }
         return icon;
     }
