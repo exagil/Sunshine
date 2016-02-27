@@ -12,10 +12,6 @@ public enum Icon {
         public String code() {
             return "02d";
         }
-    }, CLOUDY {
-        public String code() {
-            return "03d";
-        }
     }, RAIN {
         public String code() {
             return "09d";
@@ -40,14 +36,9 @@ public enum Icon {
         public String code() {
             return "01n";
         }
-    },
-    LIGHT_CLOUDS_NIGHT {
+    }, LIGHT_CLOUDS_NIGHT {
         public String code() {
             return "02n";
-        }
-    }, CLOUDY_NIGHT {
-        public String code() {
-            return "03n";
         }
     }, RAIN_NIGHT {
         public String code() {
@@ -65,8 +56,7 @@ public enum Icon {
         public String code() {
             return "13n";
         }
-    },
-    FOG_NIGHT {
+    }, FOG_NIGHT {
         public String code() {
             return "50n";
         }
