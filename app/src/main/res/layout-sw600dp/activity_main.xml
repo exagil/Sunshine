@@ -17,13 +17,13 @@
             android:id="@+id/placeholder_forecast_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.3"/>
+            android:layout_weight="1.2"/>
 
         <FrameLayout
             android:id="@+id/placeholder_forecast_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.7"/>
+            android:layout_weight="0.8"/>
 
     </LinearLayout>
 

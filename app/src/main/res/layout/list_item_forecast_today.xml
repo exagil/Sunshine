@@ -5,6 +5,7 @@
               android:layout_height="match_parent"
               android:background="@drawable/state_drawable_forecast_list_item"
               android:orientation="horizontal"
+              android:padding="16dp"
               android:weightSum="2">
 
     <LinearLayout

@@ -37,15 +37,26 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static android.widget.AdapterView.OnItemClickListener;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String YYYY_MM_DD = "yyyyMMdd";
+    private static final int FIRST_POSITION_INDEX = 0;
+    private static final String SELECTED_FORECAST_POSITION = "net.chiragaggarwal.android.sunshine.ForecastFragment.SELECTED_FORECAST_POSITION";
+
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
     private WeatherForecastAdapter weatherForecastAdapter;
     private OnForecastSelectedListener onForecastSelectedListener;
+    private Integer selectedPosition = FIRST_POSITION_INDEX;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SELECTED_FORECAST_POSITION, selectedPosition);
+    }
 
     public void onLocationChanged() {
         loadWeeklyForecastsStartingFromToday();
@@ -79,7 +90,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forecasts, container, false);
-        initializeWidgets(view);
+        initializeWidgets(view, savedInstanceState);
         setOnItemClickListenerForForecastList();
         return view;
     }
@@ -146,6 +157,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void showForecasts(Forecasts forecasts) {
         this.weatherForecastAdapter.replaceForecasts(forecasts);
+        this.forecastList.smoothScrollToPosition(selectedPosition);
     }
 
     private void save(ForecastsForLocation forecastsForLocation) {
@@ -184,10 +196,16 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         return Uri.parse("geo:0,0?q=" + Uri.encode(zipCode));
     }
 
-    private void initializeWidgets(View view) {
+    private void initializeWidgets(View view, Bundle savedInstanceState) {
         this.forecastList = (ListView) view.findViewById(R.id.forecast_list);
         this.forecastList.setAdapter(this.weatherForecastAdapter);
+        restoreUserForecastSelectionIfAny(savedInstanceState);
         this.invalidPreferencesTextView = (TextView) view.findViewById(R.id.invalid_preferences);
+    }
+
+    private void restoreUserForecastSelectionIfAny(Bundle savedInstanceState) {
+        if (savedInstanceState == null) return;
+        this.selectedPosition = savedInstanceState.getInt(SELECTED_FORECAST_POSITION);
     }
 
     private void setOnItemClickListenerForForecastList() {
@@ -222,10 +240,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @NonNull
-    private AdapterView.OnItemClickListener onItemClickListenerForForecastList() {
-        return new AdapterView.OnItemClickListener() {
+    private OnItemClickListener onItemClickListenerForForecastList() {
+        return new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedPosition = position;
                 Forecast forecast = weatherForecastAdapter.getItem(position);
                 onForecastSelectedListener.onForecastSelected(forecast);
             }

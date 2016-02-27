@@ -10,6 +10,8 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:weightSum="2"
+        android:layout_gravity="center"
+        android:padding="16dp"
         tools:context="net.chiragaggarwal.android.sunshine.DetailActivity">
 
         <LinearLayout
