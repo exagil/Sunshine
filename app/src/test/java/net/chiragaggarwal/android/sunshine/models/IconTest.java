@@ -31,8 +31,18 @@ public class IconTest {
     }
 
     @Test
+    public void lightCloudsIconShouldHave02dCode() {
+        assertEquals("02d", Icon.LIGHT_CLOUDS.code());
+    }
+
+    @Test
     public void fewCloudsNightIconCodeShouldRepresentLightCloudsIcon() {
         assertEquals(Icon.LIGHT_CLOUDS_NIGHT, Icon.parse("02n"));
+    }
+
+    @Test
+    public void lightCloudsNightIconShouldHave02nCode() {
+        assertEquals("02n", Icon.LIGHT_CLOUDS_NIGHT.code());
     }
 
     @Test

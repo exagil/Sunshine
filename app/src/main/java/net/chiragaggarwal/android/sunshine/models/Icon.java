@@ -8,12 +8,20 @@ public enum Icon {
         public String code() {
             return "01d";
         }
-    }, LIGHT_CLOUDS, CLOUDY, RAIN, LIGHT_RAIN, STORM, SNOW, FOG, CLEAR_SKY_NIGHT {
+    }, LIGHT_CLOUDS {
+        public String code() {
+            return "02d";
+        }
+    }, CLOUDY, RAIN, LIGHT_RAIN, STORM, SNOW, FOG, CLEAR_SKY_NIGHT {
         public String code() {
             return "01n";
         }
     },
-    LIGHT_CLOUDS_NIGHT, CLOUDY_NIGHT, RAIN_NIGHT, LIGHT_RAIN_NIGHT, STORM_NIGHT, SNOW_NIGHT,
+    LIGHT_CLOUDS_NIGHT {
+        public String code() {
+            return "02n";
+        }
+    }, CLOUDY_NIGHT, RAIN_NIGHT, LIGHT_RAIN_NIGHT, STORM_NIGHT, SNOW_NIGHT,
     FOG_NIGHT;
 
     public static Icon parse(String iconCode) {
