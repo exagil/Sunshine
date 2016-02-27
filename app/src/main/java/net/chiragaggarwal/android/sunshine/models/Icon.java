@@ -50,6 +50,10 @@ public enum Icon {
         public String code() {
             return "13d";
         }
+
+        public int resource() {
+            return R.drawable.ic_snow;
+        }
     }, FOG {
         public String code() {
             return "50d";
@@ -97,6 +101,10 @@ public enum Icon {
     }, SNOW_NIGHT {
         public String code() {
             return "13n";
+        }
+
+        public int resource() {
+            return R.drawable.ic_snow;
         }
     }, FOG_NIGHT {
         public String code() {
