@@ -18,6 +18,21 @@ public class IconTest {
     }
 
     @Test
+    public void iconRepresentingNoForecastShouldNotHaveAnIconResource() {
+        assertEquals(0, Icon.NULL.resource());
+    }
+
+    @Test
+    public void iconRepresentingNoForecastShouldNotHaveAnIconArt() {
+        assertEquals(0, Icon.NULL.art());
+    }
+
+    @Test
+    public void iconRepresentingNoForecastShouldHaveNullCode() {
+        assertEquals("NULL", Icon.NULL.code());
+    }
+
+    @Test
     public void clearDaySkyCodeForAForecastShouldRepresentClearSkyIcon() {
         assertEquals(Icon.CLEAR_SKY, Icon.parse("01d"));
     }

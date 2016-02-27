@@ -222,7 +222,19 @@ public enum Icon {
         public int art() {
             return R.drawable.art_clouds;
         }
-    }, NULL;
+    }, NULL {
+        public String code() {
+            return "NULL";
+        }
+
+        public int resource() {
+            return 0;
+        }
+
+        public int art() {
+            return 0;
+        }
+    };
 
     public static Icon parse(String iconCode) {
         if (iconCode == null) return Icon.NULL;
