@@ -98,9 +98,17 @@ public enum Icon {
         public String code() {
             return "04n";
         }
+
+        public int resource() {
+            return R.drawable.ic_cloudy;
+        }
     }, BROKEN_CLOUDS {
         public String code() {
             return "04d";
+        }
+
+        public int resource() {
+            return R.drawable.ic_cloudy;
         }
     };
 
