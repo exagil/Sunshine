@@ -4,7 +4,7 @@ package net.chiragaggarwal.android.sunshine.models;
 // which is mapped to a forecast description using a code
 
 public enum Icon {
-    CLEAR_SKY, LIGHT_CLOUDS;
+    CLEAR_SKY, LIGHT_CLOUDS, CLOUDY;
 
     public static Icon parse(String iconCode) {
         Icon icon = null;
@@ -20,6 +20,12 @@ public enum Icon {
                 break;
             case "02n":
                 icon = Icon.LIGHT_CLOUDS;
+                break;
+            case "03d":
+                icon = Icon.CLOUDY;
+                break;
+            case "03n":
+                icon = Icon.CLOUDY;
                 break;
         }
         return icon;

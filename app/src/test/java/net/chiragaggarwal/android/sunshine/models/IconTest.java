@@ -24,4 +24,14 @@ public class IconTest {
     public void fewCloudsNightIconCodeShouldRepresentLightCloudsIcon() {
         assertEquals(Icon.LIGHT_CLOUDS, Icon.parse("02n"));
     }
+
+    @Test
+    public void scatteredCloudsDayIconCodeShouldRepresentCloudyIcon() {
+        assertEquals(Icon.CLOUDY, Icon.parse("03d"));
+    }
+
+    @Test
+    public void scatteredCloudsNightIconCodeShouldRepresentCloudyIcon() {
+        assertEquals(Icon.CLOUDY, Icon.parse("03n"));
+    }
 }
