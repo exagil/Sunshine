@@ -138,6 +138,11 @@ public class IconTest {
     }
 
     @Test
+    public void rainIconShouldHaveRainIconResource() {
+        assertEquals(R.drawable.ic_rain, Icon.RAIN.resource());
+    }
+
+    @Test
     public void showerRainNightIconCodeShouldRepresentRainIcon() {
         assertEquals(Icon.RAIN_NIGHT, Icon.parse("09n"));
     }
@@ -145,6 +150,11 @@ public class IconTest {
     @Test
     public void showerRainNightIconShouldHave09nCode() {
         assertEquals("09n", Icon.RAIN_NIGHT.code());
+    }
+
+    @Test
+    public void rainNightIconShouldHaveRainIconResource() {
+        assertEquals(R.drawable.ic_rain, Icon.RAIN_NIGHT.resource());
     }
 
     @Test
