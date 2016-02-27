@@ -23,8 +23,18 @@ public class IconTest {
     }
 
     @Test
+    public void clearSkyIconShouldHaveClearSkyIconArt() {
+        assertEquals(R.drawable.art_clear, Icon.CLEAR_SKY.art());
+    }
+
+    @Test
     public void clearNightSkyCodeForAForecastShouldRepresentClearSkyIcon() {
         assertEquals(Icon.CLEAR_SKY_NIGHT, Icon.parse("01n"));
+    }
+
+    @Test
+    public void clearSkyNightIconShouldHave01nCode() {
+        assertEquals("01n", Icon.CLEAR_SKY_NIGHT.code());
     }
 
     @Test
@@ -33,8 +43,8 @@ public class IconTest {
     }
 
     @Test
-    public void clearSkyNightIconShouldHave01nCode() {
-        assertEquals("01n", Icon.CLEAR_SKY_NIGHT.code());
+    public void clearSkyNightIconShouldHaveClearSkyIconArt() {
+        assertEquals(R.drawable.art_clear, Icon.CLEAR_SKY_NIGHT.art());
     }
 
     @Test
