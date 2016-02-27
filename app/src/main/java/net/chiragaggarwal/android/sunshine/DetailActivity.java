@@ -48,6 +48,8 @@ public class DetailActivity extends AppCompatActivity {
 
     private void initializeAppToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_toolbar);
+        int whiteColor = getResources().getColor(R.color.white);
+        toolbar.setTitleTextColor(whiteColor);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

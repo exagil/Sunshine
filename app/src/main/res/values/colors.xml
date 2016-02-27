@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="red">#FF0000</color>
     <color name="light_silver">#d9dcde</color>
+    <color name="sunshine_blue">#1CB4E2</color>
+    <color name="sunshine_click_blue">#cef4ff</color>
+    <color name="white">#FFFFFF</color>
 </resources>

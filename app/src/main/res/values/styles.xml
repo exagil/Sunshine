@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionModeShareDrawable">@drawable/ic_action_social_share</item>
     </style>
     <style name="text_forecast_info">
         <item name="android:layout_width">match_parent</item>

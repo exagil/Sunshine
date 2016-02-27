@@ -9,7 +9,7 @@
         app:showAsAction="always"/>
 
     <item android:id="@+id/detail_action_settings"
-          android:icon="@drawable/ic_settings_black_24dp"
+          android:icon="@drawable/ic_settings_white_24dp"
           android:title="@string/action_settings"
           app:showAsAction="never"/>
 
