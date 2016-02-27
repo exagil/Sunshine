@@ -171,7 +171,17 @@ public class IconTest {
     }
 
     @Test
+    public void fogIconShouldHave50dCode() {
+        assertEquals("50d", Icon.FOG.code());
+    }
+
+    @Test
     public void mistNightIconCodeShouldRepresentFogIcon() {
         assertEquals(Icon.FOG_NIGHT, Icon.parse("50n"));
+    }
+
+    @Test
+    public void fogNightIconShouldHave50nCode() {
+        assertEquals("50n", Icon.FOG_NIGHT.code());
     }
 }
