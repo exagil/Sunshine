@@ -1,6 +1,7 @@
 package net.chiragaggarwal.android.sunshine;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import net.chiragaggarwal.android.sunshine.models.Forecast;
+import net.chiragaggarwal.android.sunshine.models.LocationPreferences;
 
 public class MainActivity extends AppCompatActivity implements
         ForecastFragment.OnForecastSelectedListener {
@@ -22,6 +24,17 @@ public class MainActivity extends AppCompatActivity implements
         loadDefaultPreferences();
 
         showForecastList(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (hasLocationChanged()) {
+            ForecastFragment forecastFragment = (ForecastFragment) getSupportFragmentManager().
+                    findFragmentById(R.id.placeholder_forecast_list);
+            forecastFragment.onLocationChanged();
+        }
+
     }
 
     @Override
@@ -66,11 +79,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showForecastList(Bundle savedInstanceState) {
-        if(savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.placeholder_forecast_list, new ForecastFragment())
-                    .commit();
+        if (savedInstanceState == null) {
+            showForecastFragment();
         }
+    }
+
+    private void showForecastFragment() {
+        ForecastFragment forecastFragment = new ForecastFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.placeholder_forecast_list, forecastFragment)
+                .commit();
     }
 
     private boolean isTablet() {
@@ -91,5 +109,10 @@ public class MainActivity extends AppCompatActivity implements
 
     private void loadDefaultPreferences() {
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+    }
+
+    private boolean hasLocationChanged() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        return LocationPreferences.getInstance(sharedPreferences).hasChanged();
     }
 }

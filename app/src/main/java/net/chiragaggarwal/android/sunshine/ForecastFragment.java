@@ -31,6 +31,7 @@ import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
 import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
 import net.chiragaggarwal.android.sunshine.models.Location;
+import net.chiragaggarwal.android.sunshine.models.LocationPreferences;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,6 +46,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private TextView invalidPreferencesTextView;
     private WeatherForecastAdapter weatherForecastAdapter;
     private OnForecastSelectedListener onForecastSelectedListener;
+
+    public void onLocationChanged() {
+        loadWeeklyForecastsStartingFromToday();
+        LocationPreferences.getInstance(getSharedPreferences()).setLocationAsNotChanged();
+    }
 
     public interface OnForecastSelectedListener {
         void onForecastSelected(Forecast forecast);

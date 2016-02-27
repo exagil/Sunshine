@@ -1,7 +1,6 @@
 package net.chiragaggarwal.android.sunshine.models;
 
 import android.content.ContentValues;
-import android.content.SharedPreferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +14,6 @@ public class Location {
     private static final String NAME = "name";
     private static final String LONGITUDE = "lon";
     private static final String LATITUDE = "lat";
-    public static final String HAS_CHANGED = "net.chiragaggarwal.android.sunshine.models.Location.HAS_CHANGED";
 
     public String name;
     public String postalCode;
@@ -38,10 +36,6 @@ public class Location {
         Double latitude = coordinatesJSONObject.getDouble(LATITUDE);
 
         return new Location(cityName, postalCode, latitude, longitude);
-    }
-
-    public static boolean hasChanged(SharedPreferences sharedPreferences) {
-        return sharedPreferences.getBoolean(Location.HAS_CHANGED, false);
     }
 
     public ContentValues toContentValues() {
