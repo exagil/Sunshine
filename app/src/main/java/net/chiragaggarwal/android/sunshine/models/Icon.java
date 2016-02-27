@@ -74,6 +74,10 @@ public enum Icon {
         public int resource() {
             return R.drawable.ic_snow;
         }
+
+        public int art() {
+            return R.drawable.art_snow;
+        }
     }, FOG {
         public String code() {
             return "50d";
@@ -81,6 +85,10 @@ public enum Icon {
 
         public int resource() {
             return R.drawable.ic_fog;
+        }
+
+        public int art() {
+            return R.drawable.art_fog;
         }
     }, CLEAR_SKY_NIGHT {
         public String code() {
@@ -150,6 +158,10 @@ public enum Icon {
         public int resource() {
             return R.drawable.ic_snow;
         }
+
+        public int art() {
+            return R.drawable.art_snow;
+        }
     }, FOG_NIGHT {
         public String code() {
             return "50n";
@@ -157,6 +169,10 @@ public enum Icon {
 
         public int resource() {
             return R.drawable.ic_fog;
+        }
+
+        public int art() {
+            return R.drawable.art_fog;
         }
     }, SCATTERED_CLOUDS {
         public String code() {

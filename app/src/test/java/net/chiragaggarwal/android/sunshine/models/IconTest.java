@@ -303,6 +303,11 @@ public class IconTest {
     }
 
     @Test
+    public void snowIconShouldHaveSnowIconArt() {
+        assertEquals(R.drawable.art_snow, Icon.SNOW.art());
+    }
+
+    @Test
     public void snowNightIconCodeShouldRepresentSnowIcon() {
         assertEquals(Icon.SNOW_NIGHT, Icon.parse("13n"));
     }
@@ -315,6 +320,11 @@ public class IconTest {
     @Test
     public void snowNightIconShouldHaveSnowIconResource() {
         assertEquals(R.drawable.ic_snow, Icon.SNOW_NIGHT.resource());
+    }
+
+    @Test
+    public void snowNightIconShouldHaveSnowIconArt() {
+        assertEquals(R.drawable.art_snow, Icon.SNOW_NIGHT.art());
     }
 
     @Test
@@ -333,6 +343,11 @@ public class IconTest {
     }
 
     @Test
+    public void fogIconShouldHaveFogIconArt() {
+        assertEquals(R.drawable.art_fog, Icon.FOG.art());
+    }
+
+    @Test
     public void mistNightIconCodeShouldRepresentFogIcon() {
         assertEquals(Icon.FOG_NIGHT, Icon.parse("50n"));
     }
@@ -345,5 +360,10 @@ public class IconTest {
     @Test
     public void fogNightIconShouldHaveFogIconResource() {
         assertEquals(R.drawable.ic_fog, Icon.FOG_NIGHT.resource());
+    }
+
+    @Test
+    public void fogNightIconShouldHaveFogIconArt() {
+        assertEquals(R.drawable.art_fog, Icon.FOG_NIGHT.art());
     }
 }
