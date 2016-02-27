@@ -34,6 +34,10 @@ public enum Icon {
         public String code() {
             return "10d";
         }
+
+        public int resource() {
+            return R.drawable.ic_light_rain;
+        }
     }, STORM {
         public String code() {
             return "11d";
@@ -73,6 +77,10 @@ public enum Icon {
     }, LIGHT_RAIN_NIGHT {
         public String code() {
             return "10n";
+        }
+
+        public int resource() {
+            return R.drawable.ic_light_rain;
         }
     }, STORM_NIGHT {
         public String code() {
