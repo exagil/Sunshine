@@ -16,7 +16,11 @@ public enum Icon {
         public String code() {
             return "03d";
         }
-    }, RAIN, LIGHT_RAIN, STORM, SNOW, FOG, CLEAR_SKY_NIGHT {
+    }, RAIN {
+        public String code() {
+            return "09d";
+        }
+    }, LIGHT_RAIN, STORM, SNOW, FOG, CLEAR_SKY_NIGHT {
         public String code() {
             return "01n";
         }
@@ -29,7 +33,11 @@ public enum Icon {
         public String code() {
             return "03n";
         }
-    }, RAIN_NIGHT, LIGHT_RAIN_NIGHT, STORM_NIGHT, SNOW_NIGHT,
+    }, RAIN_NIGHT {
+        public String code() {
+            return "09n";
+        }
+    }, LIGHT_RAIN_NIGHT, STORM_NIGHT, SNOW_NIGHT,
     FOG_NIGHT, SCATTERED_CLOUDS {
         public String code() {
             return "03d";

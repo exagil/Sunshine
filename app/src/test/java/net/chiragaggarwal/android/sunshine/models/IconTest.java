@@ -91,8 +91,18 @@ public class IconTest {
     }
 
     @Test
+    public void showerRainDayIconCodeShouldHave09dCode() {
+        assertEquals("09d", Icon.RAIN.code());
+    }
+
+    @Test
     public void showerRainNightIconCodeShouldRepresentRainIcon() {
         assertEquals(Icon.RAIN_NIGHT, Icon.parse("09n"));
+    }
+
+    @Test
+    public void showerRainNightIconCodeShouldHave09nCode() {
+        assertEquals("09n", Icon.RAIN_NIGHT.code());
     }
 
     @Test
