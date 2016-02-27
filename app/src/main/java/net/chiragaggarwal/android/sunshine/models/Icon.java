@@ -142,6 +142,10 @@ public enum Icon {
         public int resource() {
             return R.drawable.ic_cloudy;
         }
+
+        public int art() {
+            return R.drawable.art_clouds;
+        }
     }, SCATTERED_CLOUDS_NIGHT {
         public String code() {
             return "03n";
@@ -149,6 +153,10 @@ public enum Icon {
 
         public int resource() {
             return R.drawable.ic_cloudy;
+        }
+
+        public int art() {
+            return R.drawable.art_clouds;
         }
     }, BROKEN_CLOUDS_NIGHT {
         public String code() {
