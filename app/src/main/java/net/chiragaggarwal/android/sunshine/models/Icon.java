@@ -38,6 +38,14 @@ public enum Icon {
         public String code() {
             return "03n";
         }
+    }, BROKEN_CLOUDS_NIGHT {
+        public String code() {
+            return "04n";
+        }
+    }, BROKEN_CLOUDS {
+        public String code() {
+            return "04d";
+        }
     };
 
     public static Icon parse(String iconCode) {
@@ -62,10 +70,10 @@ public enum Icon {
                 icon = Icon.SCATTERED_CLOUDS_NIGHT;
                 break;
             case "04d":
-                icon = Icon.CLOUDY;
+                icon = Icon.BROKEN_CLOUDS;
                 break;
             case "04n":
-                icon = Icon.CLOUDY_NIGHT;
+                icon = Icon.BROKEN_CLOUDS_NIGHT;
                 break;
             case "09d":
                 icon = Icon.RAIN;

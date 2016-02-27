@@ -66,13 +66,23 @@ public class IconTest {
     }
 
     @Test
-    public void brokenCloudsDayIconCodeShouldRepresentCloudyIcon() {
-        assertEquals(Icon.CLOUDY, Icon.parse("04d"));
+    public void brokenCloudsDayIconCodeShouldRepresentBrokenCloudsIcon() {
+        assertEquals(Icon.BROKEN_CLOUDS, Icon.parse("04d"));
     }
 
     @Test
-    public void brokenCloudsNightIconCodeShouldRepresentCloudyIcon() {
-        assertEquals(Icon.CLOUDY_NIGHT, Icon.parse("04n"));
+    public void brokenCloudsIconShouldHave04dCode() {
+        assertEquals("04d", Icon.BROKEN_CLOUDS.code());
+    }
+
+    @Test
+    public void brokenCloudsNightIconCodeShouldRepresentBrokenCloudsIcon() {
+        assertEquals(Icon.BROKEN_CLOUDS_NIGHT, Icon.parse("04n"));
+    }
+
+    @Test
+    public void brokenCloudsNightIconShouldHave04nCode() {
+        assertEquals("04n", Icon.BROKEN_CLOUDS_NIGHT.code());
     }
 
     @Test
