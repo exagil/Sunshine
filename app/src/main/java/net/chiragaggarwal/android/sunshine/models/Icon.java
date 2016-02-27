@@ -10,9 +10,17 @@ public enum Icon {
         public String code() {
             return "01d";
         }
+
+        public int resource() {
+            return R.drawable.ic_clear;
+        }
     }, LIGHT_CLOUDS {
         public String code() {
             return "02d";
+        }
+
+        public int resource() {
+            return R.drawable.ic_light_clouds;
         }
     }, RAIN {
         public String code() {
@@ -38,9 +46,17 @@ public enum Icon {
         public String code() {
             return "01n";
         }
+
+        public int resource() {
+            return R.drawable.ic_clear;
+        }
     }, LIGHT_CLOUDS_NIGHT {
         public String code() {
             return "02n";
+        }
+
+        public int resource() {
+            return R.drawable.ic_light_clouds;
         }
     }, RAIN_NIGHT {
         public String code() {
@@ -146,6 +162,6 @@ public enum Icon {
     }
 
     public int resource() {
-        return R.drawable.ic_clear;
+        return this.resource();
     }
 }
