@@ -58,6 +58,10 @@ public enum Icon {
         public String code() {
             return "50d";
         }
+
+        public int resource() {
+            return R.drawable.ic_fog;
+        }
     }, CLEAR_SKY_NIGHT {
         public String code() {
             return "01n";
@@ -109,6 +113,10 @@ public enum Icon {
     }, FOG_NIGHT {
         public String code() {
             return "50n";
+        }
+
+        public int resource() {
+            return R.drawable.ic_fog;
         }
     }, SCATTERED_CLOUDS {
         public String code() {

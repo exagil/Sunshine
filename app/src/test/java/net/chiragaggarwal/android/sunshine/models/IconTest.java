@@ -258,6 +258,11 @@ public class IconTest {
     }
 
     @Test
+    public void fogIconShouldHaveFogIconResource() {
+        assertEquals(R.drawable.ic_fog, Icon.FOG.resource());
+    }
+
+    @Test
     public void mistNightIconCodeShouldRepresentFogIcon() {
         assertEquals(Icon.FOG_NIGHT, Icon.parse("50n"));
     }
@@ -265,5 +270,10 @@ public class IconTest {
     @Test
     public void fogNightIconShouldHave50nCode() {
         assertEquals("50n", Icon.FOG_NIGHT.code());
+    }
+
+    @Test
+    public void fogNightIconShouldHaveFogIconResource() {
+        assertEquals(R.drawable.ic_fog, Icon.FOG_NIGHT.resource());
     }
 }
