@@ -91,7 +91,7 @@ public class IconTest {
     }
 
     @Test
-    public void showerRainDayIconCodeShouldHave09dCode() {
+    public void showerRainDayIconShouldHave09dCode() {
         assertEquals("09d", Icon.RAIN.code());
     }
 
@@ -101,7 +101,7 @@ public class IconTest {
     }
 
     @Test
-    public void showerRainNightIconCodeShouldHave09nCode() {
+    public void showerRainNightIconShouldHave09nCode() {
         assertEquals("09n", Icon.RAIN_NIGHT.code());
     }
 
@@ -111,8 +111,18 @@ public class IconTest {
     }
 
     @Test
+    public void lightRainIconShouldHave10dCode() {
+        assertEquals("10d", Icon.LIGHT_RAIN.code());
+    }
+
+    @Test
     public void rainNightIconCodeShouldRepresentLightRainIcon() {
         assertEquals(Icon.LIGHT_RAIN_NIGHT, Icon.parse("10n"));
+    }
+
+    @Test
+    public void lightRainNightIconShouldHave10nCode() {
+        assertEquals("10n", Icon.LIGHT_RAIN_NIGHT.code());
     }
 
     @Test
