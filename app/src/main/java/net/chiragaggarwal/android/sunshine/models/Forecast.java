@@ -42,12 +42,11 @@ public class Forecast implements Parcelable {
     private static final String DAY_PATTERN = "EEEE";
     private static final String TOMORROW = "Tomorrow";
     private static final String TODAY = "Today";
-    private static final String YESTERDAY = "Yesterday";
     private static final String HECTOPASCAL_PRESSURE_UNIT = " hPa";
     private static final String KMPH_NORTH_WIND_UNIT = " km/h NW";
     private static final String PERCENT_SYMBOL = "%";
     private static final String WEATHER_ICON_CODE = "icon";
-    private static final int NO_ICON_RESOURCE = 0;
+    private static final String NEXT_LINE = "\n";
 
     private final Date date;
     private final Double minimumTemperature;
@@ -179,7 +178,7 @@ public class Forecast implements Parcelable {
     }
 
     public String formattedDate() {
-        return new SimpleDateFormat(DAY_KEYWORD + COMMA + MONTH_NAME_KEYWORD + DATE_KEYWORD,
+        return new SimpleDateFormat(DAY_KEYWORD + COMMA + NEXT_LINE + MONTH_NAME_KEYWORD + DATE_KEYWORD,
                 Locale.US).format(this.date);
     }
 
