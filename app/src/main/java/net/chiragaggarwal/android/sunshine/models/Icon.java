@@ -42,6 +42,10 @@ public enum Icon {
         public String code() {
             return "11d";
         }
+
+        public int resource() {
+            return R.drawable.ic_storm;
+        }
     }, SNOW {
         public String code() {
             return "13d";
@@ -85,6 +89,10 @@ public enum Icon {
     }, STORM_NIGHT {
         public String code() {
             return "11n";
+        }
+
+        public int resource() {
+            return R.drawable.ic_storm;
         }
     }, SNOW_NIGHT {
         public String code() {
