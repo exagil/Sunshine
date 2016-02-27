@@ -3,6 +3,8 @@ package net.chiragaggarwal.android.sunshine.models;
 // Icon represents a forecast's visual representation
 // which is mapped to a forecast description using a code
 
+import net.chiragaggarwal.android.sunshine.R;
+
 public enum Icon {
     CLEAR_SKY {
         public String code() {
@@ -141,5 +143,9 @@ public enum Icon {
 
     public String code() {
         return this.code();
+    }
+
+    public int resource() {
+        return R.drawable.ic_clear;
     }
 }

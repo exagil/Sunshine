@@ -1,5 +1,7 @@
 package net.chiragaggarwal.android.sunshine.models;
 
+import net.chiragaggarwal.android.sunshine.R;
+
 import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
@@ -16,8 +18,18 @@ public class IconTest {
     }
 
     @Test
+    public void clearSkyIconShouldHaveClearSkyIconResource() {
+        assertEquals(R.drawable.ic_clear, Icon.CLEAR_SKY.resource());
+    }
+
+    @Test
     public void clearNightSkyCodeForAForecastShouldRepresentClearSkyIcon() {
         assertEquals(Icon.CLEAR_SKY_NIGHT, Icon.parse("01n"));
+    }
+
+    @Test
+    public void clearSkyNightIconShouldHaveClearSkyIconResource() {
+        assertEquals(R.drawable.ic_clear, Icon.CLEAR_SKY_NIGHT.resource());
     }
 
     @Test
