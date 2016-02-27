@@ -8,6 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionModeShareDrawable">@drawable/ic_action_social_share</item>
     </style>
+    <style name="ForecastTheme" parent="AppTheme">
+        <item name="toolbarStyle">@style/SunshineActionBar</item>
+    </style>
+    <style name="SunshineActionBar">
+        <item name="logo">@drawable/ic_action_bar_icon</item>
+        <item name="displayOptions">useLogo|showHome</item>
+    </style>
     <style name="text_forecast_info">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -47,5 +54,4 @@
         <item name="android:layout_weight">1</item>
         <item name="android:orientation">vertical</item>
     </style>
-
 </resources>

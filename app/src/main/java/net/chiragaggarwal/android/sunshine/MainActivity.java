@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements
         ForecastFragment.OnForecastSelectedListener {
 
     public static final String IS_TABLET = "net.chiragaggarwal.android.sunshine.MainActivity.IS_TABLET";
+    private static final float NO_ELEVATION = 0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements
         int whiteColor = getResources().getColor(R.color.white);
         toolbar.setTitleTextColor(whiteColor);
         setSupportActionBar(toolbar);
+        if (!isTablet()) getSupportActionBar().setElevation(NO_ELEVATION);
     }
 
     private void loadDefaultPreferences() {
