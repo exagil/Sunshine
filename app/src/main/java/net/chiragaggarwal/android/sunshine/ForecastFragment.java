@@ -82,8 +82,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        boolean isTablet = getArguments().getBoolean(MainActivity.IS_TABLET, false);
         this.weatherForecastAdapter = new WeatherForecastAdapter(getContext(),
-                new Forecasts());
+                new Forecasts(), !isTablet);
     }
 
     @Nullable

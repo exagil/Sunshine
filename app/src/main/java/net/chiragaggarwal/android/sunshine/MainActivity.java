@@ -16,6 +16,8 @@ import net.chiragaggarwal.android.sunshine.models.LocationPreferences;
 public class MainActivity extends AppCompatActivity implements
         ForecastFragment.OnForecastSelectedListener {
 
+    public static final String IS_TABLET = "net.chiragaggarwal.android.sunshine.MainActivity.IS_TABLET";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements
         initializeAppToolbar();
         loadDefaultPreferences();
 
-        showForecastList(savedInstanceState);
+        showForecastList(savedInstanceState, isTablet());
     }
 
     @Override
@@ -78,14 +80,19 @@ public class MainActivity extends AppCompatActivity implements
         return detailsFragment;
     }
 
-    private void showForecastList(Bundle savedInstanceState) {
+    private void showForecastList(Bundle savedInstanceState, boolean isTablet) {
         if (savedInstanceState == null) {
-            showForecastFragment();
+            showForecastFragment(isTablet);
         }
     }
 
-    private void showForecastFragment() {
+    private void showForecastFragment(boolean isTablet) {
+        Bundle forecastFragmentMetadata = new Bundle();
+        forecastFragmentMetadata.putBoolean(IS_TABLET, isTablet);
+
         ForecastFragment forecastFragment = new ForecastFragment();
+        forecastFragment.setArguments(forecastFragmentMetadata);
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.placeholder_forecast_list, forecastFragment)
                 .commit();

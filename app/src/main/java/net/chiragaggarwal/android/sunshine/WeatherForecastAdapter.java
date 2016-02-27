@@ -10,15 +10,17 @@ import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
 
 public class WeatherForecastAdapter extends BaseAdapter {
-    private static final int DEFAULT_FORECAST_VIEW_ID = 0;
-    private static final int TODAYS_FORECAST_VIEW_ID = 1;
+    private static final int DEFAULT_FORECAST_VIEW_TYPE = 0;
+    private static final int TODAYS_FORECAST_VIEW_TYPE = 1;
     private static final int MAX_FORECAST_LAYOUT_TYPES = 2;
     private final Context context;
+    private final boolean isTodaysForecastViewTypeEnabled;
     private Forecasts forecasts;
 
-    public WeatherForecastAdapter(Context context, Forecasts forecasts) {
+    public WeatherForecastAdapter(Context context, Forecasts forecasts, boolean isTodaysForecastViewTypeEnabled) {
         this.context = context;
         this.forecasts = forecasts;
+        this.isTodaysForecastViewTypeEnabled = isTodaysForecastViewTypeEnabled;
     }
 
     @Override
@@ -28,8 +30,9 @@ public class WeatherForecastAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        int viewType = DEFAULT_FORECAST_VIEW_ID;
-        if (isFirstForecast(position)) viewType = TODAYS_FORECAST_VIEW_ID;
+        int viewType = DEFAULT_FORECAST_VIEW_TYPE;
+        if (isTodaysForecastViewTypeEnabled && isFirstForecast(position))
+            viewType = TODAYS_FORECAST_VIEW_TYPE;
         return viewType;
     }
 
@@ -53,7 +56,7 @@ public class WeatherForecastAdapter extends BaseAdapter {
         View view;
         int viewType = getItemViewType(position);
 
-        if (viewType == TODAYS_FORECAST_VIEW_ID) {
+        if (viewType == TODAYS_FORECAST_VIEW_TYPE) {
             view = loadTodaysForecastView(position, convertView);
         } else {
             view = loadForecastView(position, convertView);
