@@ -151,8 +151,18 @@ public class IconTest {
     }
 
     @Test
+    public void snowIconShouldHave13dCode() {
+        assertEquals("13d", Icon.SNOW.code());
+    }
+
+    @Test
     public void snowNightIconCodeShouldRepresentSnowIcon() {
         assertEquals(Icon.SNOW_NIGHT, Icon.parse("13n"));
+    }
+
+    @Test
+    public void snowNightIconShouldHave13dCode() {
+        assertEquals("13n", Icon.SNOW_NIGHT.code());
     }
 
     @Test
