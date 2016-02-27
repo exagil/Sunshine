@@ -225,7 +225,8 @@ public enum Icon {
     };
 
     public static Icon parse(String iconCode) {
-        Icon icon = null;
+        if (iconCode == null) return null;
+        Icon icon;
         switch (iconCode) {
             case "01d":
                 icon = Icon.CLEAR_SKY;
@@ -280,6 +281,9 @@ public enum Icon {
                 break;
             case "50n":
                 icon = Icon.FOG_NIGHT;
+                break;
+            default:
+                icon = null;
                 break;
         }
         return icon;
