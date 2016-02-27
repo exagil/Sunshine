@@ -84,4 +84,14 @@ public class IconTest {
     public void snowNightIconCodeShouldRepresentSnowIcon() {
         assertEquals(Icon.SNOW, Icon.parse("13n"));
     }
+
+    @Test
+    public void mistDayIconCodeShouldRepresentFogIcon() {
+        assertEquals(Icon.FOG, Icon.parse("50d"));
+    }
+
+    @Test
+    public void mistNightIconCodeShouldRepresentFogIcon() {
+        assertEquals(Icon.FOG, Icon.parse("50n"));
+    }
 }
