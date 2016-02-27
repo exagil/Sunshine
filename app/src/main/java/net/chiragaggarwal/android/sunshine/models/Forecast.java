@@ -231,6 +231,33 @@ public class Forecast implements Parcelable {
             case "50d":
                 iconResource = R.drawable.ic_fog;
                 break;
+            case "01n":
+                iconResource = R.drawable.ic_clear;
+                break;
+            case "02n":
+                iconResource = R.drawable.ic_light_clouds;
+                break;
+            case "03n":
+                iconResource = R.drawable.ic_cloudy;
+                break;
+            case "04n":
+                iconResource = R.drawable.ic_cloudy;
+                break;
+            case "09n":
+                iconResource = R.drawable.ic_rain;
+                break;
+            case "10n":
+                iconResource = R.drawable.ic_light_rain;
+                break;
+            case "11n":
+                iconResource = R.drawable.ic_storm;
+                break;
+            case "13n":
+                iconResource = R.drawable.ic_snow;
+                break;
+            case "50n":
+                iconResource = R.drawable.ic_fog;
+                break;
             default:
                 iconResource = NO_ICON_RESOURCE;
                 break;
@@ -266,6 +293,33 @@ public class Forecast implements Parcelable {
                 iconResource = R.drawable.art_snow;
                 break;
             case "50d":
+                iconResource = R.drawable.art_fog;
+                break;
+            case "01n":
+                iconResource = R.drawable.art_clear;
+                break;
+            case "02n":
+                iconResource = R.drawable.art_light_clouds;
+                break;
+            case "03n":
+                iconResource = R.drawable.art_clouds;
+                break;
+            case "04n":
+                iconResource = R.drawable.art_clouds;
+                break;
+            case "09n":
+                iconResource = R.drawable.art_rain;
+                break;
+            case "10n":
+                iconResource = R.drawable.art_light_rain;
+                break;
+            case "11n":
+                iconResource = R.drawable.art_storm;
+                break;
+            case "13n":
+                iconResource = R.drawable.art_snow;
+                break;
+            case "50n":
                 iconResource = R.drawable.art_fog;
                 break;
             default:

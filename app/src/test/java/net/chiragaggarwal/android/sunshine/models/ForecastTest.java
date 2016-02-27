@@ -128,6 +128,85 @@ public class ForecastTest {
     }
 
     @Test
+    public void shouldHaveIconResourceAsClearSkyIconIfHasIconIdThatOfClearSkyAtNight() {
+        String clearSkyIcon = "01n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, clearSkyIcon);
+        assertEquals("Forecast should have `Clear Sky Icon` but was something else",
+                R.drawable.ic_clear, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveIconResourceAsLightCloudsIconIfHasIconIdThatOfFewCloudsAtNight() {
+        String fewCloudsIcon = "02n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, fewCloudsIcon);
+        assertEquals("Forecast should have `Light Clouds Icon` but was something else",
+                R.drawable.ic_light_clouds, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveNoIconResourceIfHasInexistantIconIdAtNight() {
+        String inexistantIcon = "some_inexistant_icon_resourcn";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, inexistantIcon);
+        assertEquals("Forecast should have `no Icon` but was something else", 0, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveIconResourceAsCloudsIconIfHasIconIdThatOfScatteredCloudsAtNight() {
+        String scatteredCloudsIcon = "03n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, scatteredCloudsIcon);
+        assertEquals("Forecast should have `Clouds Icon` but was something else",
+                R.drawable.ic_cloudy, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveIconResourceAsCloudsIconIfHasIconIdThatOfBrokenCloudsAtNight() {
+        String brokenCloudsIcon = "04n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, brokenCloudsIcon);
+        assertEquals("Forecast should have `Clouds Icon` but was something else",
+                R.drawable.ic_cloudy, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveIconResourceAsRainIconIfHasIconIdThatOfShowerRainAtNight() {
+        String showerRainIcon = "09n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, showerRainIcon);
+        assertEquals("Forecast should have `Rain Icon` but was something else",
+                R.drawable.ic_rain, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveIconResourceAsRainIconIfHasIconIdThatOfRainAtNight() {
+        String rainIcon = "10n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, rainIcon);
+        assertEquals("Forecast should have `Light Rain Icon` but was something else",
+                R.drawable.ic_light_rain, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveIconResourceAsRainIconIfHasIconIdThatOfThunderstormAtNight() {
+        String thunderstormIcon = "11n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, thunderstormIcon);
+        assertEquals("Forecast should have `Thunderstorm Icon` but was something else",
+                R.drawable.ic_storm, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveIconResourceAsSnowIconIfHasIconIdThatOfSnowAtNight() {
+        String snowIcon = "13n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, snowIcon);
+        assertEquals("Forecast should have `Snow Icon` but was something else",
+                R.drawable.ic_snow, forecast.iconResource());
+    }
+
+    @Test
+    public void shouldHaveIconResourceAsFogIconIfHasIconIdThatOfFogAtNight() {
+        String fogIcon = "50n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, fogIcon);
+        assertEquals("Forecast should have `Fog Icon` but was something else",
+                R.drawable.ic_fog, forecast.iconResource());
+    }
+
+    @Test
     public void shouldHaveIconArtAsClearSkyIfHasIconIdThatOfClearSky() {
         String clearSkyIcon = "01d";
         Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, clearSkyIcon);
@@ -201,6 +280,85 @@ public class ForecastTest {
     @Test
     public void shouldHaveIconArtAsFogIfHasIconIdThatOfFog() {
         String fogIcon = "50d";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, fogIcon);
+        assertEquals("Forecast should have `Fog Art` but was something else",
+                R.drawable.art_fog, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveIconArtAsClearSkyIfHasIconIdThatOfClearSkyAtNight() {
+        String clearSkyIcon = "01n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, clearSkyIcon);
+        assertEquals("Forecast should have `Clear Sky Icon` but was something else",
+                R.drawable.art_clear, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveIconArtAsLightCloudsIfHasIconIdThatOfFewCloudsAtNight() {
+        String fewCloudsIcon = "02n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, fewCloudsIcon);
+        assertEquals("Forecast should have `Light Clouds Art` but was something else",
+                R.drawable.art_light_clouds, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveNoArtIfHasInexistantIconIdAtNight() {
+        String inexistantIcon = "some_inexistant_icon_resource";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, inexistantIcon);
+        assertEquals("Forecast should have `no Art` but was something else", 0, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveIconArtAsCloudsIfHasIconIdThatOfScatteredCloudsAtNight() {
+        String scatteredCloudsIcon = "03n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, scatteredCloudsIcon);
+        assertEquals("Forecast should have `Clouds Art` but was something else",
+                R.drawable.art_clouds, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveIconArtAsCloudsIfHasIconIdThatOfBrokenCloudsAtNight() {
+        String brokenCloudsIcon = "04n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, brokenCloudsIcon);
+        assertEquals("Forecast should have `Clouds Art` but was something else",
+                R.drawable.art_clouds, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveIconArtAsRainIfHasIconIdThatOfShowerRainAtNight() {
+        String showerRainIcon = "09n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, showerRainIcon);
+        assertEquals("Forecast should have `Rain Art` but was something else",
+                R.drawable.art_rain, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveIconArtAsRainIfHasIconIdThatOfRainAtNight() {
+        String rainIcon = "10n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, rainIcon);
+        assertEquals("Forecast should have `Light Rain Art` but was something else",
+                R.drawable.art_light_rain, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveIconArtAsRainIfHasIconIdThatOfThunderstormAtNight() {
+        String thunderstormIcon = "11n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, thunderstormIcon);
+        assertEquals("Forecast should have `Thunderstorm Art` but was something else",
+                R.drawable.art_storm, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveIconArtAsSnowIfHasIconIdThatOfSnowAtNight() {
+        String snowIcon = "13n";
+        Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, snowIcon);
+        assertEquals("Forecast should have `Snow Art` but was something else",
+                R.drawable.art_snow, forecast.iconArt());
+    }
+
+    @Test
+    public void shouldHaveIconArtAsFogIfHasIconIdThatOfFogAtNight() {
+        String fogIcon = "50n";
         Forecast forecast = new Forecast(null, null, null, null, null, null, null, null, null, fogIcon);
         assertEquals("Forecast should have `Fog Art` but was something else",
                 R.drawable.art_fog, forecast.iconArt());
