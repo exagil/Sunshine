@@ -46,7 +46,7 @@ public class Forecast implements Parcelable {
     private static final String HECTOPASCAL_PRESSURE_UNIT = " hPa";
     private static final String KMPH_NORTH_WIND_UNIT = " km/h NW";
     private static final String PERCENT_SYMBOL = "%";
-    private static final String WEATHER_ICON = "icon";
+    private static final String WEATHER_ICON_CODE = "icon";
     private static final int NO_ICON_RESOURCE = 0;
 
     private final Date date;
@@ -57,12 +57,12 @@ public class Forecast implements Parcelable {
     private Double pressure;
     private Double windSpeed;
     private Long weatherId;
-    private String icon;
+    private Icon icon;
     private final Double maximumTemperature;
 
     public Forecast(Date date, Double minimumTemperature, Double maximumTemperature,
                     String mainDescription, Double degrees, Double humidity,
-                    Double pressure, Double windSpeed, Long weatherId, String icon) {
+                    Double pressure, Double windSpeed, Long weatherId, String iconCode) {
 
         this.date = date;
         this.minimumTemperature = minimumTemperature;
@@ -73,7 +73,7 @@ public class Forecast implements Parcelable {
         this.pressure = pressure;
         this.windSpeed = windSpeed;
         this.weatherId = weatherId;
-        this.icon = icon;
+        this.icon = Icon.parse(iconCode);
     }
 
     public static Forecast fromJSON(JSONObject dayForecast) throws JSONException {
@@ -90,10 +90,10 @@ public class Forecast implements Parcelable {
         Double pressure = dayForecast.getDouble(PRESSURE);
         Double windSpeed = dayForecast.getDouble(WIND_SPEED);
         Long weatherId = weather.getLong(WEATHER_ID);
-        String icon = weather.getString(WEATHER_ICON);
+        String iconCode = weather.getString(WEATHER_ICON_CODE);
 
         return new Forecast(date, minimumTemperature, maximumTemperature, mainDescription, degrees,
-                humidity, pressure, windSpeed, weatherId, icon);
+                humidity, pressure, windSpeed, weatherId, iconCode);
     }
 
     public static Forecast fromCursor(Cursor forecastsCursor) throws ParseException {
@@ -118,10 +118,10 @@ public class Forecast implements Parcelable {
         Double pressure = forecastsCursor.getDouble(pressureIndex);
         Double windSpeed = forecastsCursor.getDouble(windSpeedIndex);
         Long weatherId = forecastsCursor.getLong(weatherIdIndex);
-        String icon = forecastsCursor.getString(iconIndex);
+        String iconCode = forecastsCursor.getString(iconIndex);
 
         return new Forecast(date, minimumTemperature, maximumTemperature, mainDescription, degrees,
-                humidity, pressure, windSpeed, weatherId, icon);
+                humidity, pressure, windSpeed, weatherId, iconCode);
     }
 
     public ContentValues toContentValues(Long locationRowId) {
@@ -136,7 +136,7 @@ public class Forecast implements Parcelable {
         contentValues.put(ForecastEntry.COLUMN_PRESSURE, pressure);
         contentValues.put(ForecastEntry.COLUMN_WIND_SPEED, windSpeed);
         contentValues.put(ForecastEntry.COLUMN_WEATHER_ID, weatherId);
-        contentValues.put(ForecastEntry.COLUMN_ICON, icon);
+        contentValues.put(ForecastEntry.COLUMN_ICON, icon.code());
         return contentValues;
     }
 
@@ -201,134 +201,6 @@ public class Forecast implements Parcelable {
         return this.humidity + PERCENT_SYMBOL;
     }
 
-    public int iconResource() {
-        int iconResource;
-        switch (icon) {
-            case "01d":
-                iconResource = R.drawable.ic_clear;
-                break;
-            case "02d":
-                iconResource = R.drawable.ic_light_clouds;
-                break;
-            case "03d":
-                iconResource = R.drawable.ic_cloudy;
-                break;
-            case "04d":
-                iconResource = R.drawable.ic_cloudy;
-                break;
-            case "09d":
-                iconResource = R.drawable.ic_rain;
-                break;
-            case "10d":
-                iconResource = R.drawable.ic_light_rain;
-                break;
-            case "11d":
-                iconResource = R.drawable.ic_storm;
-                break;
-            case "13d":
-                iconResource = R.drawable.ic_snow;
-                break;
-            case "50d":
-                iconResource = R.drawable.ic_fog;
-                break;
-            case "01n":
-                iconResource = R.drawable.ic_clear;
-                break;
-            case "02n":
-                iconResource = R.drawable.ic_light_clouds;
-                break;
-            case "03n":
-                iconResource = R.drawable.ic_cloudy;
-                break;
-            case "04n":
-                iconResource = R.drawable.ic_cloudy;
-                break;
-            case "09n":
-                iconResource = R.drawable.ic_rain;
-                break;
-            case "10n":
-                iconResource = R.drawable.ic_light_rain;
-                break;
-            case "11n":
-                iconResource = R.drawable.ic_storm;
-                break;
-            case "13n":
-                iconResource = R.drawable.ic_snow;
-                break;
-            case "50n":
-                iconResource = R.drawable.ic_fog;
-                break;
-            default:
-                iconResource = NO_ICON_RESOURCE;
-                break;
-        }
-        return iconResource;
-    }
-
-    public int iconArt() {
-        int iconResource;
-        switch (icon) {
-            case "01d":
-                iconResource = R.drawable.art_clear;
-                break;
-            case "02d":
-                iconResource = R.drawable.art_light_clouds;
-                break;
-            case "03d":
-                iconResource = R.drawable.art_clouds;
-                break;
-            case "04d":
-                iconResource = R.drawable.art_clouds;
-                break;
-            case "09d":
-                iconResource = R.drawable.art_rain;
-                break;
-            case "10d":
-                iconResource = R.drawable.art_light_rain;
-                break;
-            case "11d":
-                iconResource = R.drawable.art_storm;
-                break;
-            case "13d":
-                iconResource = R.drawable.art_snow;
-                break;
-            case "50d":
-                iconResource = R.drawable.art_fog;
-                break;
-            case "01n":
-                iconResource = R.drawable.art_clear;
-                break;
-            case "02n":
-                iconResource = R.drawable.art_light_clouds;
-                break;
-            case "03n":
-                iconResource = R.drawable.art_clouds;
-                break;
-            case "04n":
-                iconResource = R.drawable.art_clouds;
-                break;
-            case "09n":
-                iconResource = R.drawable.art_rain;
-                break;
-            case "10n":
-                iconResource = R.drawable.art_light_rain;
-                break;
-            case "11n":
-                iconResource = R.drawable.art_storm;
-                break;
-            case "13n":
-                iconResource = R.drawable.art_snow;
-                break;
-            case "50n":
-                iconResource = R.drawable.art_fog;
-                break;
-            default:
-                iconResource = NO_ICON_RESOURCE;
-                break;
-        }
-        return iconResource;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -344,7 +216,7 @@ public class Forecast implements Parcelable {
         dest.writeValue(this.pressure);
         dest.writeValue(this.windSpeed);
         dest.writeValue(this.weatherId);
-        dest.writeString(this.icon);
+        dest.writeString(this.icon.code());
         dest.writeValue(this.maximumTemperature);
     }
 
@@ -358,7 +230,7 @@ public class Forecast implements Parcelable {
         this.pressure = (Double) in.readValue(Double.class.getClassLoader());
         this.windSpeed = (Double) in.readValue(Double.class.getClassLoader());
         this.weatherId = (Long) in.readValue(Long.class.getClassLoader());
-        this.icon = in.readString();
+        this.icon = Icon.parse(in.readString());
         this.maximumTemperature = (Double) in.readValue(Double.class.getClassLoader());
     }
 
@@ -371,4 +243,12 @@ public class Forecast implements Parcelable {
             return new Forecast[size];
         }
     };
+
+    public int iconArt() {
+        return this.icon.art();
+    }
+
+    public int iconResource() {
+        return this.icon.resource();
+    }
 }
