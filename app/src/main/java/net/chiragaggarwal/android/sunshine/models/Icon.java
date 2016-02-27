@@ -30,7 +30,15 @@ public enum Icon {
             return "03n";
         }
     }, RAIN_NIGHT, LIGHT_RAIN_NIGHT, STORM_NIGHT, SNOW_NIGHT,
-    FOG_NIGHT;
+    FOG_NIGHT, SCATTERED_CLOUDS {
+        public String code() {
+            return "03d";
+        }
+    }, SCATTERED_CLOUDS_NIGHT {
+        public String code() {
+            return "03n";
+        }
+    };
 
     public static Icon parse(String iconCode) {
         Icon icon = null;
@@ -48,10 +56,10 @@ public enum Icon {
                 icon = Icon.LIGHT_CLOUDS_NIGHT;
                 break;
             case "03d":
-                icon = Icon.CLOUDY;
+                icon = Icon.SCATTERED_CLOUDS;
                 break;
             case "03n":
-                icon = Icon.CLOUDY_NIGHT;
+                icon = Icon.SCATTERED_CLOUDS_NIGHT;
                 break;
             case "04d":
                 icon = Icon.CLOUDY;
