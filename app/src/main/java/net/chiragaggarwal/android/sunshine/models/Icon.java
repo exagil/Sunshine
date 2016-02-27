@@ -222,10 +222,11 @@ public enum Icon {
         public int art() {
             return R.drawable.art_clouds;
         }
-    };
+    }, NULL;
 
     public static Icon parse(String iconCode) {
-        if (iconCode == null) return null;
+        if (iconCode == null) return Icon.NULL;
+
         Icon icon;
         switch (iconCode) {
             case "01d":
@@ -283,7 +284,7 @@ public enum Icon {
                 icon = Icon.FOG_NIGHT;
                 break;
             default:
-                icon = null;
+                icon = Icon.NULL;
                 break;
         }
         return icon;

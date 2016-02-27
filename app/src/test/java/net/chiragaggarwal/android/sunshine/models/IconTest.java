@@ -4,18 +4,17 @@ import net.chiragaggarwal.android.sunshine.R;
 
 import org.junit.Test;
 
-import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.assertEquals;
 
 public class IconTest {
     @Test
-    public void iconWithNoCodeShouldRepresentNoIcon() {
-        assertNull(Icon.parse(null));
+    public void iconWithNoCodeShouldRepresentNullIcon() {
+        assertEquals(Icon.NULL, Icon.parse(null));
     }
 
     @Test
-    public void iconWithInexistantCodeShouldRepresentNoIcon() {
-        assertNull(Icon.parse("inexistant_code"));
+    public void iconWithInexistantCodeShouldRepresentNullIcon() {
+        assertEquals(Icon.NULL, Icon.parse("inexistant_code"));
     }
 
     @Test
