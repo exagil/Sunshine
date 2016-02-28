@@ -24,8 +24,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE = "CREATE TABLE ";
     private static final String PRIMARY_KEY = " PRIMARY KEY";
     private static final String AUTOINCREMENT = " AUTOINCREMENT";
-    private static final String CITY_NAME_INDIRANAGAR = "Indiranagar";
-    private static final String RANDOM_SETTING = "random setting";
 
     public static String DATABASE_NAME = WEATHER_FORECAST_TABLE_NAME + ".db";
     public static Integer DATABASE_VERSION = 1;
@@ -104,11 +102,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 LocationEntry.COLUMN_LONGITUDE + NUMERIC + NOT_NULL +
                 COMMA +
                 LocationEntry.COLUMN_LOCATION_SETTING + TEXT + UNIQUE + NOT_NULL +
-                COMMA +
-
-                UNIQUE + START_BRACKET + LocationEntry.COLUMN_LATITUDE + COMMA +
-                LocationEntry.COLUMN_LONGITUDE + END_BRACKET +
-
                 END_BRACKET;
     }
 }
