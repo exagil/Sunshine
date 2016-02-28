@@ -15,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,14 +55,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d(LOG_TAG, "onSaveInstanceState");
         outState.putInt(SELECTED_FORECAST_POSITION, selectedPosition);
         outState.putParcelable(Forecasts.TAG, this.weatherForecastAdapter.getForecasts());
         super.onSaveInstanceState(outState);
     }
 
     public void onLocationChanged() {
-        Log.d(LOG_TAG, "onLocationChanged");
         int loaderIdToNotStop = buildUniqueLoaderId();
         ForecastLoaders.getInstance().stopAllExcept(loaderIdToNotStop, getLoaderManager());
         loadWeeklyForecastsStartingFromToday();
@@ -87,7 +84,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         boolean isTablet = getArguments().getBoolean(MainActivity.IS_TABLET, false);
@@ -98,7 +94,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "onCreateView");
         View view = inflater.inflate(R.layout.fragment_forecasts, container, false);
         initializeWidgets(view, savedInstanceState);
         setOnItemClickListenerForForecastList();
@@ -107,7 +102,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onPause() {
-        Log.d(LOG_TAG, "onPause");
         super.onPause();
         DatabaseHelper.getInstance(getContext()).close();
     }
@@ -135,7 +129,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void fetchWeatherForecast(SharedPreferences sharedPreferences) {
-        Log.d(LOG_TAG, "fetchWeatherForecast");
         new FetchWeatherForecastsTask(
                 savedZipCode(sharedPreferences),
                 savedCountryCode(sharedPreferences),
@@ -143,7 +136,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 new Callback<ForecastsForLocation>() {
                     @Override
                     public void onSuccess(ForecastsForLocation forecastsForLocation) {
-                        Log.d(LOG_TAG, "onSuccess");
                         if (isForecastListGone()) {
                             removeInvalidPreferences();
                             showForecastList();
@@ -154,7 +146,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
                     @Override
                     public void onFailure() {
-                        Log.d(LOG_TAG, "onFailure");
                         if (isInvalidPreferencesGone()) {
                             removeForecastList();
                             showInvalidPreferences();
@@ -164,13 +155,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void showForecasts(Forecasts forecasts) {
-        Log.d(LOG_TAG, "showForecasts");
         this.weatherForecastAdapter.replaceForecasts(forecasts);
         this.forecastList.smoothScrollToPosition(selectedPosition);
     }
 
     private void save(ForecastsForLocation forecastsForLocation) {
-        Log.d(LOG_TAG, "save");
         Forecasts forecasts = forecastsForLocation.forecasts;
         Location location = forecastsForLocation.location;
 
@@ -207,7 +196,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void initializeWidgets(View view, Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "initializeWidgets");
         this.forecastList = (ListView) view.findViewById(R.id.forecast_list);
         this.forecastList.setAdapter(this.weatherForecastAdapter);
         restoreForecastsOrRequeryIfNone(savedInstanceState);
@@ -216,7 +204,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void restoreForecastsOrRequeryIfNone(Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "restoreForecastsOrRequeryIfNone");
         if (savedInstanceState == null) {
             loadWeeklyForecastsStartingFromToday();
             return;
@@ -230,7 +217,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void restoreUserForecastSelectionIfAny(Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "restoreUserForecastSelectionIfAny");
         if (savedInstanceState == null) return;
         this.selectedPosition = savedInstanceState.getInt(SELECTED_FORECAST_POSITION);
     }
@@ -287,7 +273,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private Long insertLocationIfNotPresent(Location location) {
-        Log.d(LOG_TAG, "insertLocationIfNotPresent");
         Cursor locationCursor = queryLocationFromLocationProvider(location);
         Long locationRowId = null;
 
@@ -302,7 +287,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void insertForecastsForLocationIfNotPresent(Forecasts forecasts, Long locationRowId) {
-        Log.d(LOG_TAG, "insertForecastsForLocationIfNotPresent");
         Cursor forecastsCursor = queryForecastsForLocationFromForecastsProviderStartingFromToday(locationRowId);
         if (isOneWeeksForecastsNotPresent(forecastsCursor)) {
             ContentValues[] forecastsValues = forecasts.toContentValues(locationRowId);
@@ -319,7 +303,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private Cursor queryLocationFromLocationProvider(Location location) {
-        Log.d(LOG_TAG, "queryLocationFromLocationProvider");
         return getContext().getContentResolver().
                 query(LocationEntry.CONTENT_URI,
                         null,
@@ -333,7 +316,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private Uri insertLocationInLocationProvider(Location location) {
-        Log.d(LOG_TAG, "insertLocationInLocationProvider");
         return getContext().getContentResolver().insert(
                 LocationEntry.CONTENT_URI,
                 location.toContentValues()
@@ -378,15 +360,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle arguments) {
-        Log.d(LOG_TAG, "onCreateLoader");
         Loader<Cursor> forecastsLoader = buildLoaderToFetchForecastsStartingFromToday(arguments);
         return forecastsLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor dataCursor) {
-        Log.d(LOG_TAG, "onLoadFinished");
-        Log.d(LOG_TAG, "onLoadFinished: " + loader.getId());
         if (didNotFindAnyForecasts(dataCursor)) onLoaderReset(loader);
         if (dataCursor == null) return;
 
@@ -398,7 +377,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void onForecastsLoaded(Cursor forecastsCursor) {
-        Log.d(LOG_TAG, "onForecastsLoaded");
         if (isOneWeeksForecastsNotPresent(forecastsCursor)) {
             fetchWeatherForecast(getSharedPreferences());
         } else {
