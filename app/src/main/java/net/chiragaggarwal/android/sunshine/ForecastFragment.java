@@ -53,7 +53,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private WeatherForecastAdapter weatherForecastAdapter;
     private OnForecastSelectedListener onForecastSelectedListener;
     private Integer selectedPosition = FIRST_POSITION_INDEX;
-    private int currentLoaderId;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -64,7 +63,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     public void onLocationChanged() {
         Log.d(LOG_TAG, "onLocationChanged");
-        getLoaderManager().getLoader(currentLoaderId).stopLoading();
+        int loaderIdToNotStop = buildUniqueLoaderId();
+        ForecastLoaders.getInstance().stopAllExcept(loaderIdToNotStop, getLoaderManager());
         loadWeeklyForecastsStartingFromToday();
         LocationPreferences.getInstance(getSharedPreferences()).setLocationAsNotChanged();
     }
@@ -384,6 +384,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor dataCursor) {
         Log.d(LOG_TAG, "onLoadFinished");
+        Log.d(LOG_TAG, "onLoadFinished: " + loader.getId());
         if (didNotFindAnyForecasts(dataCursor)) onLoaderReset(loader);
         if (dataCursor == null) return;
 
@@ -422,8 +423,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private int buildUniqueLoaderId() {
         String zipCode = this.savedZipCode(getSharedPreferences());
-        this.currentLoaderId = Integer.parseInt(zipCode);
-        return this.currentLoaderId;
+        int newLoaderId = Integer.parseInt(zipCode);
+        ForecastLoaders.getInstance().addLoaderId(newLoaderId);
+        return newLoaderId;
     }
 
     private void reloadWeeklyForecastsStartingFromToday() {
