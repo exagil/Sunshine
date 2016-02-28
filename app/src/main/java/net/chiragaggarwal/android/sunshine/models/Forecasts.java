@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 public class Forecasts implements Parcelable {
     private static final String LIST = "list";
+    public static final String TAG = "net.chiragaggarwal.android.sunshine.models.Forecasts.TAG";
     private ArrayList<Forecast> forecasts = new ArrayList<>();
 
     public Forecasts(Forecast... forecasts) {
