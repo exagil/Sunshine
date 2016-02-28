@@ -108,4 +108,8 @@ public class WeatherForecastAdapter extends BaseAdapter {
     private boolean isFirstForecast(int position) {
         return position == 0;
     }
+
+    public Forecasts getForecasts() {
+        return forecasts;
+    }
 }

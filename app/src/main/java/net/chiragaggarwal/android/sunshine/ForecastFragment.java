@@ -57,8 +57,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onSaveInstanceState(Bundle outState) {
         Log.d(LOG_TAG, "onSaveInstanceState");
-        super.onSaveInstanceState(outState);
         outState.putInt(SELECTED_FORECAST_POSITION, selectedPosition);
+        outState.putParcelable(Forecasts.TAG, this.weatherForecastAdapter.getForecasts());
+        super.onSaveInstanceState(outState);
     }
 
     public void onLocationChanged() {
@@ -225,6 +226,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             loadWeeklyForecastsStartingFromToday();
             return;
         }
+        showForecasts(forecasts);
     }
 
     private void restoreUserForecastSelectionIfAny(Bundle savedInstanceState) {
