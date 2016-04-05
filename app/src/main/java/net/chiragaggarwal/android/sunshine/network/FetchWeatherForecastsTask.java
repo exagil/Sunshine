@@ -1,4 +1,4 @@
-package net.chiragaggarwal.android.sunshine;
+package net.chiragaggarwal.android.sunshine.network;
 
 import android.net.Uri;
 import android.os.AsyncTask;

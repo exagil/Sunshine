@@ -32,6 +32,7 @@ import net.chiragaggarwal.android.sunshine.models.Forecasts;
 import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
 import net.chiragaggarwal.android.sunshine.models.Location;
 import net.chiragaggarwal.android.sunshine.models.LocationPreferences;
+import net.chiragaggarwal.android.sunshine.network.FetchWeatherForecastsTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
