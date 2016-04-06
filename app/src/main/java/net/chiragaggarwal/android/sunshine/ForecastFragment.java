@@ -1,9 +1,11 @@
 package net.chiragaggarwal.android.sunshine;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,13 +29,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import net.chiragaggarwal.android.sunshine.data.DatabaseHelper;
-import net.chiragaggarwal.android.sunshine.models.Callback;
 import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
 import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
 import net.chiragaggarwal.android.sunshine.models.Location;
 import net.chiragaggarwal.android.sunshine.models.LocationPreferences;
-import net.chiragaggarwal.android.sunshine.network.FetchWeatherForecastsTask;
+import net.chiragaggarwal.android.sunshine.network.FetchWeatherForecastsService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -90,6 +92,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         boolean isTablet = getArguments().getBoolean(MainActivity.IS_TABLET, false);
         this.weatherForecastAdapter = new WeatherForecastAdapter(getContext(),
                 new Forecasts(), !isTablet);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(
+                new WeatherForecastsReceiver(),
+                new IntentFilter(ForecastsForLocation.ACTION_BROADCAST)
+        );
     }
 
     @Nullable
@@ -130,29 +136,17 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void fetchWeatherForecast(SharedPreferences sharedPreferences) {
-        new FetchWeatherForecastsTask(
-                savedZipCode(sharedPreferences),
-                savedCountryCode(sharedPreferences),
-                savedTemperatureUnit(sharedPreferences),
-                new Callback<ForecastsForLocation>() {
-                    @Override
-                    public void onSuccess(ForecastsForLocation forecastsForLocation) {
-                        if (isForecastListGone()) {
-                            removeInvalidPreferences();
-                            showForecastList();
-                        }
-                        save(forecastsForLocation);
-                        reloadWeeklyForecastsStartingFromToday();
-                    }
+        String savedZipCode = savedZipCode(sharedPreferences);
+        String savedCountryCode = savedCountryCode(sharedPreferences);
+        String savedTemperatureUnit = savedTemperatureUnit(sharedPreferences);
 
-                    @Override
-                    public void onFailure() {
-                        if (isInvalidPreferencesGone()) {
-                            removeForecastList();
-                            showInvalidPreferences();
-                        }
-                    }
-                }).execute();
+        Context context = getContext();
+        Intent fetchWeatherForecastsService = new Intent(context, FetchWeatherForecastsService.class);
+        fetchWeatherForecastsService.putExtra(Location.COUNTRY_CODE, savedCountryCode);
+        fetchWeatherForecastsService.putExtra(Location.POSTAL_CODE, savedZipCode);
+        fetchWeatherForecastsService.putExtra(Forecast.TEMPERATURE_UNIT, savedTemperatureUnit);
+
+        context.startService(fetchWeatherForecastsService);
     }
 
     private void showForecasts(Forecasts forecasts) {
@@ -438,4 +432,31 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 null
         );
     }
+
+    private class WeatherForecastsReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case ForecastsForLocation.ACTION_BROADCAST:
+                    Bundle weatherForecastsBundle = intent.getExtras();
+                    Object forecastsForLocationObject = weatherForecastsBundle.get(ForecastsForLocation.TAG);
+                    if (forecastsForLocationObject != null) {
+                        ForecastsForLocation forecastsForLocation = (ForecastsForLocation) forecastsForLocationObject;
+                        if (isForecastListGone()) {
+                            removeInvalidPreferences();
+                            showForecastList();
+                        }
+                        save(forecastsForLocation);
+                        reloadWeeklyForecastsStartingFromToday();
+                    } else {
+                        if (isInvalidPreferencesGone()) {
+                            removeForecastList();
+                            showInvalidPreferences();
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
 }

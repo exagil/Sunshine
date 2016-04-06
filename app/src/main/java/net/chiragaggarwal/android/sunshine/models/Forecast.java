@@ -19,6 +19,9 @@ import java.util.Locale;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 
 public class Forecast implements Parcelable {
+    public static final String TAG = "net.chiragaggarwal.android.sunshine.models.Forecast";
+    public static final java.lang.String TEMPERATURE_UNIT = "temperature_unit";
+
     private static final String TEMPERATURE = "temp";
     private static final String WEATHER = "weather";
     private static final String DATE = "dt";
@@ -30,7 +33,6 @@ public class Forecast implements Parcelable {
     private static final String MONTH_NAME_KEYWORD = "MMMM";
     private static final String COMMA = ", ";
     private static final String DATE_KEYWORD = " d";
-    public static final String TAG = "net.chiragaggarwal.android.sunshine.models.Forecast";
     private static final String SPACE = " ";
     private static final String DEGREES = "deg";
     private static final String HUMIDITY = "humidity";

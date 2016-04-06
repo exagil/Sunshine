@@ -1,13 +1,17 @@
 package net.chiragaggarwal.android.sunshine.models;
 
 import android.content.ContentValues;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
-public class Location {
+public class Location implements Parcelable {
+    public static final String COUNTRY_CODE = "country_code";
+    public static final String POSTAL_CODE = "postal_code";
 
     private static final String CITY = "city";
     private static final String COORDINATES = "coord";
@@ -46,4 +50,34 @@ public class Location {
         locationContentValues.put(LocationEntry.COLUMN_LONGITUDE, this.longitude);
         return locationContentValues;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.name);
+        dest.writeString(this.postalCode);
+        dest.writeValue(this.latitude);
+        dest.writeValue(this.longitude);
+    }
+
+    protected Location(Parcel in) {
+        this.name = in.readString();
+        this.postalCode = in.readString();
+        this.latitude = (Double) in.readValue(Double.class.getClassLoader());
+        this.longitude = (Double) in.readValue(Double.class.getClassLoader());
+    }
+
+    public static final Creator<Location> CREATOR = new Creator<Location>() {
+        public Location createFromParcel(Parcel source) {
+            return new Location(source);
+        }
+
+        public Location[] newArray(int size) {
+            return new Location[size];
+        }
+    };
 }
