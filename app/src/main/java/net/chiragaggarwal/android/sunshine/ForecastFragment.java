@@ -1,6 +1,8 @@
 package net.chiragaggarwal.android.sunshine;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -34,7 +36,6 @@ import net.chiragaggarwal.android.sunshine.models.Forecasts;
 import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
 import net.chiragaggarwal.android.sunshine.models.Location;
 import net.chiragaggarwal.android.sunshine.models.LocationPreferences;
-import net.chiragaggarwal.android.sunshine.network.FetchWeatherForecastsService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,12 +44,14 @@ import java.util.Date;
 import static android.widget.AdapterView.OnItemClickListener;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
+import static net.chiragaggarwal.android.sunshine.network.FetchWeatherForecastsService.AlarmReceiver;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String YYYY_MM_DD = "yyyyMMdd";
     private static final int FIRST_POSITION_INDEX = 0;
     private static final String SELECTED_FORECAST_POSITION = "net.chiragaggarwal.android.sunshine.ForecastFragment.SELECTED_FORECAST_POSITION";
     private static final String LOG_TAG = "chi6rag";
+    private static final int REQUEST_CODE = 1;
 
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
@@ -141,12 +144,16 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         String savedTemperatureUnit = savedTemperatureUnit(sharedPreferences);
 
         Context context = getContext();
-        Intent fetchWeatherForecastsService = new Intent(context, FetchWeatherForecastsService.class);
-        fetchWeatherForecastsService.putExtra(Location.COUNTRY_CODE, savedCountryCode);
-        fetchWeatherForecastsService.putExtra(Location.POSTAL_CODE, savedZipCode);
-        fetchWeatherForecastsService.putExtra(Forecast.TEMPERATURE_UNIT, savedTemperatureUnit);
+        Intent fetchWeatherForecastsIntent = new Intent(context, AlarmReceiver.class);
+        fetchWeatherForecastsIntent.putExtra(Location.COUNTRY_CODE, savedCountryCode);
+        fetchWeatherForecastsIntent.putExtra(Location.POSTAL_CODE, savedZipCode);
+        fetchWeatherForecastsIntent.putExtra(Forecast.TEMPERATURE_UNIT, savedTemperatureUnit);
 
-        context.startService(fetchWeatherForecastsService);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, fetchWeatherForecastsIntent, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmManager = ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE));
+        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 500, pendingIntent);
+
+        context.startService(fetchWeatherForecastsIntent);
     }
 
     private void showForecasts(Forecasts forecasts) {

@@ -1,6 +1,8 @@
 package net.chiragaggarwal.android.sunshine.network;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -71,6 +73,7 @@ public class FetchWeatherForecastsService extends IntentService {
         forecastsBroadcast.putExtra(ForecastsForLocation.TAG, forecastsForLocation);
         LocalBroadcastManager.getInstance(this).sendBroadcast(forecastsBroadcast);
     }
+
     private URL buildWeatherForecastsURL() throws MalformedURLException {
         Uri fetchWeatherForecastsUri = new Uri.Builder()
                 .scheme(HTTP)
@@ -123,5 +126,13 @@ public class FetchWeatherForecastsService extends IntentService {
 
         JSONObject forecastsFromLocationJSONResponse = new JSONObject(forecastsForLocationResponseString);
         return ForecastsForLocation.fromJSON(forecastsFromLocationJSONResponse, postalCode);
+    }
+
+    public static class AlarmReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            intent.setClass(context, FetchWeatherForecastsService.class);
+            context.startService(intent);
+        }
     }
 }
