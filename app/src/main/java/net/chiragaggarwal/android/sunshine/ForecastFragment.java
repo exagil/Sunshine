@@ -1,7 +1,6 @@
 package net.chiragaggarwal.android.sunshine;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -31,6 +30,7 @@ import net.chiragaggarwal.android.sunshine.data.DatabaseHelper;
 import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
 import net.chiragaggarwal.android.sunshine.models.LocationPreferences;
+import net.chiragaggarwal.android.sunshine.network.sync.WeatherForecastsSyncAdapter;
 
 import java.text.ParseException;
 
@@ -43,8 +43,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private static final int FIRST_POSITION_INDEX = 0;
     private static final String SELECTED_FORECAST_POSITION = "net.chiragaggarwal.android.sunshine.ForecastFragment.SELECTED_FORECAST_POSITION";
     private static final String LOG_TAG = "chi6rag";
-    private static final int REQUEST_CODE = 1;
-    private static final String ACCOUNT_NAME = "chiragaggarwal";
 
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
@@ -132,10 +130,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         String savedCountryCode = savedCountryCode(sharedPreferences);
         String savedTemperatureUnit = savedTemperatureUnit(sharedPreferences);
 
-        AccountManager accountManager = (AccountManager) getContext().getSystemService(Context.ACCOUNT_SERVICE);
-        Account account = new Account(ACCOUNT_NAME, getContext().getString(R.string.account_type));
-        if (accountManager.addAccountExplicitly(account, null, null)) {
-        }
+        Account account = new Account(WeatherForecastsSyncAdapter.ACCOUNT_NAME, getContext().getString(R.string.account_type));
 
         Bundle extras = new Bundle();
         extras.putString(getContext().getString(R.string.preference_zip_code_key), savedZipCode);
@@ -146,6 +141,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         ContentResolver.requestSync(account, ForecastEntry.FORECASTS_PROVIDER_AUTHORITY, extras);
         reloadWeeklyForecastsStartingFromToday();
     }
+
 
     private void showForecasts(Forecasts forecasts) {
         this.weatherForecastAdapter.replaceForecasts(forecasts);

@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 
 import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.LocationPreferences;
+import net.chiragaggarwal.android.sunshine.network.sync.WeatherForecastsSyncAdapter;
 
 public class MainActivity extends AppCompatActivity implements
         ForecastFragment.OnForecastSelectedListener {
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WeatherForecastsSyncAdapter.init(this);
         setContentView(R.layout.activity_main);
         initializeAppToolbar();
         loadDefaultPreferences();

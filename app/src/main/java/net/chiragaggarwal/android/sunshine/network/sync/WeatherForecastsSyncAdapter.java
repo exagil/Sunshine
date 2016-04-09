@@ -1,6 +1,7 @@
 package net.chiragaggarwal.android.sunshine.network.sync;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
@@ -35,6 +36,7 @@ import java.net.URL;
 // as required by the app components
 
 public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
+    public static final String ACCOUNT_NAME = "chiragaggarwal";
     private static final String RESPONSE_ACCEPTABLE_RANGE = "^2.*";
     private static final String HTTP = "http";
     private static final String AUTHORITY = "api.openweathermap.org";
@@ -58,6 +60,14 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public WeatherForecastsSyncAdapter(Context context, boolean autoInitialize, boolean allowParallelSyncs) {
         super(context, autoInitialize, allowParallelSyncs);
+    }
+
+    public static Account init(Context context) {
+        AccountManager accountManager = (AccountManager) context.getSystemService(Context.ACCOUNT_SERVICE);
+        Account account = new Account(ACCOUNT_NAME, context.getString(R.string.account_type));
+        if (accountManager.addAccountExplicitly(account, null, null)) {
+        }
+        return account;
     }
 
     @Override
