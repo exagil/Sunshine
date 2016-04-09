@@ -90,13 +90,13 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
         String temperatureUnit = Utility.savedTemperatureUnit(context, sharedPreferences);
         String postalCode = Utility.savedZipCode(context, sharedPreferences);
 
-        ForecastsForLocation forecastsForLocation = null;
         try {
             URL url = buildWeatherForecastsURL(countryCode, postalCode, temperatureUnit);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
             if (isResponseAcceptable(httpURLConnection)) {
-                forecastsForLocation = getForecastsForLocation(httpURLConnection, postalCode);
+                ForecastsForLocation forecastsForLocation = getForecastsForLocation(httpURLConnection, postalCode);
+                save(forecastsForLocation);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -104,7 +104,6 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
             e.printStackTrace();
         }
 
-        save(forecastsForLocation);
         try {
             notifyWeather(postalCode);
         } catch (ParseException e) {
@@ -130,9 +129,9 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private NotificationCompat.Builder getNotificationBuilder(Forecast forecast) {
         return new NotificationCompat.Builder(getContext())
-                    .setContentText(forecast.summary())
-                    .setContentTitle("Forecast")
-                    .setSmallIcon(R.drawable.ic_action_bar_icon);
+                .setContentText(forecast.summary())
+                .setContentTitle("Forecast")
+                .setSmallIcon(R.drawable.ic_action_bar_icon);
     }
 
     private Forecast queryTodaysForecast(String postalCode) throws ParseException {
