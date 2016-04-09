@@ -43,14 +43,6 @@
             android:smallScreens="true"
             android:xlargeScreens="true" />
 
-        <service
-            android:name=".network.FetchWeatherForecastsService"
-            android:exported="false" />
-
-        <receiver
-            android:name=".network.FetchWeatherForecastsService$AlarmReceiver"
-            android:enabled="true" />
-
         <service android:name=".network.sync.AuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"></action>
