@@ -3,11 +3,9 @@ package net.chiragaggarwal.android.sunshine;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
-import android.content.ContentValues;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,7 +17,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,24 +30,21 @@ import android.widget.TextView;
 import net.chiragaggarwal.android.sunshine.data.DatabaseHelper;
 import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
-import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
-import net.chiragaggarwal.android.sunshine.models.Location;
 import net.chiragaggarwal.android.sunshine.models.LocationPreferences;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import static android.widget.AdapterView.OnItemClickListener;
+import static net.chiragaggarwal.android.sunshine.Utils.Utility.parsedCurrentDateArgument;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String YYYY_MM_DD = "yyyyMMdd";
     private static final int FIRST_POSITION_INDEX = 0;
     private static final String SELECTED_FORECAST_POSITION = "net.chiragaggarwal.android.sunshine.ForecastFragment.SELECTED_FORECAST_POSITION";
     private static final String LOG_TAG = "chi6rag";
     private static final int REQUEST_CODE = 1;
+    private static final String ACCOUNT_NAME = "chiragaggarwal";
 
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
@@ -94,10 +88,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         boolean isTablet = getArguments().getBoolean(MainActivity.IS_TABLET, false);
         this.weatherForecastAdapter = new WeatherForecastAdapter(getContext(),
                 new Forecasts(), !isTablet);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(
-                new WeatherForecastsReceiver(),
-                new IntentFilter(ForecastsForLocation.ACTION_BROADCAST)
-        );
     }
 
     @Nullable
@@ -138,39 +128,28 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void fetchWeatherForecast(SharedPreferences sharedPreferences) {
-        AccountManager accountManager = (AccountManager) getContext().getSystemService(Context.ACCOUNT_SERVICE);
-        Account account = new Account("chiragaggarwal", "chiragaggarwal.net");
-        accountManager.addAccountExplicitly(account, null, null);
-        /*
         String savedZipCode = savedZipCode(sharedPreferences);
         String savedCountryCode = savedCountryCode(sharedPreferences);
         String savedTemperatureUnit = savedTemperatureUnit(sharedPreferences);
 
-        Context context = getContext();
-        Intent fetchWeatherForecastsIntent = new Intent(context, AlarmReceiver.class);
-        fetchWeatherForecastsIntent.putExtra(Location.COUNTRY_CODE, savedCountryCode);
-        fetchWeatherForecastsIntent.putExtra(Location.POSTAL_CODE, savedZipCode);
-        fetchWeatherForecastsIntent.putExtra(Forecast.TEMPERATURE_UNIT, savedTemperatureUnit);
+        AccountManager accountManager = (AccountManager) getContext().getSystemService(Context.ACCOUNT_SERVICE);
+        Account account = new Account(ACCOUNT_NAME, getContext().getString(R.string.account_type));
+        if (accountManager.addAccountExplicitly(account, null, null)) {
+        }
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, fetchWeatherForecastsIntent, PendingIntent.FLAG_ONE_SHOT);
-        AlarmManager alarmManager = ((AlarmManager) context.getSystemService(Context.ALARM_SERVICE));
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 500, pendingIntent);
+        Bundle extras = new Bundle();
+        extras.putString(getContext().getString(R.string.preference_zip_code_key), savedZipCode);
+        extras.putString(getContext().getString(R.string.preference_country_code_key), savedCountryCode);
+        extras.putString(getContext().getString(R.string.preference_temperature_unit_key), savedTemperatureUnit);
+        extras.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
 
-        context.startService(fetchWeatherForecastsIntent);
-        */
+        ContentResolver.requestSync(account, ForecastEntry.FORECASTS_PROVIDER_AUTHORITY, extras);
+        reloadWeeklyForecastsStartingFromToday();
     }
 
     private void showForecasts(Forecasts forecasts) {
         this.weatherForecastAdapter.replaceForecasts(forecasts);
         this.forecastList.smoothScrollToPosition(selectedPosition);
-    }
-
-    private void save(ForecastsForLocation forecastsForLocation) {
-        Forecasts forecasts = forecastsForLocation.forecasts;
-        Location location = forecastsForLocation.location;
-
-        Long locationRowId = insertLocationIfNotPresent(location);
-        insertForecastsForLocationIfNotPresent(forecasts, locationRowId);
     }
 
     private void launchSettings() {
@@ -278,90 +257,12 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         return (forecastList.getVisibility() == ListView.GONE);
     }
 
-    private Long insertLocationIfNotPresent(Location location) {
-        Cursor locationCursor = queryLocationFromLocationProvider(location);
-        Long locationRowId = null;
-
-        if (isLocationNotPresent(locationCursor)) {
-            Uri locationUri = insertLocationInLocationProvider(location);
-            locationRowId = Long.decode(locationUri.getLastPathSegment());
-        } else {
-            locationRowId = getIdOfLocationAlreadyPresent(locationCursor);
-        }
-
-        return locationRowId;
-    }
-
-    private void insertForecastsForLocationIfNotPresent(Forecasts forecasts, Long locationRowId) {
-        Cursor forecastsCursor = queryForecastsForLocationFromForecastsProviderStartingFromToday(locationRowId);
-        if (isOneWeeksForecastsNotPresent(forecastsCursor)) {
-            ContentValues[] forecastsValues = forecasts.toContentValues(locationRowId);
-            insertForecastsInForecastsProvider(forecastsValues);
-        }
-    }
-
     private boolean isInvalidPreferencesGone() {
         return (this.invalidPreferencesTextView.getVisibility() == TextView.GONE);
     }
 
     private boolean canDisplayMaps(Intent intent) {
         return intent.resolveActivity(getActivity().getPackageManager()) != null;
-    }
-
-    private Cursor queryLocationFromLocationProvider(Location location) {
-        return getContext().getContentResolver().
-                query(LocationEntry.CONTENT_URI,
-                        null,
-                        LocationEntry.TABLE_NAME + "." + LocationEntry.COLUMN_LOCATION_SETTING + "=?",
-                        new String[]{location.postalCode},
-                        null);
-    }
-
-    private boolean isLocationNotPresent(Cursor locationCursor) {
-        return locationCursor.getCount() == 0;
-    }
-
-    private Uri insertLocationInLocationProvider(Location location) {
-        return getContext().getContentResolver().insert(
-                LocationEntry.CONTENT_URI,
-                location.toContentValues()
-        );
-    }
-
-    @NonNull
-    private Long getIdOfLocationAlreadyPresent(Cursor locationCursor) {
-        locationCursor.moveToFirst();
-        return locationCursor.getLong(0);
-    }
-
-    private Cursor queryForecastsForLocationFromForecastsProviderStartingFromToday(Long locationRowId) {
-        String locationRowIdArgument = locationRowId.toString();
-        String dateArgument = parsedCurrentDateArgument();
-
-        return getContext().getContentResolver().query(
-                ForecastEntry.CONTENT_URI,
-                null,
-                ForecastEntry.buildForecastsSelectionForLocationIdWithStartDate(),
-                new String[]{locationRowIdArgument, dateArgument},
-                null
-        );
-    }
-
-    @NonNull
-    private String parsedCurrentDateArgument() {
-        SimpleDateFormat currentDateFormat = new SimpleDateFormat(YYYY_MM_DD);
-        String formattedCurrentDate = currentDateFormat.format(new Date());
-        return formattedCurrentDate;
-    }
-
-    private boolean isOneWeeksForecastsNotPresent(Cursor forecastsCursor) {
-        return forecastsCursor.getCount() < 6;
-    }
-
-    private void insertForecastsInForecastsProvider(ContentValues[] forecastsValues) {
-        getContext().getContentResolver().bulkInsert(
-                ForecastEntry.CONTENT_URI, forecastsValues
-        );
     }
 
     @Override
@@ -383,14 +284,21 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void onForecastsLoaded(Cursor forecastsCursor) {
-        if (isOneWeeksForecastsNotPresent(forecastsCursor)) {
+        if (forecastsCursor.getCount() < 6) {
             fetchWeatherForecast(getSharedPreferences());
         } else {
             try {
-                Forecasts forecasts = null;
-                forecasts = Forecasts.fromCursor(forecastsCursor);
+                if (isForecastListGone()) {
+                    removeInvalidPreferences();
+                    showForecastList();
+                }
+                Forecasts forecasts = Forecasts.fromCursor(forecastsCursor);
                 showForecasts(forecasts);
             } catch (ParseException e) {
+                if (isInvalidPreferencesGone()) {
+                    removeForecastList();
+                    showInvalidPreferences();
+                }
                 e.printStackTrace();
                 return;
             }
@@ -443,31 +351,4 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 null
         );
     }
-
-    private class WeatherForecastsReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            switch (intent.getAction()) {
-                case ForecastsForLocation.ACTION_BROADCAST:
-                    Bundle weatherForecastsBundle = intent.getExtras();
-                    Object forecastsForLocationObject = weatherForecastsBundle.get(ForecastsForLocation.TAG);
-                    if (forecastsForLocationObject != null) {
-                        ForecastsForLocation forecastsForLocation = (ForecastsForLocation) forecastsForLocationObject;
-                        if (isForecastListGone()) {
-                            removeInvalidPreferences();
-                            showForecastList();
-                        }
-                        save(forecastsForLocation);
-                        reloadWeeklyForecastsStartingFromToday();
-                    } else {
-                        if (isInvalidPreferencesGone()) {
-                            removeForecastList();
-                            showInvalidPreferences();
-                        }
-                    }
-                    break;
-            }
-        }
-    }
-
 }

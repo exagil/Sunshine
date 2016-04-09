@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <sync-adapter
     android:contentAuthority="net.chiragaggarwal.android.sunshine.data.forecasts_provider"
-    android:accountType="chiragaggarwal.net"
+    android:accountType="@string/account_type"
     android:userVisible="true"
     android:supportsUploading="false"
     android:allowParallelSyncs="false"
