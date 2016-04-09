@@ -49,6 +49,14 @@
         <receiver
             android:name=".network.FetchWeatherForecastsService$AlarmReceiver"
             android:enabled="true" />
-    </application>
 
+        <service android:name=".network.sync.AuthenticatorService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"></action>
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+    </application>
 </manifest>
