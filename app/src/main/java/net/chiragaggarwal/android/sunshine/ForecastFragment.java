@@ -1,8 +1,8 @@
 package net.chiragaggarwal.android.sunshine;
 
-import android.app.AlarmManager;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -44,7 +44,6 @@ import java.util.Date;
 import static android.widget.AdapterView.OnItemClickListener;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
-import static net.chiragaggarwal.android.sunshine.network.FetchWeatherForecastsService.AlarmReceiver;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String YYYY_MM_DD = "yyyyMMdd";
@@ -139,6 +138,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void fetchWeatherForecast(SharedPreferences sharedPreferences) {
+        AccountManager accountManager = (AccountManager) getContext().getSystemService(Context.ACCOUNT_SERVICE);
+        Account account = new Account("chiragaggarwal", "chiragaggarwal.net");
+        accountManager.addAccountExplicitly(account, null, null);
+        /*
         String savedZipCode = savedZipCode(sharedPreferences);
         String savedCountryCode = savedCountryCode(sharedPreferences);
         String savedTemperatureUnit = savedTemperatureUnit(sharedPreferences);
@@ -154,6 +157,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 500, pendingIntent);
 
         context.startService(fetchWeatherForecastsIntent);
+        */
     }
 
     private void showForecasts(Forecasts forecasts) {
