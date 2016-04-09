@@ -3,11 +3,13 @@ package net.chiragaggarwal.android.sunshine.network.sync;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
-import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
@@ -19,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
+import net.chiragaggarwal.android.sunshine.MainActivity;
 import net.chiragaggarwal.android.sunshine.R;
 import net.chiragaggarwal.android.sunshine.Utils.Utility;
 import net.chiragaggarwal.android.sunshine.data.ForecastContract;
@@ -110,23 +113,35 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void notifyWeather(String postalCode) throws ParseException {
-        Cursor todaysForecastCursor = queryTodaysForecast(postalCode);
-        todaysForecastCursor.moveToFirst();
-        Forecast forecast = Forecast.fromCursor(todaysForecastCursor);
-
-        Notification notification = new NotificationCompat.Builder(getContext())
-                .setContentText(forecast.summary())
-                .setContentTitle("Forecast")
-                .setSmallIcon(R.drawable.ic_action_bar_icon)
-                .build();
-        NotificationManagerCompat.from(getContext()).notify(NOTIFICATION_ID, notification);
+        Forecast forecast = queryTodaysForecast(postalCode);
+        NotificationCompat.Builder notificationBuilder = getNotificationBuilder(forecast);
+        addContentIntentIfPossible(notificationBuilder);
+        NotificationManagerCompat.from(getContext()).notify(NOTIFICATION_ID, notificationBuilder.build());
     }
 
-    private Cursor queryTodaysForecast(String postalCode) {
+    private void addContentIntentIfPossible(NotificationCompat.Builder notificationBuilder) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            PendingIntent launchMainActivityIntent = TaskStackBuilder.create(getContext())
+                    .addNextIntentWithParentStack(new Intent(getContext(), MainActivity.class))
+                    .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            notificationBuilder.setContentIntent(launchMainActivityIntent);
+        }
+    }
+
+    private NotificationCompat.Builder getNotificationBuilder(Forecast forecast) {
+        return new NotificationCompat.Builder(getContext())
+                    .setContentText(forecast.summary())
+                    .setContentTitle("Forecast")
+                    .setSmallIcon(R.drawable.ic_action_bar_icon);
+    }
+
+    private Forecast queryTodaysForecast(String postalCode) throws ParseException {
         long todaysPersistableDate = Forecast.persistableDate(new Date());
-        return getContext().getContentResolver().query(
+        Cursor forecastCursor = getContext().getContentResolver().query(
                 ForecastContract.ForecastEntry.buildWeatherLocationWithDate(postalCode, todaysPersistableDate), null,
                 null, null, null);
+        forecastCursor.moveToFirst();
+        return Forecast.fromCursor(forecastCursor);
     }
 
     private URL buildWeatherForecastsURL(String countryCode, String postalCode, String temperatureUnit)
