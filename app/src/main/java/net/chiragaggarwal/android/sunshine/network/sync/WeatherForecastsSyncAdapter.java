@@ -3,6 +3,7 @@ package net.chiragaggarwal.android.sunshine.network.sync;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
@@ -15,10 +16,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 
 import net.chiragaggarwal.android.sunshine.R;
 import net.chiragaggarwal.android.sunshine.Utils.Utility;
 import net.chiragaggarwal.android.sunshine.data.ForecastContract;
+import net.chiragaggarwal.android.sunshine.models.Forecast;
 import net.chiragaggarwal.android.sunshine.models.Forecasts;
 import net.chiragaggarwal.android.sunshine.models.ForecastsForLocation;
 import net.chiragaggarwal.android.sunshine.models.Location;
@@ -33,6 +37,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.util.Date;
 
 // WeatherForecastsSyncAdapter fetches the weather forecasts
 // as required by the app components
@@ -54,6 +60,7 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String SEVEN = "7";
     private static final String APPID = "APPID";
     private static final String DATA = "data";
+    private static final int NOTIFICATION_ID = 2002;
 
     public WeatherForecastsSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
@@ -95,6 +102,31 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         save(forecastsForLocation);
+        try {
+            notifyWeather(postalCode);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void notifyWeather(String postalCode) throws ParseException {
+        Cursor todaysForecastCursor = queryTodaysForecast(postalCode);
+        todaysForecastCursor.moveToFirst();
+        Forecast forecast = Forecast.fromCursor(todaysForecastCursor);
+
+        Notification notification = new NotificationCompat.Builder(getContext())
+                .setContentText(forecast.summary())
+                .setContentTitle("Forecast")
+                .setSmallIcon(R.drawable.ic_action_bar_icon)
+                .build();
+        NotificationManagerCompat.from(getContext()).notify(NOTIFICATION_ID, notification);
+    }
+
+    private Cursor queryTodaysForecast(String postalCode) {
+        long todaysPersistableDate = Forecast.persistableDate(new Date());
+        return getContext().getContentResolver().query(
+                ForecastContract.ForecastEntry.buildWeatherLocationWithDate(postalCode, todaysPersistableDate), null,
+                null, null, null);
     }
 
     private URL buildWeatherForecastsURL(String countryCode, String postalCode, String temperatureUnit)

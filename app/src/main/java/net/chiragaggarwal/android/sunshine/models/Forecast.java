@@ -129,7 +129,7 @@ public class Forecast implements Parcelable {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ForecastEntry.COLUMN_MAX_TEMP, maximumTemperature);
         contentValues.put(ForecastEntry.COLUMN_MIN_TEMP, minimumTemperature);
-        contentValues.put(ForecastEntry.COLUMN_DATE, persistableDate());
+        contentValues.put(ForecastEntry.COLUMN_DATE, persistableDate(this.date));
         contentValues.put(ForecastEntry.COLUMN_SHORT_DESC, mainDescription);
         contentValues.put(ForecastEntry.COLUMN_LOC_KEY, locationRowId);
         contentValues.put(ForecastEntry.COLUMN_DEGREES, degrees);
@@ -184,9 +184,9 @@ public class Forecast implements Parcelable {
                 Locale.US).format(this.date);
     }
 
-    private long persistableDate() {
+    public static long persistableDate(Date date) {
         SimpleDateFormat persistableDateFormat = new SimpleDateFormat(YYYY_MM_DD);
-        String formattedPersistableDate = persistableDateFormat.format(this.date);
+        String formattedPersistableDate = persistableDateFormat.format(date);
         return Long.parseLong(formattedPersistableDate);
     }
 
