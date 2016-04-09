@@ -7,11 +7,13 @@ import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
 import net.chiragaggarwal.android.sunshine.R;
@@ -72,9 +74,11 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        String countryCode = extras.getString(this.getContext().getString(R.string.preference_country_code_key));
-        String temperatureUnit = extras.getString(this.getContext().getString(R.string.preference_temperature_unit_key));
-        String postalCode = extras.getString(this.getContext().getString(R.string.preference_zip_code_key));
+        Context context = getContext();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String countryCode = Utility.savedCountryCode(context, sharedPreferences);
+        String temperatureUnit = Utility.savedTemperatureUnit(context, sharedPreferences);
+        String postalCode = Utility.savedZipCode(context, sharedPreferences);
 
         ForecastsForLocation forecastsForLocation = null;
         try {

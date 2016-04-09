@@ -36,13 +36,14 @@ import java.text.ParseException;
 
 import static android.widget.AdapterView.OnItemClickListener;
 import static net.chiragaggarwal.android.sunshine.Utils.Utility.parsedCurrentDateArgument;
+import static net.chiragaggarwal.android.sunshine.Utils.Utility.savedZipCode;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.ForecastEntry;
 import static net.chiragaggarwal.android.sunshine.data.ForecastContract.LocationEntry;
 
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final int FIRST_POSITION_INDEX = 0;
     private static final String SELECTED_FORECAST_POSITION = "net.chiragaggarwal.android.sunshine.ForecastFragment.SELECTED_FORECAST_POSITION";
-    private static final String LOG_TAG = "chi6rag";
+    private static final int POLL_EVERY_DAY = 24 * 60 * 60;
 
     private ListView forecastList;
     private TextView invalidPreferencesTextView;
@@ -115,7 +116,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         SharedPreferences sharedPreferences = getSharedPreferences();
         switch (item.getItemId()) {
             case R.id.forecast_action_show_location:
-                String zipCode = savedZipCode(sharedPreferences);
+                String zipCode = savedZipCode(getContext(), sharedPreferences);
                 showLocationAt(zipCode);
                 break;
             case R.id.forecast_action_settings:
@@ -125,20 +126,16 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         return false;
     }
 
-    private void fetchWeatherForecast(SharedPreferences sharedPreferences) {
-        String savedZipCode = savedZipCode(sharedPreferences);
-        String savedCountryCode = savedCountryCode(sharedPreferences);
-        String savedTemperatureUnit = savedTemperatureUnit(sharedPreferences);
-
+    private void fetchWeatherForecast() {
         Account account = new Account(WeatherForecastsSyncAdapter.ACCOUNT_NAME, getContext().getString(R.string.account_type));
 
         Bundle extras = new Bundle();
-        extras.putString(getContext().getString(R.string.preference_zip_code_key), savedZipCode);
-        extras.putString(getContext().getString(R.string.preference_country_code_key), savedCountryCode);
-        extras.putString(getContext().getString(R.string.preference_temperature_unit_key), savedTemperatureUnit);
         extras.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-
         ContentResolver.requestSync(account, ForecastEntry.FORECASTS_PROVIDER_AUTHORITY, extras);
+
+        ContentResolver.addPeriodicSync(account, ForecastEntry.FORECASTS_PROVIDER_AUTHORITY,
+                new Bundle(), POLL_EVERY_DAY);
+
         reloadWeeklyForecastsStartingFromToday();
     }
 
@@ -218,21 +215,6 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         this.invalidPreferencesTextView.setVisibility(TextView.VISIBLE);
     }
 
-    private String savedCountryCode(SharedPreferences sharedPreferences) {
-        String preferenceCountryCodeKey = getString(R.string.preference_country_code_key);
-        return sharedPreferences.getString(preferenceCountryCodeKey, "");
-    }
-
-    private String savedZipCode(SharedPreferences sharedPreferences) {
-        String preferenceZipCodeKey = getString(R.string.preference_zip_code_key);
-        return sharedPreferences.getString(preferenceZipCodeKey, "");
-    }
-
-    private String savedTemperatureUnit(SharedPreferences sharedPreferences) {
-        String preferenceTemperatureUnitKey = getString(R.string.preference_temperature_unit_key);
-        return sharedPreferences.getString(preferenceTemperatureUnitKey, "");
-    }
-
     @NonNull
     private OnItemClickListener onItemClickListenerForForecastList() {
         return new OnItemClickListener() {
@@ -281,7 +263,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void onForecastsLoaded(Cursor forecastsCursor) {
         if (forecastsCursor.getCount() < 6) {
-            fetchWeatherForecast(getSharedPreferences());
+            fetchWeatherForecast();
         } else {
             try {
                 if (isForecastListGone()) {
@@ -312,7 +294,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private int buildUniqueLoaderId() {
-        String zipCode = this.savedZipCode(getSharedPreferences());
+        String zipCode = savedZipCode(getContext(), getSharedPreferences());
         int newLoaderId = Integer.parseInt(zipCode);
         ForecastLoaders.getInstance().addLoaderId(newLoaderId);
         return newLoaderId;
@@ -326,7 +308,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @NonNull
     private Bundle forecastsBundle() {
         SharedPreferences sharedPreferences = getSharedPreferences();
-        String savedZipCode = savedZipCode(sharedPreferences);
+        String savedZipCode = savedZipCode(getContext(), sharedPreferences);
         Bundle forecastsBundle = new Bundle();
         forecastsBundle.putString(LocationEntry.COLUMN_LOCATION_SETTING, savedZipCode);
         return forecastsBundle;
