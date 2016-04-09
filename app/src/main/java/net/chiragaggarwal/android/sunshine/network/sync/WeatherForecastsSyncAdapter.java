@@ -105,10 +105,15 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         try {
-            notifyWeather(postalCode);
+            if (isNotificationEnabled()) notifyWeather(postalCode);
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean isNotificationEnabled() {
+        String notificationPreferenceKey = getContext().getString(R.string.preference_show_notifications_key);
+        return PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(notificationPreferenceKey, false);
     }
 
     private void notifyWeather(String postalCode) throws ParseException {
@@ -140,7 +145,9 @@ public class WeatherForecastsSyncAdapter extends AbstractThreadedSyncAdapter {
                 ForecastContract.ForecastEntry.buildWeatherLocationWithDate(postalCode, todaysPersistableDate), null,
                 null, null, null);
         forecastCursor.moveToFirst();
-        return Forecast.fromCursor(forecastCursor);
+        Forecast queriedForecast = Forecast.fromCursor(forecastCursor);
+        forecastCursor.close();
+        return queriedForecast;
     }
 
     private URL buildWeatherForecastsURL(String countryCode, String postalCode, String temperatureUnit)

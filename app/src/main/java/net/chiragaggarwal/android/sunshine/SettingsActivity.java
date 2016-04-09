@@ -43,6 +43,8 @@ public class SettingsActivity extends PreferenceActivity implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(LocationPreferences.HAS_CHANGED)) return;
+        else if (hasNotificationPreferenceChanged(key)) return;
+
         String changedValue = sharedPreferences.getString(key, BLANK);
 
         if (hasChangedZipCode(key) || hasChangedCountryCode(key)) {
@@ -54,6 +56,10 @@ public class SettingsActivity extends PreferenceActivity implements
             Preference temperaturePreference = findPreference(key);
             temperaturePreference.setSummary(changedValue);
         }
+    }
+
+    private boolean hasNotificationPreferenceChanged(String key) {
+        return key.equals(this.getString(R.string.preference_show_notifications_key));
     }
 
     private boolean hasChangedTemperatureUnit(String key) {

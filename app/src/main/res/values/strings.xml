@@ -25,4 +25,6 @@
 
     <string name="degrees_symbol">\u00B0</string>
     <string name="account_type">chiragaggarwal.net</string>
+    <string name="preference_show_notifications_key">preference_show_notifications</string>
+    <string name="preference_show_notifications_summary">Notifications</string>
 </resources>
